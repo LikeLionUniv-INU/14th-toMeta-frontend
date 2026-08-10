@@ -3,6 +3,9 @@ import AppLayout from './styles/AppLayout';
 import HealthConnect from './pages/HealthConnect';
 import RecordDefaultInput from './pages/RecordDefaultInput';
 
+/**
+ * Configures the application layout and client-side routes.
+ */
 function App() {
   return (
     <BrowserRouter>
