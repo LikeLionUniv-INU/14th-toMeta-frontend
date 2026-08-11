@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import AppLayout from './styles/AppLayout';
 import HealthConnect from './pages/HealthConnect';
-import RecordDefaultInput from './pages/RecordDefaultInput';
+import DefaultInput from './pages/DefaultInput';
 import ProfileInput from './pages/ProfileInput';
 import SkintypeInput from './pages/SkintypeInput';
 import Notification from './pages/Notification';
@@ -17,7 +17,7 @@ function App() {
       <AppLayout>
         <Routes>
           <Route path="/healthconnect" element={<HealthConnect />} />
-          <Route path="/recorddefaultinput" element={<RecordDefaultInput />} />
+          <Route path="/defaultinput" element={<DefaultInput />} />
           <Route path="/onboarding/profile" element={<ProfileInput />} />
           <Route path="/onboarding/skin-type" element={<SkintypeInput />} />
           <Route path="/onboarding/notification" element={<Notification />} />
