@@ -1,14 +1,14 @@
 import React, { useState, useRef } from 'react';
 import Button from '../components/Button';
-import * as S from './RecordDefaultInput.styles';
+import * as S from './DefaultInput.styles';
 
-const RecordDefaultInput = () => {
-  const [skinCondition, setSkinCondition] = useState(null); // 피부 상태
-  const [morningProducts, setMorningProducts] = useState([]); // 아침 화장품 목록
-  const [nightProducts, setNightProducts] = useState([]); // 밤 화장품 목록
-  const [foodInput, setFoodInput] = useState(''); // 음식이름 입력값
-  const [selectedImage, setSelectedImage] = useState(null); // 첨부된 피부 사진
-  const [noteInput, setNoteInput] = useState(''); // 특이사항 입력값
+const DefaultInput = () => {
+  const [skinCondition, setSkinCondition] = useState(null);
+  const [morningProducts, setMorningProducts] = useState([]);
+  const [nightProducts, setNightProducts] = useState([]);
+  const [foodInput, setFoodInput] = useState('');
+  const [images, setImages] = useState([]);
+  const [noteInput, setNoteInput] = useState('');
 
   const fileInputRef = useRef(null);
 
@@ -20,15 +20,15 @@ const RecordDefaultInput = () => {
     { id: 5, label: '매우 나쁨', emoji: '😑' },
   ];
 
+  const isBadSkin = Number(skinCondition) === 4 || Number(skinCondition) === 5;
+
   const isFormValid =
     skinCondition !== null &&
     morningProducts.length > 0 &&
     nightProducts.length > 0 &&
-    noteInput.trim().length > 0;
+    (!isBadSkin || noteInput.trim().length > 0);
 
   const handleAddProduct = (type) => {
-    console.log(`${type} 화장품 추가 버튼 클릭`);
-    // 예시: 클릭 시 임시 데이터 세팅
     if (type === 'morning') {
       setMorningProducts(['아침 토너']);
     } else {
@@ -43,11 +43,15 @@ const RecordDefaultInput = () => {
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setSelectedImage(imageUrl);
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
+      const newImageUrls = files.map((file) => URL.createObjectURL(file));
+      setImages((prev) => [...prev, ...newImageUrls]);
     }
+  };
+
+  const handleRemoveImage = (index) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = () => {
@@ -58,11 +62,11 @@ const RecordDefaultInput = () => {
       morningProducts,
       nightProducts,
       foodInput,
-      selectedImage,
+      images,
       noteInput,
     };
 
-    console.log('기록 저장 데이타:', recordData);
+    console.log('기록 저장 데이터:', recordData);
   };
 
   return (
@@ -90,7 +94,7 @@ const RecordDefaultInput = () => {
               <S.SkinStatusButton
                 key={item.id}
                 type="button"
-                selected={skinCondition === item.id}
+                selected={Number(skinCondition) === item.id}
                 onClick={() => setSkinCondition(item.id)}
               >
                 <span className="emoji">{item.emoji}</span>
@@ -100,7 +104,7 @@ const RecordDefaultInput = () => {
           </S.SkinStatusGroup>
         </S.Section>
 
-        <S.Divider />
+        <S.SectionDivider />
 
         <S.Section>
           <S.Label>
@@ -120,7 +124,7 @@ const RecordDefaultInput = () => {
           </S.AddButton>
         </S.Section>
 
-        <S.Divider />
+        <S.SectionDivider />
 
         <S.Section>
           <S.Label>
@@ -136,7 +140,7 @@ const RecordDefaultInput = () => {
           </S.TextareaWrapper>
         </S.Section>
 
-        <S.Divider />
+        <S.SectionDivider />
 
         <S.Section>
           <S.Label>
@@ -149,32 +153,53 @@ const RecordDefaultInput = () => {
           <input
             type="file"
             accept="image/*"
+            multiple
             capture="environment"
             ref={fileInputRef}
             onChange={handleFileChange}
             style={{ display: 'none' }}
           />
 
-          <S.CameraButton type="button" onClick={handleCameraClick}>
-            {selectedImage ? (
-              <img src={selectedImage} alt="피부 상태 미리보기" />
-            ) : (
+          <S.ImageListContainer>
+            <S.CameraButton type="button" onClick={handleCameraClick}>
               <span className="camera-icon">📷</span>
-            )}
-          </S.CameraButton>
+            </S.CameraButton>
+
+            {images.map((imgUrl, index) => (
+              <S.ImageItem key={index}>
+                <img src={imgUrl} alt={`피부 사진 ${index + 1}`} />
+                <button
+                  type="button"
+                  className="delete-btn"
+                  onClick={() => handleRemoveImage(index)}
+                >
+                  ✕
+                </button>
+              </S.ImageItem>
+            ))}
+          </S.ImageListContainer>
         </S.Section>
 
-        <S.Divider />
+        <S.SectionDivider />
 
         <S.Section>
           <S.Label>
-            오늘 기억하고 싶은 특이사항이 있나요?<span className="required">*</span>
+            오늘 기억하고 싶은 특이사항이 있나요?
+            {isBadSkin ? (
+              <span className="required">*</span>
+            ) : (
+              <span className="optional">(선택)</span>
+            )}
           </S.Label>
           <S.TextareaWrapper>
             <textarea
               value={noteInput}
               onChange={(e) => setNoteInput(e.target.value.slice(0, 300))}
-              placeholder="ex. 요즘 물 1.5L씩 마시는 중!"
+              placeholder={
+                isBadSkin
+                  ? 'ex. 갑자기 트러블이 올라왔거나, 피부가 자극받은 이유(늦은 야식, 붉은기 등)를\n자유롭게 적어주세요!'
+                  : 'ex. 요즘 물 1.5L씩 마시는 중!'
+              }
             />
             <span className="char-count">{noteInput.length}/300</span>
           </S.TextareaWrapper>
@@ -190,4 +215,4 @@ const RecordDefaultInput = () => {
   );
 };
 
-export default RecordDefaultInput;
+export default DefaultInput;

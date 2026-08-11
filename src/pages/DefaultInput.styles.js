@@ -11,7 +11,6 @@ export const Header = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 1px;
-  border-bottom: 1px solid #e5e7eb;
 
   button {
     font-size: 1.25rem;
@@ -27,55 +26,66 @@ export const Header = styled.div`
 `;
 
 export const Content = styled.div`
-  padding: 1rem;
+  padding: 30px 20px;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 `;
 
 export const DateSection = styled.div`
   h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 24px;
+    font-weight: 400;
+    margin: 0 0 0.3rem 0;
   }
 
   p {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin-top: 0.25rem;
+    font-size: 10px;
+    font-weight: 400;
+    color: #000000;
+    margin: 0.1rem;
   }
+`;
+
+export const SectionDivider = styled.div`
+  height: 12px;
+  background-color: #f3f4f6;
+  margin: 0 -20px;
 `;
 
 export const Divider = styled.hr`
   border: none;
-  border-top: 1px solid #f3f4f6;
-  margin: 0.5rem 0;
+  border-top: 1px solid #b0b0b0;
+  margin: 1px;
 `;
 
-export const Section = styled.section``;
+export const Section = styled.section`
 
-export const Label = styled.label`
+`;
+
+export const Label = styled.div`
   display: block;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  font-size: 0.95rem;
+  font-size: 14px;
 
   .required {
-    color: #ef4444;
+    color: red;
     margin-left: 2px;
   }
 
   .optional {
-    color: #3b82f6;
-    font-size: 0.85rem;
+    color: #0C10FF;
+    font-size: 12px;
     font-weight: 400;
     margin-left: 4px;
   }
 `;
 
 export const SubDescription = styled.p`
-  font-size: 0.75rem;
-  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 400;
+  color: #828282;
   margin-bottom: 0.5rem;
 `;
 
@@ -98,13 +108,14 @@ export const SkinStatusButton = styled.button`
   transition: all 0.2s ease;
 
   .emoji {
-    font-size: 1.875rem;
+    font-size: 40px;
     margin-bottom: 0.25rem;
   }
 
   .text {
-    font-size: 0.75rem;
-    color: #4b5563;
+    font-size: 12px;
+    font-weight: 400;
+    color: #000000;
   }
 `;
 
@@ -114,7 +125,9 @@ export const AddButton = styled.button`
   border-radius: 0.5rem;
   padding: 1rem;
   text-align: center;
-  color: #9ca3af;
+  color: #828282;
+  font-weight: 600;
+  font-size: 12px;
   background-color: transparent;
   cursor: pointer;
   transition: background-color 0.2s;
@@ -132,7 +145,9 @@ export const TextareaWrapper = styled.div`
     border: 1px solid #d1d5db;
     border-radius: 0.5rem;
     padding: 0.75rem;
-    font-size: 0.875rem;
+    font-weight: 400;
+    font-size: 10px;
+    color: #828282;
     height: 7rem;
     resize: none;
     box-sizing: border-box;
@@ -152,11 +167,19 @@ export const TextareaWrapper = styled.div`
   }
 `;
 
+export const ImageListContainer = styled.div`
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+`;
+
 export const CameraButton = styled.button`
-  width: 100%;
+  width: 5.5rem;
+  height: 5.5rem;
+  flex-shrink: 0;
   background-color: #f3f4f6;
-  border-radius: 0.5rem;
-  padding: 1.5rem;
+  border-radius: 0.75rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -168,14 +191,39 @@ export const CameraButton = styled.button`
     background-color: #e5e7eb;
   }
 
+  .camera-icon {
+    font-size: 1.75rem;
+  }
+`;
+
+export const ImageItem = styled.div`
+  position: relative;
+  width: 5.5rem;
+  height: 5.5rem;
+  flex-shrink: 0;
+
   img {
-    height: 6rem;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border-radius: 0.25rem;
+    border-radius: 0.75rem;
   }
 
-  .camera-icon {
-    font-size: 1.5rem;
+  .delete-btn {
+    position: absolute;
+    top: -0.25rem;
+    right: -0.25rem;
+    background-color: #374151;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 1.25rem;
+    height: 1.25rem;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
   }
 `;
 

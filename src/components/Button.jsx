@@ -5,7 +5,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const StyledButton = styled.button`
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
   height: 52px;
   background-color: ${(props) => (props.disabled ? '#B3B3B3' : '#609668')};
