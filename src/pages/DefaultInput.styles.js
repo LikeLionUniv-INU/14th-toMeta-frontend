@@ -11,7 +11,6 @@ export const Header = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 1px;
-  border-bottom: 1px solid #e5e7eb;
 
   button {
     font-size: 1.25rem;
@@ -30,35 +29,38 @@ export const Content = styled.div`
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 `;
 
 export const DateSection = styled.div`
   h2 {
     font-size: 1.5rem;
     font-weight: 700;
+    margin: 0 0 0.3rem 0;
   }
 
   p {
     font-size: 0.75rem;
     color: #6b7280;
-    margin-top: 0.25rem;
+    margin: 0.1rem;
   }
 `;
 
 export const Divider = styled.hr`
   border: none;
-  border-top: 1px solid #f3f4f6;
-  margin: 0.5rem 0;
+  border-top: 1px solid #b0b0b0;
+  margin: 1px;
 `;
 
-export const Section = styled.section``;
+export const Section = styled.section`
+
+`;
 
 export const Label = styled.label`
   display: block;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  font-size: 0.95rem;
+  font-size: 17px;
 
   .required {
     color: #ef4444;
@@ -132,7 +134,7 @@ export const TextareaWrapper = styled.div`
     border: 1px solid #d1d5db;
     border-radius: 0.5rem;
     padding: 0.75rem;
-    font-size: 0.875rem;
+    font-size: 11px;
     height: 7rem;
     resize: none;
     box-sizing: border-box;

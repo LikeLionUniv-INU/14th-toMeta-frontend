@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 import Button from '../components/Button';
-import * as S from './RecordDefaultInput.styles';
+import * as S from './DefaultInput.styles';
 
-const RecordDefaultInput = () => {
+const DefaultInput = () => {
   const [skinCondition, setSkinCondition] = useState(null); // 피부 상태
   const [morningProducts, setMorningProducts] = useState([]); // 아침 화장품 목록
   const [nightProducts, setNightProducts] = useState([]); // 밤 화장품 목록
@@ -190,4 +190,4 @@ const RecordDefaultInput = () => {
   );
 };
 
-export default RecordDefaultInput;
+export default DefaultInput;
