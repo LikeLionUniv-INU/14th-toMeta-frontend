@@ -13,7 +13,7 @@ export default AppLayout;
 const Background = styled.div`
   display: flex;
   justify-content: center;
-  width: 100vw;
+  width: 100%;
   height: 100dvh;
   background-color: #f0f0f5;
 `;
@@ -26,6 +26,10 @@ const MobileContainer = styled.div`
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
   overflow-y: auto;
 
+  -webkit-overflow-scrolling: touch;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
   }
