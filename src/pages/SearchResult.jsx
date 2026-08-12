@@ -9,27 +9,23 @@ export default function SearchResult() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 백엔드에서 전달받은 검색 결과 데이터 예시 (Array 형태)
-  // 데이터 개수가 1개이면 카드형, 2개 이상이면 라디오 리스트형으로 자동 분기됩니다.
+  // 백엔드에서 전달받은 검색 결과 데이터 예시
   const searchResults = location.state?.searchResults || [
     { id: 1, name: '브링그린 티트리 시카 크림', imageUrl: '' },
     { id: 2, name: '브링그린 티트리 시카 수딩 토너', imageUrl: '' },
     { id: 3, name: '메디힐 티트리 진정 수딩 크림', imageUrl: '' },
   ];
 
-  // 상태 관리
   const [selectedListId, setSelectedListId] = useState(
     searchResults.length === 1 ? searchResults[0].id : null,
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // 모달 내부: 낮/밤 중복 선택을 위한 객체 상태
   const [selectedRoutines, setSelectedRoutines] = useState({
     day: false,
     night: false,
   });
 
-  // 낮/밤 토글 핸들러 (중복 선택 지원)
   const toggleRoutine = (type) => {
     setSelectedRoutines((prev) => ({
       ...prev,
@@ -37,9 +33,7 @@ export default function SearchResult() {
     }));
   };
 
-  // [확인] 버튼 클릭
   const handleConfirmClick = () => {
-    // 다건 목록에서 선택하지 않은 경우
     if (searchResults.length > 1 && !selectedListId) {
       alert('사용 중인 제품을 선택해 주세요.');
       return;
@@ -47,17 +41,14 @@ export default function SearchResult() {
     setIsModalOpen(true);
   };
 
-  // [다시 검색] 버튼 클릭
   const handleRetrySearch = () => {
     navigate('/register/search');
   };
 
-  // [직접 입력하기] 버튼 클릭
   const handleGoToCustom = () => {
-    navigate('/register/custom/routine');
+    navigate('/register/custom-routine');
   };
 
-  // 모달 내부 [확인] 클릭 (최종 등록)
   const handleFinalRegister = () => {
     if (!selectedRoutines.day && !selectedRoutines.night) {
       alert('사용 시점(낮 또는 밤)을 최소 하나 이상 선택해 주세요.');
@@ -72,7 +63,7 @@ export default function SearchResult() {
 
     console.log('최종 등록 데이터:', {
       product: selectedProduct,
-      routines: selectedRoutines, // { day: true, night: false } 등
+      routines: selectedRoutines,
     });
 
     // TODO: 백엔드 등록 API 호출 후 페이지 이동
@@ -83,9 +74,8 @@ export default function SearchResult() {
     <Container>
       <Header title="검색 결과" variant="back" />
       <Content>
-        {/* 1. 백엔드 데이터 개수에 따른 삼항연산자 타이틀 및 메인 뷰 전환 */}
         {searchResults.length === 1 ? (
-          /* 단건일 경우 */
+          /* 검색 결과가 하나일 경우 */
           <>
             <MainTitle>이 제품이 맞으신가요?</MainTitle>
             <SingleProductCard>
@@ -107,7 +97,7 @@ export default function SearchResult() {
             </SingleProductCard>
           </>
         ) : (
-          /* 다건일 경우 */
+          /* 검색 결과가 여러 건일 경우 */
           <>
             <MainTitle>
               이 중 어떤 제품을
@@ -201,7 +191,7 @@ export default function SearchResult() {
   );
 }
 
-/* ==================== SVG Icons ==================== */
+/* SVG Icons */
 
 const SunIcon = () => (
   <svg
@@ -230,7 +220,7 @@ const MoonIcon = () => (
   </svg>
 );
 
-/* ==================== Style Components ==================== */
+/* Style Components */
 
 const Container = styled.div`
   width: 100%;
@@ -262,7 +252,7 @@ const MainTitle = styled.h2`
   }
 `;
 
-/* --- 단건 (1개) 시안 스타일 --- */
+/* 검색 결과가 하나일 때 */
 
 const SingleProductCard = styled.div`
   width: 100%;
@@ -304,7 +294,7 @@ const ProductName = styled.p`
   text-align: center;
 `;
 
-/* --- 다건 (여러개) 시안 스타일 --- */
+/* 검색 결과가 여러 건일 때 */
 
 const ProductList = styled.div`
   display: flex;
@@ -384,7 +374,7 @@ const ButtonGroup = styled.div`
   margin-top: 24px;
 `;
 
-/* ==================== Modal Styles ==================== */
+/* Modal Styles */
 
 const Overlay = styled.div`
   position: fixed;
