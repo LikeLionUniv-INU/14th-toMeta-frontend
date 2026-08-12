@@ -7,6 +7,7 @@ import AppLayout from './styles/AppLayout';
 import Privacy from './pages/Privacy';
 import HealthConnect from './pages/HealthConnect';
 import DefaultInput from './pages/DefaultInput';
+import EmptyPouch from './pages/EmptyPouch';
 import ProfileInput from './pages/ProfileInput';
 import SkintypeInput from './pages/SkintypeInput';
 import Notification from './pages/Notification';
@@ -26,6 +27,7 @@ function App() {
           <Route path="/onboarding/skin-type" element={<SkintypeInput />} />
           <Route path="/onboarding/notification" element={<Notification />} />
           <Route path="/defaultinput" element={<DefaultInput />} />
+          <Route path="/emptypouch" element={<EmptyPouch />} />
           <Route
             path="/register/search-cosmetic"
             element={<SearchCosmetic />}
