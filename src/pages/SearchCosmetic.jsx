@@ -10,7 +10,6 @@ export default function SearchCosmetic() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // 백엔드로 검색 요청을 보내는 함수
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchTerm.trim() || isLoading) return;
@@ -18,7 +17,7 @@ export default function SearchCosmetic() {
     try {
       setIsLoading(true);
 
-      // 1. 백엔드 API 호출 (실제 API URL로 변경하세요)
+      // 1. 백엔드 API 호출
       // const response = await fetch(`/api/cosmetics/search?name=${encodeURIComponent(searchTerm)}`);
       // const data = await response.json();
 
@@ -122,7 +121,7 @@ export default function SearchCosmetic() {
   );
 }
 
-/* ==================== Style Components ==================== */
+/*  Style Components  */
 
 const Container = styled.div`
   width: 100%;
