@@ -10,6 +10,7 @@ import DefaultInput from './pages/DefaultInput';
 import ProfileInput from './pages/ProfileInput';
 import SkintypeInput from './pages/SkintypeInput';
 import Notification from './pages/Notification';
+import MyPage from './pages/Mypage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/onboarding/profile" element={<ProfileInput />} />
           <Route path="/onboarding/skin-type" element={<SkintypeInput />} />
           <Route path="/onboarding/notification" element={<Notification />} />
+          <Route path="/mypage" element={<MyPage />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
