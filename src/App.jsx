@@ -16,6 +16,7 @@ import CustomRoutine from './pages/CustomRoutine';
 import CustomName from './pages/CustomName';
 import CustomCategory from './pages/CustomCategory';
 import CustomIngredient from './pages/CustomIngredient';
+import MyPage from './pages/Mypage';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
             path="/register/custom-ingredient"
             element={<CustomIngredient />}
           />
+          <Route path="/mypage" element={<MyPage />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
