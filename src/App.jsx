@@ -10,6 +10,8 @@ import DefaultInput from './pages/DefaultInput';
 import ProfileInput from './pages/ProfileInput';
 import SkintypeInput from './pages/SkintypeInput';
 import Notification from './pages/Notification';
+import SearchCosmetic from './pages/SearchCosmetic';
+import SearchResult from './pages/SearchResult';
 import MyPage from './pages/Mypage';
 
 function App() {
@@ -20,10 +22,15 @@ function App() {
         <Routes>
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/healthconnect" element={<HealthConnect />} />
-          <Route path="/defaultinput" element={<DefaultInput />} />
           <Route path="/onboarding/profile" element={<ProfileInput />} />
           <Route path="/onboarding/skin-type" element={<SkintypeInput />} />
           <Route path="/onboarding/notification" element={<Notification />} />
+          <Route path="/defaultinput" element={<DefaultInput />} />
+          <Route
+            path="/register/search-cosmetic"
+            element={<SearchCosmetic />}
+          />
+          <Route path="/register/search-result" element={<SearchResult />} />
           <Route path="/mypage" element={<MyPage />} />
         </Routes>
       </AppLayout>
