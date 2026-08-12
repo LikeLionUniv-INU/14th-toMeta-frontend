@@ -12,6 +12,7 @@ import SkintypeInput from './pages/SkintypeInput';
 import Notification from './pages/Notification';
 import SearchCosmetic from './pages/SearchCosmetic';
 import SearchResult from './pages/SearchResult';
+import MyPage from './pages/Mypage';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             element={<SearchCosmetic />}
           />
           <Route path="/register/search-result" element={<SearchResult />} />
+          <Route path="/mypage" element={<MyPage />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
