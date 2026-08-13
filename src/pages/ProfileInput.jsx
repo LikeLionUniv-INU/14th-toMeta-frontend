@@ -232,24 +232,20 @@ const SectionLabel = styled.h2`
 
 const StyledInput = styled.input`
   width: 100%;
-  height: 39px;
+  height: 48px;
   padding: 0 16px;
   font-size: 14px;
   font-weight: 500;
   color: #111111;
   background-color: #ffffff;
-  border: 1px solid #b3b3b3;
+  border: 1px solid #dee2e6;
   border-radius: 8px;
   box-sizing: border-box;
   outline: none;
   transition: border-color 0.2s ease;
 
   &::placeholder {
-    color: #b5b5b5;
-  }
-
-  &:focus {
-    border: 1.5px solid #609668;
+    color: #ced4da;
   }
 `;
 
@@ -275,7 +271,7 @@ const GenderChip = styled.button`
   justify-content: center;
 
   background-color: ${({ $selected }) => ($selected ? '#E7FFF7' : '#ffffff')};
-  color: #000000;
+  color: #212529;
   border: 1px solid ${({ $selected }) => ($selected ? '#02ca70' : '#dee2e6')};
 
   transition: all 0.2s ease;

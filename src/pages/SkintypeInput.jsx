@@ -163,7 +163,7 @@ const Title = styled.h1`
 
 const Advice = styled.p`
   margin-top: 6px;
-  margin-bottom: 40px;
+  margin-bottom: 80px;
   font-size: 16px;
   color: #bfbfbf;
 `;

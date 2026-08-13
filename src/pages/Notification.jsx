@@ -233,10 +233,10 @@ const ButtonGroup = styled.div`
 const SubButton = styled.button`
   width: 100%;
   height: 52px;
-  border-radius: 10px;
+  border-radius: 20px;
   background-color: #e5e5e5;
   color: #333333;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   border: none;
   cursor: pointer;
@@ -246,6 +246,7 @@ const SubButton = styled.button`
   }
 `;
 
+/* 모달 스타일 컴포넌트*/
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -348,7 +349,7 @@ const ModalButtonGroup = styled.div`
 const ModalSubButton = styled.button`
   flex: 0.35;
   height: 52px;
-  border-radius: 10px;
+  border-radius: 20px;
   background-color: #e5e5e5;
   color: #333333;
   font-size: 15px;
