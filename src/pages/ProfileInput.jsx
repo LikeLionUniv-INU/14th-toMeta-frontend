@@ -37,7 +37,7 @@ export const getDecryptedData = (key) => {
 export default function ProfileInput() {
   const [nickname, setNickname] = useState('');
   const [gender, setGender] = useState(''); // 'male' | 'female'
-  const [ageGroup, setAgeGroup] = useState(''); // '10s' | '20s' | '30s' | '40s' | '50s' | 'etc'
+  const [ageGroup, setAgeGroup] = useState(''); // '10s' | '20s' | '30s' | '40s' | 'etc'
   const navigate = useNavigate();
 
   const isValid =
@@ -84,9 +84,10 @@ export default function ProfileInput() {
           <SectionLabel>닉네임</SectionLabel>
           <StyledInput
             type="text"
-            placeholder="닉네임을 입력해 주세요"
+            placeholder="한글, 영문, 숫자 1~10자 이내로 입력해 주세요."
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
+            minLength={2}
             maxLength={10}
           />
         </Section>
@@ -144,17 +145,10 @@ export default function ProfileInput() {
             </AgeChip>
             <AgeChip
               type="button"
-              $selected={ageGroup === '50s'}
-              onClick={() => setAgeGroup('50s')}
-            >
-              50대
-            </AgeChip>
-            <AgeChip
-              type="button"
               $selected={ageGroup === 'etc'}
               onClick={() => setAgeGroup('etc')}
             >
-              기타
+              50대 이상
             </AgeChip>
           </AgeGrid>
         </Section>
@@ -200,44 +194,52 @@ const ContentWrapper = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.2;
   color: #000000;
-  margin-bottom: 30px;
+  margin-bottom: 53px;
   margin-top: 80px;
   word-break: keep-all;
 
   @media ${media.mobileM} {
-    font-size: 32px;
+    font-size: 28px;
+    margin-top: 120px;
+    margin-bottom: 80px;
   }
 `;
 
 const Section = styled.div`
-  margin-bottom: 30px;
+  margin-bottom: 28px;
+
+  @media ${media.mobileM} {
+    margin-bottom: 40px;
+  }
 `;
 
 const SectionLabel = styled.h2`
   font-size: 16px;
   font-weight: 700;
   color: #000000;
-  margin-bottom: 12px;
+  margin-top: 0;
+  margin-bottom: 10px;
 
   @media ${media.mobileM} {
     font-size: 20px;
+    margin-bottom: 16px;
   }
 `;
 
 const StyledInput = styled.input`
   width: 100%;
-  height: 34px;
+  height: 39px;
   padding: 0 16px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   color: #111111;
   background-color: #ffffff;
   border: 1px solid #b3b3b3;
-  border-radius: 10px;
+  border-radius: 8px;
   box-sizing: border-box;
   outline: none;
   transition: border-color 0.2s ease;
@@ -254,27 +256,27 @@ const StyledInput = styled.input`
 const GenderGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 30px;
 `;
 
 const AgeGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px 12px;
 `;
 
 const GenderChip = styled.button`
-  height: 54px;
-  border-radius: 10px;
-  font-size: 20px;
-  font-weight: ${({ $selected }) => ($selected ? '700' : '500')};
+  height: 50px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ $selected }) => ($selected ? '#EAF5EA' : '#ffffff')};
-  color: ${({ $selected }) => ($selected ? '#1B4325' : '#b3b3b3')};
-  border: 1.5px solid ${({ $selected }) => ($selected ? '#609668' : '#b3b3b3')};
+  background-color: ${({ $selected }) => ($selected ? '#E7FFF7' : '#ffffff')};
+  color: #000000;
+  border: 1px solid ${({ $selected }) => ($selected ? '#02ca70' : '#dee2e6')};
 
   transition: all 0.2s ease;
 
@@ -284,6 +286,5 @@ const GenderChip = styled.button`
 `;
 
 const AgeChip = styled(GenderChip)`
-  height: 78px;
-  font-size: 16px;
+  font-size: 13px;
 `;
