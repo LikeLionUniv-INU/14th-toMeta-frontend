@@ -20,6 +20,7 @@ import CustomIngredient from './pages/CustomIngredient';
 import MyPage from './pages/Mypage';
 import Record from './pages/Record';
 import EditProfile from './pages/EditProfile';
+import MyPouch from './pages/MyPouch';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/todaynote" element={<TodayNote />} />
           <Route path="/record" element={<Record />} />
           <Route path="/emptypouch" element={<EmptyPouch />} />
+          <Route path="/mypouch" element={<MyPouch />} />
           <Route
             path="/register/search-cosmetic"
             element={<SearchCosmetic />}
