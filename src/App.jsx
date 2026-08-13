@@ -18,6 +18,7 @@ import CustomName from './pages/CustomName';
 import CustomCategory from './pages/CustomCategory';
 import CustomIngredient from './pages/CustomIngredient';
 import MyPage from './pages/Mypage';
+import Record from './pages/Record';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/onboarding/skin-type" element={<SkintypeInput />} />
           <Route path="/onboarding/notification" element={<Notification />} />
           <Route path="/defaultinput" element={<DefaultInput />} />
+          <Route path="/record" element={<Record />} />
           <Route path="/emptypouch" element={<EmptyPouch />} />
           <Route
             path="/register/search-cosmetic"
