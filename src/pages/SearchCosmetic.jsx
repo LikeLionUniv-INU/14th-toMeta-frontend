@@ -50,7 +50,7 @@ export default function SearchCosmetic() {
 
   const handleGoToCustom = () => {
     setIsModalOpen(false);
-    navigate('/register/custom/routine');
+    navigate('/register/custom-routine');
   };
 
   return (
