@@ -41,7 +41,6 @@ const Container = styled.div`
 
 const Header = styled.header`
   text-align: center;
-  padding: 16px 0;
   font-weight: 700;
   font-size: 18px;
   color: #000000;
