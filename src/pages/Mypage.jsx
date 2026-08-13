@@ -49,7 +49,7 @@ export default function MyPage() {
   };
 
   const handleEditProfile = () => {
-    navigate('/my/edit');
+    navigate('/editprofile');
   };
 
   const handleOpenTimeModal = (type) => {

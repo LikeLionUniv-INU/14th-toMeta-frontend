@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppLayout from './styles/AppLayout';
 import Privacy from './pages/Privacy';
 import HealthConnect from './pages/HealthConnect';
-import DefaultInput from './pages/DefaultInput';
+import TodayNote from './pages/TodayNote';
 import EmptyPouch from './pages/EmptyPouch';
 import ProfileInput from './pages/ProfileInput';
 import SkintypeInput from './pages/SkintypeInput';
@@ -19,6 +19,7 @@ import CustomCategory from './pages/CustomCategory';
 import CustomIngredient from './pages/CustomIngredient';
 import MyPage from './pages/Mypage';
 import Record from './pages/Record';
+import EditProfile from './pages/EditProfile';
 
 function App() {
   return (
@@ -31,7 +32,7 @@ function App() {
           <Route path="/onboarding/profile" element={<ProfileInput />} />
           <Route path="/onboarding/skin-type" element={<SkintypeInput />} />
           <Route path="/onboarding/notification" element={<Notification />} />
-          <Route path="/defaultinput" element={<DefaultInput />} />
+          <Route path="/todaynote" element={<TodayNote />} />
           <Route path="/record" element={<Record />} />
           <Route path="/emptypouch" element={<EmptyPouch />} />
           <Route
@@ -50,6 +51,7 @@ function App() {
             element={<CustomIngredient />}
           />
           <Route path="/mypage" element={<MyPage />} />
+          <Route path="/editprofile" element={<EditProfile />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
