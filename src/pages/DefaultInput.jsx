@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import Button from '../components/Button';
 import * as S from './DefaultInput.styles';
+import Header from '../components/Header';
 
 const DefaultInput = () => {
   const [skinCondition, setSkinCondition] = useState(null);
@@ -71,11 +72,7 @@ const DefaultInput = () => {
 
   return (
     <S.Container>
-      <S.Header>
-        <button type="button">&lt;</button>
-        <h1>기록</h1>
-        <div style={{ width: '20px' }} />
-      </S.Header>
+      <Header title={"기록"} variant="back" />
 
       <S.Content>
         <S.DateSection>

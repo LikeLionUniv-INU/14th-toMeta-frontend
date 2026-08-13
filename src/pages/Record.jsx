@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Header from "../components/Header";
+import Button from "../components/Button";
+import CosmeticCard from "../components/CosmeticCard";
+import SunIcon from "../assets/images/record/sun.svg";
+import MoonIcon from "../assets/images/record/Moon.svg";
 
 export default function Record() {
   const [activeTab, setActiveTab] = useState("morning");
+  const [isEditing, setIsEditing] = useState(false);
 
-  // 2. 백엔드 연동 전 임시 데이터 (상태로 관리)
   const [recordData, setRecordData] = useState({
     dateText: "8월 5일 수요일",
     weatherText: "날씨 흐림 | 온도 25-34 | 습도 94%",
@@ -20,7 +24,6 @@ export default function Record() {
       { id: 101, name: "아누아 어성초 77% 진정 토너", tags: ["#토너", "#진정"] },
       { id: 102, name: "에스트라 아토베리어 365크림", tags: ["#크림", "#보습"] },
     ],
-    // null이나 빈 값을 넣어두면 첫 번째 화면처럼 필수 입력란만 노출됩니다.
     food: "아침에 감자탕을 먹었다.",
     skinPhotos: [
       "https://via.placeholder.com/100",
@@ -34,20 +37,50 @@ export default function Record() {
       ? recordData.morningRoutine
       : recordData.nightRoutine;
 
+  const handleFoodChange = (e) => {
+    setRecordData((prev) => ({
+      ...prev,
+      food: e.target.value,
+    }));
+  };
+
+  const handleRemovePhoto = (index) => {
+    setRecordData((prev) => ({
+      ...prev,
+      skinPhotos: prev.skinPhotos.filter((_, i) => i !== index),
+    }));
+  };
+
+  // 수정 / 저장 토글 및 백엔드 전송 핸들러
+  const handleToggleEdit = async () => {
+    if (isEditing) {
+      try {
+        console.log("백엔드로 전송할 수정 데이터:", recordData);
+        // await axios.put('/api/records', recordData);
+        alert("수정사항이 저장되었습니다.");
+        setIsEditing(false);
+      } catch (error) {
+        console.error("저장 중 오류 발생:", error);
+      }
+    } else {
+      setIsEditing(true);
+    }
+  };
+
   return (
     <Container>
+      <Header title={"기록"} variant="back" />
       <ContentWrapper>
-        {/* 상단 공통 헤더 */}
-        <Header />
 
-        {/* 날짜 & 날씨 정보 */}
-        <DateTitle>{recordData.dateText}</DateTitle>
-        <SubHeader>
-          <WeatherInfo>{recordData.weatherText}</WeatherInfo>
+        <HeaderRow>
+          <DateTitle>{recordData.dateText}</DateTitle>
           <ReportBadge>데일리 리포트</ReportBadge>
-        </SubHeader>
+        </HeaderRow>
 
-        {/* 피부 상태 요약 */}
+        <WeatherSubHeader>
+          <WeatherInfo>{recordData.weatherText}</WeatherInfo>
+        </WeatherSubHeader>
+
         <StatusSection>
           <ProfileCircle />
           <StatusTextWrapper>
@@ -56,45 +89,49 @@ export default function Record() {
           </StatusTextWrapper>
         </StatusSection>
 
-        {/* 모닝 / 나이트 탭 */}
         <TabGroup>
           <TabButton
             $active={activeTab === "morning"}
             onClick={() => setActiveTab("morning")}
           >
-            ⚙️ 모닝 스킨케어
+            <img src={SunIcon} /> 모닝 스킨케어
           </TabButton>
           <TabButton
             $active={activeTab === "night"}
             onClick={() => setActiveTab("night")}
           >
-            🌙 나이트 스킨케어
+            <img src={MoonIcon} /> 나이트 스킨케어
           </TabButton>
         </TabGroup>
 
-        {/* 스킨케어 제품 카드 리스트 */}
-        <CardList>
-          {currentRoutine.map((item) => (
-            <Card key={item.id}>
-              <CardTitle>{item.name}</CardTitle>
-              <TagGroup>
-                {item.tags.map((tag, idx) => (
-                  <Tag key={idx}>{tag}</Tag>
-                ))}
-              </TagGroup>
-            </Card>
-          ))}
-        </CardList>
+        <CardListSection>
+          <CardList>
+            {currentRoutine.map((item) => (
+              <CosmeticCard
+                key={item.id}
+                name={item.name}
+                tags={item.tags}
+              />
+            ))}
+          </CardList>
+          {isEditing && <EditText>edit</EditText>}
+        </CardListSection>
 
-        {/* 선택 입력 영역 (조건부 렌더링) */}
-        {(recordData.food || (recordData.skinPhotos && recordData.skinPhotos.length > 0)) && (
+        {(recordData.food || (recordData.skinPhotos && recordData.skinPhotos.length > 0) || isEditing) && (
           <OptionalSection>
-            {recordData.food && (
-              <OptionalGroup>
-                <SectionTitle>오늘 먹은 음식</SectionTitle>
-                <FoodCard>{recordData.food}</FoodCard>
-              </OptionalGroup>
-            )}
+            <OptionalGroup>
+              <SectionTitle>오늘 먹은 음식</SectionTitle>
+              {isEditing ? (
+                <FoodInput
+                  value={recordData.food}
+                  onChange={handleFoodChange}
+                  placeholder="오늘 드신 음식을 작성해주세요."
+                />
+              ) : (
+                <FoodCard>{recordData.food || "기록된 음식이 없습니다."}</FoodCard>
+              )}
+              {isEditing && <EditText>edit</EditText>}
+            </OptionalGroup>
 
             {recordData.skinPhotos && recordData.skinPhotos.length > 0 && (
               <OptionalGroup>
@@ -102,9 +139,17 @@ export default function Record() {
                 <SubDescription>
                   사진을 남겨두면 주간 리포트에서 한 주간의 변화 추이를 볼 수 있어요!
                 </SubDescription>
+
                 <PhotoGrid>
                   {recordData.skinPhotos.map((photo, index) => (
-                    <PhotoBox key={index} src={photo} alt={`skin-${index}`} />
+                    <PhotoItem key={index}>
+                      <PhotoBox src={photo} alt={`skin-${index}`} />
+                      {isEditing && (
+                        <DeleteBadge type="button" onClick={() => handleRemovePhoto(index)}>
+                          −
+                        </DeleteBadge>
+                      )}
+                    </PhotoItem>
                   ))}
                 </PhotoGrid>
               </OptionalGroup>
@@ -113,66 +158,74 @@ export default function Record() {
         )}
       </ContentWrapper>
 
-      {/* 하단 버튼 */}
-      <SubmitButton>수정하기</SubmitButton>
+      <ButtonWrapper>
+        <Button onClick={handleToggleEdit}>
+          {isEditing ? "저장하기" : "수정하기"}
+        </Button>
+      </ButtonWrapper>
     </Container>
   );
 }
 
 const Container = styled.div`
-  height: 100dvh;
+  min-height: 100dvh;
   margin: 0 auto;
-  padding: 16px;
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   box-sizing: border-box;
 `;
 
 const ContentWrapper = styled.div`
   width: 100%;
+  flex: 1;
 `;
 
-const DateTitle = styled.h1`
-  font-size: 20px;
-  font-weight: 700;
-  margin-top: 12px;
-  color: #111;
-`;
-
-const SubHeader = styled.div`
+const HeaderRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 12px 20px 0 20px;
+`;
+
+const DateTitle = styled.h1`
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0;
+  color: #000000;
+`;
+
+const WeatherSubHeader = styled.div`
   padding-bottom: 12px;
-  border-bottom: 1px solid #eee;
-  margin-top: 4px;
+  border-bottom: 1.5px solid #B0B0B0;
+  margin: 4px 20px 0 20px;
 `;
 
 const WeatherInfo = styled.span`
   font-size: 12px;
-  color: #777;
+  font-weight: 400;
+  color: #000000;
 `;
 
 const ReportBadge = styled.span`
   font-size: 10px;
-  background-color: #5b8e6b;
-  color: #fff;
+  background-color: #96be9c;
+  color: #FDFFFD;
   padding: 4px 8px;
   border-radius: 4px;
+  font-weight: 400;
 `;
 
 const StatusSection = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
-  margin: 24px 0 16px 0;
+  margin: 20px;
 `;
 
 const ProfileCircle = styled.div`
-  width: 64px;
-  height: 64px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background-color: #e0e0e0;
   flex-shrink: 0;
@@ -184,15 +237,18 @@ const StatusTextWrapper = styled.div`
 `;
 
 const StatusLabel = styled.span`
-  font-size: 12px;
-  color: #888;
+  font-size: 16px;
+  font-weight: 500;
+  color: #141212;
+  margin-left: 10px;
 `;
 
 const StatusValue = styled.span`
   font-size: 22px;
-  font-weight: 800;
-  color: #111;
-  margin-top: 2px;
+  font-weight: 700;
+  color: #141212;
+  margin-left: 10px;
+  margin-top: 6px;
 `;
 
 const TabGroup = styled.div`
@@ -204,56 +260,57 @@ const TabGroup = styled.div`
 const TabButton = styled.button`
   flex: 1;
   padding: 12px 0;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
   font-size: 14px;
-  font-weight: ${(props) => (props.$active ? "700" : "500")};
-  color: ${(props) => (props.$active ? "#497356" : "#aaa")};
-  border-bottom: ${(props) => (props.$active ? "2px solid #497356" : "none")};
+  font-weight: 700;
+  color: ${(props) => (props.$active ? "#266210" : "gray")};
+  border-bottom: ${(props) => (props.$active ? "2px solid #266210" : "none")};
   background: none;
   border-top: none;
   border-left: none;
   border-right: none;
   cursor: pointer;
   margin-bottom: -2px;
+
+  img {
+    width: 18px;
+    height: 18px;
+    transition: filter 0.2s ease;
+    
+    filter: ${(props) =>
+    props.$active
+      ? "brightness(0) saturate(100%) invert(29%) sepia(85%) saturate(750%) hue-rotate(72deg) brightness(88%) contrast(96%)"
+      : "brightness(0) saturate(100%) invert(50%) opacity(0.7)"};
+  }
+`;
+
+const CardListSection = styled.div`
+  margin: 16px 20px 0 20px;
+  display: flex;
+  flex-direction: column;
 `;
 
 const CardList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 16px;
 `;
 
-const Card = styled.div`
-  padding: 14px;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  background-color: #fff;
-`;
-
-const CardTitle = styled.p`
-  font-size: 13px;
-  font-weight: 700;
-  color: #2d3748;
-  margin: 0 0 8px 0;
-`;
-
-const TagGroup = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-`;
-
-const Tag = styled.span`
-  font-size: 10px;
-  background-color: #e6f4ea;
-  color: #34a853;
-  padding: 3px 8px;
-  border-radius: 12px;
+const EditText = styled.span`
+  font-size: 12px;
+  color: #777;
+  text-decoration: underline;
+  text-align: right;
+  margin-top: 6px;
+  display: block;
 `;
 
 const OptionalSection = styled.div`
-  margin-top: 24px;
+  margin: 24px 20px 0 20px;
   padding-top: 16px;
   border-top: 8px solid #f7f9fa;
 `;
@@ -263,54 +320,82 @@ const OptionalGroup = styled.div`
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 700;
-  color: #111;
+  color: #000000;
   margin: 0 0 8px 0;
 `;
 
 const SubDescription = styled.p`
-  font-size: 11px;
-  color: #999;
+  font-size: 12px;
+  font-weight: 500;
+  color: #B4B4B4;
   margin: 0 0 10px 0;
 `;
 
 const FoodCard = styled.div`
   padding: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #96be9c;
   border-radius: 10px;
-  font-size: 12px;
-  color: #4a5568;
+  font-size: 11px;
+  font-weight: 500;
+  color: #141212;
+`;
+
+const FoodInput = styled.textarea`
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #96be9c;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #141212;
+  box-sizing: border-box;
+  resize: none;
+  height: 60px;
+  outline: none;
 `;
 
 const PhotoGrid = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 12px;
   overflow-x: auto;
+  padding-top: 6px;
 `;
 
-const PhotoBox = styled.img`
-  width: 90px;
-  height: 90px;
-  border-radius: 8px;
-  object-fit: cover;
-  background-color: #eee;
+const PhotoItem = styled.div`
+  position: relative;
   flex-shrink: 0;
 `;
 
-const SubmitButton = styled.button`
-  width: 100%;
-  padding: 14px 0;
-  background-color: #5b8e6b;
+const PhotoBox = styled.img`
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  object-fit: cover;
+  background-color: #eee;
+  display: block;
+`;
+
+const DeleteBadge = styled.button`
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #e53e3e;
   color: #ffffff;
   border: none;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  margin-top: 24px;
+  line-height: 1;
+`;
 
-  &:hover {
-    background-color: #497356;
-  }
+const ButtonWrapper = styled.div`
+  margin: 0 20px 30px 20px;
 `;
