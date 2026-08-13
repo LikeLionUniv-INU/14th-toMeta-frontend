@@ -19,6 +19,7 @@ import CustomCategory from './pages/CustomCategory';
 import CustomIngredient from './pages/CustomIngredient';
 import MyPage from './pages/Mypage';
 import Record from './pages/Record';
+import EditProfile from './pages/EditProfile';
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
             element={<CustomIngredient />}
           />
           <Route path="/mypage" element={<MyPage />} />
+          <Route path="/editprofile" element={<EditProfile />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
