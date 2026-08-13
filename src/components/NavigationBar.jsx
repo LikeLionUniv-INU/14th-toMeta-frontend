@@ -22,7 +22,7 @@ export default function NavigationBar() {
     { name: '보관함', path: ['/storage'], icon: storageIcon },
     { name: '홈', path: ['/home'], icon: homeIcon },
     { name: '리포트', path: ['/report'], icon: reportIcon },
-    { name: 'MY', path: ['/my'], icon: myIcon },
+    { name: 'MY', path: ['/mypage'], icon: myIcon },
   ];
 
   return (

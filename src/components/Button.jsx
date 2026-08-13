@@ -1,5 +1,3 @@
-// 버튼 비활성화가 기본설정일 때 예시
-//  <Button onclick={handleCompelete} disabled={!isValid}>완료</Button>
 
 import React from 'react';
 import styled from 'styled-components';
@@ -8,11 +6,11 @@ const StyledButton = styled.button`
   width: 100%;
   margin: 0 auto;
   height: 52px;
-  background-color: ${(props) => (props.disabled ? '#B3B3B3' : '#609668')};
-  color: #FFFFFF;
+  background-color: ${(props) => (props.disabled ? '#FFFFFF' : '#63BF8E')};
+  color: ${(props) => (props.disabled ? '#63BF8E' : '#FFFFFF')};
   font-size: 15px;
   font-weight: 600;
-  border: none;
+  border: ${(props) => (props.disabled ? '1px solid #63BF8E' : 'none')};
   border-radius: 10px;
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   display: flex;
@@ -21,7 +19,7 @@ const StyledButton = styled.button`
   transition: all 0.2s ease;
 
   &:active {
-    background-color: ${(props) => (props.disabled ? '#E5E5E5' : '#4E7E55')};
+    background-color: ${(props) => (props.disabled ? '#FFFFFF' : '#63BF8E')};
   }
 `;
 
