@@ -514,11 +514,19 @@ const SetCard = styled.div`
   align-items: center;
   color: ${(props) => (props.$isSelected ? '#ffffff' : '#141212')};
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:active {
+    transform: scale(0.98);
+  }
 
   ${(props) =>
     props.$isSelected &&
     `
+    outline: 2.5px solid #4D7A56;
+    outline-offset: -1px;
+    box-shadow: 0 0 8px rgba(105, 152, 114, 0.4);
+    
     span {
       color: #ffffff;
     }
@@ -583,20 +591,30 @@ const IndividualSection = styled.div`
 const CardWrapper = styled.div`
   cursor: pointer;
   border-radius: 12px;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:active {
+    transform: scale(0.98);
+  }
 
   ${(props) =>
     props.$isSelected &&
     `
-    div {
-      background-color: #699872 !important;
-      border-color: #699872 !important;
-      p {
-        color: #ffffff !important;
+    outline: 2.5px solid #4D7A56;
+    outline-offset: -1px;
+    box-shadow: 0 0 8px rgba(105, 152, 114, 0.4);
+
+    & > div {
+      background-color: #699872;
+      border-color: #699872;
+
+      p, span, h1, h2, h3, h4, div {
+        color: #ffffff;
       }
+
       span {
-        background-color: #FFF1E5 !important;
-        color: #000000 !important;
+        background-color: #FFF1E5;
+        color: #000000;
       }
     }
   `}
