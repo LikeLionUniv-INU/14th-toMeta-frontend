@@ -78,7 +78,9 @@ export default function MyPouch() {
   };
 
   const handleSetClick = (setId) => {
-    navigate(`/set/${setId}`);
+    navigate(`/set/${setId}`, {
+      state: { activeTab },
+    });
   };
 
   return (
