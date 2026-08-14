@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-
-import Button from '../components/Button';
 import { media } from '../styles/GlobalStyle';
+import Button from '../components/Button';
 
 // 세션스토리지 암호화 / 복호화 유틸리티 함수
 export const saveEncryptedData = (key, data) => {
@@ -49,7 +48,11 @@ const SKIN_TYPES = [
     title: '민감성',
     desc: '자극에 민감하고\n쉽게 붉어지는 피부',
   },
-  { id: 'unknown', title: '모름', desc: '아직 내 피부 타입을\n잘 모르겠어요' },
+  {
+    id: 'unknown',
+    title: '모름',
+    desc: '아직 내 피부 타입을\n잘 모르겠어요',
+  },
 ];
 
 export default function SkinTypeSelect() {
@@ -87,25 +90,21 @@ export default function SkinTypeSelect() {
         <Title>피부 타입을 알려주세요!</Title>
         <Advice>정확하지 않아도 괜찮아요.</Advice>
 
-        <Section>
-          <SkintypeGrid>
-            {SKIN_TYPES.map((item) => (
-              <SkintypeChip
-                key={item.id}
-                type="button"
-                $selected={skinType === item.id}
-                onClick={() => setSkinType(item.id)}
-              >
-                <ChipHeader>
-                  {/* 임시 24*24 회색 네모박스 (나중에 img 태그로 교체) */}
-                  <IconPlaceholder />
-                  <ChipTitle>{item.title}</ChipTitle>
-                </ChipHeader>
-                <ChipDesc>{item.desc}</ChipDesc>
-              </SkintypeChip>
-            ))}
-          </SkintypeGrid>
-        </Section>
+        <SkintypeGrid>
+          {SKIN_TYPES.map((item) => (
+            <SkintypeChip
+              key={item.id}
+              type="button"
+              $selected={skinType === item.id}
+              onClick={() => setSkinType(item.id)}
+            >
+              <ChipHeader>
+                <ChipTitle>{item.title}</ChipTitle>
+              </ChipHeader>
+              <ChipDesc>{item.desc}</ChipDesc>
+            </SkintypeChip>
+          ))}
+        </SkintypeGrid>
       </ContentWrapper>
 
       <Button onClick={handleNext} disabled={!isValid}>
@@ -148,38 +147,37 @@ const ContentWrapper = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.2;
   color: #000000;
-  margin: 80px 0 5px 0;
+  margin-top: 80px;
+  margin-bottom: 3px;
   word-break: keep-all;
 
   @media ${media.mobileM} {
-    font-size: 32px;
+    font-size: 28px;
+    margin-top: 120px;
   }
 `;
 
 const Advice = styled.p`
+  margin-top: 6px;
   margin-bottom: 80px;
-  font-size: 12px;
+  font-size: 16px;
   color: #bfbfbf;
-`;
-
-const Section = styled.div`
-  margin-bottom: 30px;
 `;
 
 const SkintypeGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: 17px;
 `;
 
 const SkintypeChip = styled.button`
   height: 104px;
-  padding: 16px;
-  border-radius: 10px;
+  padding: 14px 20px;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -187,9 +185,9 @@ const SkintypeChip = styled.button`
   text-align: left;
   gap: 10px;
 
-  background-color: ${({ $selected }) => ($selected ? '#EAF5EA' : '#ffffff')};
-  color: ${({ $selected }) => ($selected ? '#1B4325' : '#b3b3b3')};
-  border: 1.5px solid ${({ $selected }) => ($selected ? '#609668' : '#b3b3b3')};
+  background-color: ${({ $selected }) => ($selected ? '#E7fff7' : '#ffffff')};
+  color: #141212;
+  border: 1px solid ${({ $selected }) => ($selected ? '#02ca70' : '#dee2e6')};
 
   transition: all 0.2s ease;
 
@@ -202,29 +200,20 @@ const ChipHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
-`;
-
-// 아이콘 위치용 24x24 회색 네모박스
-const IconPlaceholder = styled.div`
-  width: 24px;
-  height: 24px;
-  background-color: #cccccc;
-  border-radius: 4px;
-  flex-shrink: 0;
 `;
 
 const ChipTitle = styled.span`
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   color: #000000;
+  margin: 5px 0;
 `;
 
 const ChipDesc = styled.p`
-  font-size: 10px;
-  font-weight: 400;
+  font-size: 12px;
+  font-weight: 500;
   color: #666666;
-  line-height: 1.35;
+  line-height: 1.5;
   white-space: pre-line;
   margin: 0;
 `;
