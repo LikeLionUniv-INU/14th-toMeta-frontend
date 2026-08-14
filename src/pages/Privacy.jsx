@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 
 const Container = styled.div`
@@ -51,7 +52,7 @@ const CustomCheckIcon = styled.div`
   width: 24px;
   height: 24px;
   border-radius: 6px;
-  background-color: ${({ checked }) => (checked ? "#609668" : "#FFFFFF")};
+  background-color: ${({ $checked }) => ($checked ? "#609668" : "#FFFFFF")};
   border: ${({ $checked }) => ($checked ? "none" : "1px solid #E9E9E9")};
   display: flex;
   align-items: center;
@@ -71,7 +72,8 @@ const CustomCheckIcon = styled.div`
 `;
 
 const TermsBox = styled.div`
-  background-color: #E9E9E9;
+  background-color: #FFFFFF;
+  border: 1px solid #DEE2E6;
   border-radius: 12px;
   padding: 16px;
   line-height: 1.5;
@@ -111,11 +113,8 @@ const PolicyItem = styled.div`
   }
 `;
 
-const ButtonWrapper = styled.div`
-  padding: 0 20px 30px 20px;
-`;
-
 const Privacy = () => {
+  const navigate = useNavigate();
   const [serviceTermsChecked, setServiceTermsChecked] = useState(false);
   const [privacyPolicyChecked, setPrivacyPolicyChecked] = useState(false);
 
@@ -123,7 +122,7 @@ const Privacy = () => {
 
   const handleSubmit = () => {
     if (!isAllChecked) return;
-    console.log('약관 동의 완료');
+    navigate('/health-connect');
   };
 
   return (
@@ -141,7 +140,7 @@ const Privacy = () => {
               checked={serviceTermsChecked}
               onChange={(e) => setServiceTermsChecked(e.target.checked)}
             />
-            <CustomCheckIcon checked={serviceTermsChecked}>
+            <CustomCheckIcon $checked={serviceTermsChecked}>
               <svg viewBox="0 0 24 24">
                 <polyline points="20 6 9 17 4 12" />
               </svg>
@@ -162,7 +161,7 @@ const Privacy = () => {
               checked={privacyPolicyChecked}
               onChange={(e) => setPrivacyPolicyChecked(e.target.checked)}
             />
-            <CustomCheckIcon checked={privacyPolicyChecked}>
+            <CustomCheckIcon $checked={privacyPolicyChecked}>
               <svg viewBox="0 0 24 24">
                 <polyline points="20 6 9 17 4 12" />
               </svg>

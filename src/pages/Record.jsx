@@ -51,7 +51,6 @@ export default function Record() {
     }));
   };
 
-  // 수정 / 저장 토글 및 백엔드 전송 핸들러
   const handleToggleEdit = async () => {
     if (isEditing) {
       try {

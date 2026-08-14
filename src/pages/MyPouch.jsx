@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
 import Header from "../components/Header";
 import NavigationBar from "../components/NavigationBar";
 import CosmeticCard from "../components/CosmeticCard";
@@ -12,67 +13,147 @@ export default function MyPouch() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("morning");
   const [pouchData, setPouchData] = useState({
-    morning: {
-      sets: [
-        {
-          id: 1,
-          title: "진정템",
-          tags: ["#어성초", "#진정", "#피지조절"],
-        },
-        {
-          id: 2,
-          title: "(사용자 지정 이름)",
-          tags: ["#티트리", "#진정", "#수분보충"],
-        },
-      ],
-      items: [
-        {
-          id: 101,
-          name: "아누아 어성초 77% 진정 토너",
-          tags: ["#토너", "#어성초", "#진정", "#피지조절"],
-        },
-        {
-          id: 102,
-          name: "브링그린 티트리 시카 크림",
-          tags: ["#크림", "#속건조", "#수분", "#시카"],
-        },
-        {
-          id: 103,
-          name: "에스트라 아토베리어 365크림",
-          tags: ["#크림", "#속건조", "#수분", "#진정"],
-        },
-        {
-          id: 104,
-          name: "듀이트리 핏 앤 퀵 더블패드",
-          tags: ["#패드", "#유수분", "#수분", "#진정"],
-        },
-      ],
-    },
-    night: {
-      sets: [],
-      items: [
-        {
-          id: 201,
-          name: "아누아 어성초 77% 진정 토너",
-          tags: ["#토너", "#진정"],
-        },
-        {
-          id: 202,
-          name: "에스트라 아토베리어 365크림",
-          tags: ["#크림", "#보습"],
-        },
-      ],
-    },
+    morning: { sets: [], cosmetics: [] },
+    night: { sets: [], cosmetics: [] },
   });
+  const [loading, setLoading] = useState(true);
 
-  const currentTabContent = pouchData[activeTab];
+  // API 호출 대신 더미 데이터 직접 주입 (백엔드 개발 완료 전 임시용)
+  useEffect(() => {
+    // 백엔드 명세서 성공 Response 데이터 그대로 활용
+    const mockResponse = {
+      isSuccess: true,
+      code: "COMMON_200",
+      message: "요청에 성공했습니다.",
+      result: {
+        morning: {
+          sets: [
+            {
+              setId: 1,
+              name: "진정템",
+              cosmetics: [
+                {
+                  userCosmeticId: 11,
+                  productName: "아누아 어성초 77% 진정 토너",
+                  customName: null,
+                  productType: "skin_toner",
+                  usageTime: "both",
+                  mainIngredients: ["어성초"],
+                },
+                {
+                  userCosmeticId: 12,
+                  productName: "토리든 다이브인 저분자 히알루론산 세럼",
+                  customName: null,
+                  productType: "serum",
+                  usageTime: "morning",
+                  mainIngredients: ["히알루론산"],
+                },
+              ],
+            },
+            {
+              setId: 2,
+              name: "사용자 지정 이름",
+              cosmetics: [
+                {
+                  userCosmeticId: 13,
+                  productName: "진정 크림",
+                  customName: "데일리 진정 크림",
+                  productType: "soothing_cream",
+                  usageTime: "both",
+                  mainIngredients: ["티트리"],
+                },
+              ],
+            },
+          ],
+          cosmetics: [
+            {
+              userCosmeticId: 11,
+              productName: "아누아 어성초 77% 진정 토너",
+              customName: null,
+              productType: "skin_toner",
+              usageTime: "both",
+              mainIngredients: ["어성초"],
+            },
+            {
+              userCosmeticId: 12,
+              productName: "토리든 다이브인 저분자 히알루론산 세럼",
+              customName: null,
+              productType: "serum",
+              usageTime: "morning",
+              mainIngredients: ["히알루론산"],
+            },
+            {
+              userCosmeticId: 13,
+              productName: "진정 크림",
+              customName: "데일리 진정 크림",
+              productType: "soothing_cream",
+              usageTime: "both",
+              mainIngredients: ["티트리"],
+            },
+          ],
+        },
+        night: {
+          sets: [
+            {
+              setId: 3,
+              name: "나이트 진정 세트",
+              cosmetics: [
+                {
+                  userCosmeticId: 11,
+                  productName: "아누아 어성초 77% 진정 토너",
+                  customName: null,
+                  productType: "skin_toner",
+                  usageTime: "both",
+                  mainIngredients: ["어성초"],
+                },
+                {
+                  userCosmeticId: 14,
+                  productName: "브링그린 티트리 시카 크림",
+                  customName: null,
+                  productType: "soothing_cream",
+                  usageTime: "night",
+                  mainIngredients: ["티트리", "시카"],
+                },
+              ],
+            },
+          ],
+          cosmetics: [
+            {
+              userCosmeticId: 11,
+              productName: "아누아 어성초 77% 진정 토너",
+              customName: null,
+              productType: "skin_toner",
+              usageTime: "both",
+              mainIngredients: ["어성초"],
+            },
+            {
+              userCosmeticId: 14,
+              productName: "브링그린 티트리 시카 크림",
+              customName: null,
+              productType: "soothing_cream",
+              usageTime: "night",
+              mainIngredients: ["티트리", "시카"],
+            },
+          ],
+        },
+      },
+    };
+
+    // 더미 데이터 세팅
+    setPouchData(mockResponse.result);
+    setLoading(false);
+  }, []);
+
+  const currentTabContent = pouchData[activeTab] || { sets: [], cosmetics: [] };
 
   const handleDeleteItem = (id) => {
     setPouchData((prev) => ({
       ...prev,
       [activeTab]: {
         ...prev[activeTab],
-        items: prev[activeTab].items.filter((item) => item.id !== id),
+        cosmetics: prev[activeTab].cosmetics.filter(
+          (item) => item.userCosmeticId !== id
+        ),
       },
     }));
   };
@@ -104,44 +185,60 @@ export default function MyPouch() {
         </TabGroup>
 
         <MainContent>
-          {currentTabContent.sets.length > 0 && (
+          {loading ? (
+            <div>로딩 중...</div>
+          ) : (
             <>
-              <SetListSection>
-                {currentTabContent.sets.map((set) => (
-                  <SetCard key={set.id}>
-                    <SetHeaderRow>
-                      <SetTitle>
-                        {set.title} <ChevronDownIcon>⌵</ChevronDownIcon>
-                      </SetTitle>
-                    </SetHeaderRow>
-                    <SetTagGroup>
-                      {set.tags.map((tag, idx) => (
-                        <SetTag key={idx}>{tag}</SetTag>
-                      ))}
-                    </SetTagGroup>
-                    <ChevronRightIcon onClick={() => handleSetClick(set.id)}>
-                      ›
-                    </ChevronRightIcon>
-                  </SetCard>
-                ))}
-              </SetListSection>
-              <Divider />
+              {currentTabContent.sets && currentTabContent.sets.length > 0 && (
+                <>
+                  <SetListSection>
+                    {currentTabContent.sets.map((set) => (
+                      <SetCard key={set.setId}>
+                        <SetHeaderRow>
+                          <SetTitle>{set.name}</SetTitle>
+                        </SetHeaderRow>
+                        <SetTagGroup>
+                          {set.cosmetics
+                            ?.flatMap((c) => c.mainIngredients || [])
+                            .map((tag, idx) => (
+                              <SetTag key={idx}>#{tag}</SetTag>
+                            ))}
+                        </SetTagGroup>
+                        <ChevronRightIcon onClick={() => handleSetClick(set.setId)}>
+                          ›
+                        </ChevronRightIcon>
+                      </SetCard>
+                    ))}
+                  </SetListSection>
+                  <Divider />
+                </>
+              )}
+
+              <CardListSection>
+                {currentTabContent.cosmetics &&
+                  currentTabContent.cosmetics.map((item) => (
+                    <CardWrapper key={item.userCosmeticId}>
+                      <CosmeticCard
+                        name={item.customName || item.productName}
+                        tags={(item.mainIngredients || []).map(
+                          (tag) => `#${tag}`
+                        )}
+                      />
+                      <DeleteButton
+                        onClick={() => handleDeleteItem(item.userCosmeticId)}
+                      >
+                        <TrashIcon src={Trash} alt="delete" />
+                      </DeleteButton>
+                    </CardWrapper>
+                  ))}
+              </CardListSection>
             </>
           )}
 
-          <CardListSection>
-            {currentTabContent.items.map((item) => (
-              <CardWrapper key={item.id}>
-                <CosmeticCard name={item.name} tags={item.tags} />
-                <DeleteButton onClick={() => handleDeleteItem(item.id)}>
-                  <TrashIcon src={Trash} alt="delete" />
-                </DeleteButton>
-              </CardWrapper>
-            ))}
-          </CardListSection>
-
           <ButtonGroup>
-            <ActionButton>추가하기</ActionButton>
+            <ActionButton onClick={() => navigate("/register/search-cosmetic")}>
+              추가하기
+            </ActionButton>
             <ActionButton>세트로 묶기</ActionButton>
           </ButtonGroup>
         </MainContent>
@@ -217,10 +314,10 @@ const SetListSection = styled.div`
 
 const SetCard = styled.div`
   position: relative;
-  background-color: #a3c29e;
+  background-color: #fff8f2;
   border-radius: 12px;
   padding: 14px 16px;
-  color: #ffffff;
+  color: #141212;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -239,17 +336,13 @@ const SetTitle = styled.span`
   gap: 4px;
 `;
 
-const ChevronDownIcon = styled.span`
-  font-size: 12px;
-`;
-
 const ChevronRightIcon = styled.span`
   position: absolute;
   right: 16px;
   top: 50%;
   transform: translateY(-50%);
   font-size: 24px;
-  color: #ffffff;
+  color: #141212;
   cursor: pointer;
   padding: 4px;
 `;
@@ -261,8 +354,8 @@ const SetTagGroup = styled.div`
 `;
 
 const SetTag = styled.span`
-  background-color: rgba(255, 255, 255, 0.6);
-  color: #2e4d25;
+  background-color: #96be9c;
+  color: #fff8f2;
   font-size: 11px;
   padding: 3px 8px;
   border-radius: 12px;
@@ -317,7 +410,7 @@ const ActionButton = styled.button`
   background-color: #ffffff;
   border: 1px solid #266210;
   color: #266210;
-  border-radius: 8px;
+  border-radius: 20px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;

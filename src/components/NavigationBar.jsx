@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
-
+import api from '../api/axios';
 import recordIcon from '../assets/images/navigationbar/record.svg';
 import storageIcon from '../assets/images/navigationbar/storage.svg';
 import homeIcon from '../assets/images/navigationbar/home.svg';
@@ -19,18 +19,50 @@ export default function NavigationBar() {
 
   const navList = [
     { name: '기록', path: ['/record'], icon: recordIcon },
-    { name: '보관함', path: ['/storage'], icon: storageIcon },
+    { name: '보관함', path: ['/my-pouch', '/empty-pouch'], icon: storageIcon },
     { name: '홈', path: ['/home'], icon: homeIcon },
     { name: '리포트', path: ['/report'], icon: reportIcon },
     { name: 'MY', path: ['/mypage'], icon: myIcon },
   ];
+
+  const handleStorageClick = async () => {
+    try {
+      const response = await api.get('/api/cosmetic-options');
+
+      if (response.data && response.data.isSuccess) {
+        const { morning, night } = response.data.result || {};
+
+        const morningCount = (morning?.sets?.length || 0) + (morning?.cosmetics?.length || 0);
+        const nightCount = (night?.sets?.length || 0) + (night?.cosmetics?.length || 0);
+
+        if (morningCount === 0 && nightCount === 0) {
+          navigate('/empty-pouch');
+        } else {
+          navigate('/my-pouch');
+        }
+      } else {
+        navigate('/empty-pouch');
+      }
+    } catch (error) {
+      console.error('보관함 목록 확인 실패:', error.message);
+      navigate('/empty-pouch');
+    }
+  };
+
+  const handleNavClick = (item) => {
+    if (item.name === '보관함') {
+      handleStorageClick();
+    } else {
+      navigate(item.path[0]);
+    }
+  };
 
   return (
     <NavContainer>
       {navList.map((item) => {
         const isActive = checkIsActive(item.path);
         return (
-          <NavItem key={item.name} onClick={() => navigate(item.path[0])}>
+          <NavItem key={item.name} onClick={() => handleNavClick(item)}>
             <Icon src={item.icon} className={isActive ? 'active' : ''} alt={item.name} />
             <NavText className={isActive ? 'active' : ''}>{item.name}</NavText>
           </NavItem>
