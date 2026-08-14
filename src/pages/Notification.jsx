@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Picker from 'react-mobile-picker';
-
 import Button from '../components/Button';
 import { media } from '../styles/GlobalStyle';
+import Bell from '../assets/images/bell.svg';
 
 // 세션스토리지 복호화 유틸리티 함수
 export const getDecryptedData = (key) => {
@@ -85,16 +85,15 @@ export default function NotificationPermission() {
       </ProgressBarWrapper>
 
       <ContentWrapper>
-        <Title>알림을 받아보시겠어요?</Title>
+        <Title>
+          내 피부가 자극받은 원인을
+          <br /> 찾으면 알려드릴까요?
+        </Title>
         <SubTitle>
-          오늘 하루 모인 데이터로 작성된 리포트와
-          <br />
-          피부를 지키는 생활습관 팁을 전해드릴게요.
+          매일 밤 리포트와 피부 분석 소식도 함께 알려드릴게요.
         </SubTitle>
 
-        <IconContainer>
-          <BellIconPlaceholder />
-        </IconContainer>
+        <IconContainer src={Bell} />
       </ContentWrapper>
 
       <ButtonGroup>
@@ -185,42 +184,43 @@ const ContentWrapper = styled.div`
   align-items: center;
   text-align: center;
   flex: 1;
-  justify-content: center;
-  margin-top: -20px;
+  justify-content: start;
 `;
 
 const Title = styled.h1`
   font-size: 24px;
   font-weight: 700;
+  line-height: 1.2;
   color: #000000;
-  margin-bottom: 10px;
+  margin-top: 70px;
+  margin-bottom: 0;
   word-break: keep-all;
 
   @media ${media.mobileM} {
     font-size: 28px;
+    margin-top: 120px;
   }
 `;
 
 const SubTitle = styled.p`
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  color: #666666;
-  line-height: 1.5;
-  margin-bottom: 70px;
+  color: #828282;
+  line-height: 1.7;
+  margin-top: 18px;
+  margin-bottom: 99px;
   word-break: keep-all;
+
+  @media ${media.mobileM} {
+    font-size: 16px;
+    margin-bottom: 120px;
+  }
 `;
 
-const IconContainer = styled.div`
+const IconContainer = styled.img`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const BellIconPlaceholder = styled.div`
-  width: 200px;
-  height: 200px;
-  background-color: #f0f0f0;
-  border-radius: 20px;
 `;
 
 const ButtonGroup = styled.div`
@@ -233,10 +233,10 @@ const ButtonGroup = styled.div`
 const SubButton = styled.button`
   width: 100%;
   height: 52px;
-  border-radius: 10px;
+  border-radius: 20px;
   background-color: #e5e5e5;
   color: #333333;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   border: none;
   cursor: pointer;
@@ -246,6 +246,7 @@ const SubButton = styled.button`
   }
 `;
 
+/* 모달 스타일 컴포넌트*/
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -348,7 +349,7 @@ const ModalButtonGroup = styled.div`
 const ModalSubButton = styled.button`
   flex: 0.35;
   height: 52px;
-  border-radius: 10px;
+  border-radius: 20px;
   background-color: #e5e5e5;
   color: #333333;
   font-size: 15px;
