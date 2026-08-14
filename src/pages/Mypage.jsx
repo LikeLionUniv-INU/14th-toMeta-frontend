@@ -49,7 +49,7 @@ export default function MyPage() {
   };
 
   const handleEditProfile = () => {
-    navigate('/editprofile');
+    navigate('/edit-profile');
   };
 
   const handleOpenTimeModal = (type) => {
@@ -77,7 +77,6 @@ export default function MyPage() {
 
   };
 
-  // 24시간제(23:00) -> 화면 표시용 12시간제(11:00PM) 포맷 변환 함수
   const formatDisplayTime = (timeStr) => {
     if (!timeStr) return '11:00PM';
     const [h, m] = timeStr.split(':');
