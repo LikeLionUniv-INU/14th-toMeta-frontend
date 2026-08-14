@@ -505,7 +505,7 @@ const SetSection = styled.div`
 `;
 
 const SetCard = styled.div`
-  background-color: ${(props) => (props.$isSelected ? '#699872' : '#ffffff')};
+  background-color: ${(props) => (props.$isSelected ? '#96BE9C' : '#FFF8F2')};
   border: 1px solid #96be9c;
   border-radius: 12px;
   padding: 14px;
@@ -523,9 +523,9 @@ const SetCard = styled.div`
   ${(props) =>
     props.$isSelected &&
     `
-    outline: 2.5px solid #4D7A56;
+    outline: 2.5px solid #96BE9C;
     outline-offset: -1px;
-    box-shadow: 0 0 8px rgba(105, 152, 114, 0.4);
+    box-shadow: #96BE9C;
     
     span {
       color: #ffffff;
@@ -558,10 +558,12 @@ const TagList = styled.div`
 
 const SetTag = styled.span`
   font-size: 10px;
-  background-color: #FFF1E5;
-  color: #000000 !important;
   padding: 3px 8px;
   border-radius: 10px;
+  transition: all 0.2s ease;
+  background-color: ${(props) =>
+    props.parentIsSelected ? '#FFF8F2' : '#96BE9C'};
+  color: ${(props) => (props.parentIsSelected ? '#003B00' : '#FFF8F2')};
 `;
 
 const ArrowButton = styled.button`
@@ -597,24 +599,34 @@ const CardWrapper = styled.div`
     transform: scale(0.98);
   }
 
+  & > div {
+    background-color: #ffffff;
+    color: #000000;
+
+    span {
+      background-color: #96BE9C;
+      color: #FFF1E5;
+    }
+  }
+
   ${(props) =>
     props.$isSelected &&
     `
-    outline: 2.5px solid #4D7A56;
+    outline: 2.5px solid #96BE9C;s
     outline-offset: -1px;
-    box-shadow: 0 0 8px rgba(105, 152, 114, 0.4);
+    box-shadow: #96BE9C;
 
     & > div {
-      background-color: #699872;
-      border-color: #699872;
+      background-color: #96BE9C;
+      border-color: #96BE9C;
 
-      p, span, h1, h2, h3, h4, div {
+      p, h1, h2, h3, h4, div {
         color: #ffffff;
       }
 
       span {
-        background-color: #FFF1E5;
-        color: #000000;
+        background-color: #FFF8F2;
+        color: #003B00;
       }
     }
   `}
