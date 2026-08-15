@@ -198,9 +198,8 @@ export default function MyPage() {
 }
 
 const PageContainer = styled.div`
-  max-width: 430px;
   margin: 0 auto;
-  min-height: 100vh;
+  min-height: 100dvh;
   background-color: #ffffff;
   padding-bottom: 73px;
   box-sizing: border-box;
@@ -217,7 +216,7 @@ const Header = styled.header`
 `;
 
 const ProfileSection = styled.section`
-  background-color: #D7EDDA;
+  background-color: #FFFFFF;
   padding: 30px 0;
   display: flex;
   flex-direction: column;
@@ -245,11 +244,12 @@ const ProfileName = styled.div`
 `;
 
 const EditButton = styled.button`
-  background-color: #006014;
-  color: #f1f1f1;
+  width: 108px;
+  background-color: #67c3a3;
+  color: #FFFFFF;
   border: none;
   padding: 6px 14px;
-  border-radius: 6px;
+  border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -274,8 +274,8 @@ const SectionTitle = styled.h3`
 `;
 
 const Badge = styled.span`
-  background-color: ${(props) => (props.$isConnected ? '#266210' : '#E53E3E')};
-  color: #ffffff;
+  background-color: ${(props) => (props.$isConnected ? '#EBFBEE' : '#FFF5F5')};
+  color: ${(props) => (props.$isConnected ? '#40C057' : '#FA5252')};
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 14px;
@@ -283,7 +283,7 @@ const Badge = styled.span`
 `;
 
 const NotificationList = styled.div`
-  border-left: 2px solid #E5E5E5;
+  border-left: 2px solid #828282;
   margin-top: 20px;
   padding-left: 14px;
   display: flex;
@@ -321,7 +321,7 @@ const TimeText = styled.span`
 const ToggleWrapper = styled.div`
   width: 44px;
   height: 24px;
-  background-color: ${(props) => (props.$isActive ? '#266210' : '#D1D1D1')};
+  background-color: ${(props) => (props.$isActive ? '#63BF8E' : '#D1D1D1')};
   border-radius: 12px;
   padding: 2px;
   cursor: pointer;
