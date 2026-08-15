@@ -6,11 +6,15 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppLayout from './styles/AppLayout';
 import Privacy from './pages/Privacy';
 import HealthConnect from './pages/HealthConnect';
-import TodayNote from './pages/TodayNote';
-import EmptyPouch from './pages/EmptyPouch';
 import ProfileInput from './pages/ProfileInput';
 import SkintypeInput from './pages/SkintypeInput';
 import Notification from './pages/Notification';
+import TodayNote from './pages/TodayNote';
+import Record from './pages/Record';
+import PouchRedirect from './pages/Pouch-Redirect';
+import EmptyPouch from './pages/EmptyPouch';
+import MyPouch from './pages/MyPouch';
+import Set from './pages/Set';
 import SearchCosmetic from './pages/SearchCosmetic';
 import SearchResult from './pages/SearchResult';
 import CustomRoutine from './pages/CustomRoutine';
@@ -18,10 +22,7 @@ import CustomName from './pages/CustomName';
 import CustomCategory from './pages/CustomCategory';
 import CustomIngredient from './pages/CustomIngredient';
 import MyPage from './pages/Mypage';
-import Record from './pages/Record';
 import EditProfile from './pages/EditProfile';
-import MyPouch from './pages/MyPouch';
-import Set from './pages/Set';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path="/onboarding/notification" element={<Notification />} />
           <Route path="/todaynote" element={<TodayNote />} />
           <Route path="/record" element={<Record />} />
+          <Route path="/pouch-redirect" element={<PouchRedirect />} />
           <Route path="/empty-pouch" element={<EmptyPouch />} />
           <Route path="/my-pouch" element={<MyPouch />} />
           <Route path="/set/:setId" element={<Set />} />

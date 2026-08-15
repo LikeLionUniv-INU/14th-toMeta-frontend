@@ -334,8 +334,9 @@ const SubDescription = styled.p`
 
 const FoodCard = styled.div`
   padding: 12px;
-  border: 1px solid #96be9c;
-  border-radius: 10px;
+  border: 1px solid #89d7bc;
+  background-color: #F3FFFB;
+  border-radius: 20px;
   font-size: 11px;
   font-weight: 500;
   color: #141212;

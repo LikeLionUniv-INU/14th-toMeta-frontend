@@ -122,7 +122,6 @@ function CustomSelect({ label, value, options, isOpen, onToggle, onSelect }) {
   );
 }
 
-// 스타일 정의
 const PageContainer = styled.div`
   margin: 0 auto;
   min-height: 100dvh;

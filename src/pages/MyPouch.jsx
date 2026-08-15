@@ -18,9 +18,15 @@ export default function MyPouch() {
   });
   const [loading, setLoading] = useState(true);
 
-  // API 호출 대신 더미 데이터 직접 주입 (백엔드 개발 완료 전 임시용)
+  const [selectedCosmetics, setSelectedCosmetics] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [setName, setSetName] = useState("");
+
   useEffect(() => {
-    // 백엔드 명세서 성공 Response 데이터 그대로 활용
+    setSelectedCosmetics([]);
+  }, [activeTab]);
+
+  useEffect(() => {
     const mockResponse = {
       isSuccess: true,
       code: "COMMON_200",
@@ -139,14 +145,14 @@ export default function MyPouch() {
       },
     };
 
-    // 더미 데이터 세팅
     setPouchData(mockResponse.result);
     setLoading(false);
   }, []);
 
   const currentTabContent = pouchData[activeTab] || { sets: [], cosmetics: [] };
 
-  const handleDeleteItem = (id) => {
+  const handleDeleteItem = (e, id) => {
+    e.stopPropagation();
     setPouchData((prev) => ({
       ...prev,
       [activeTab]: {
@@ -156,12 +162,21 @@ export default function MyPouch() {
         ),
       },
     }));
+    setSelectedCosmetics((prev) => prev.filter((item) => item.userCosmeticId !== id));
   };
 
   const handleSetClick = (setId) => {
     navigate(`/set/${setId}`, {
       state: { activeTab },
     });
+  };
+
+  const handleToggleSelect = (item) => {
+    if (selectedCosmetics.some((selected) => selected.userCosmeticId === item.userCosmeticId)) {
+      setSelectedCosmetics((prev) => prev.filter((selected) => selected.userCosmeticId !== item.userCosmeticId));
+    } else {
+      setSelectedCosmetics((prev) => [...prev, item]);
+    }
   };
 
   return (
@@ -216,21 +231,30 @@ export default function MyPouch() {
 
               <CardListSection>
                 {currentTabContent.cosmetics &&
-                  currentTabContent.cosmetics.map((item) => (
-                    <CardWrapper key={item.userCosmeticId}>
-                      <CosmeticCard
-                        name={item.customName || item.productName}
-                        tags={(item.mainIngredients || []).map(
-                          (tag) => `#${tag}`
-                        )}
-                      />
-                      <DeleteButton
-                        onClick={() => handleDeleteItem(item.userCosmeticId)}
+                  currentTabContent.cosmetics.map((item) => {
+                    const isSelected = selectedCosmetics.some(
+                      (selected) => selected.userCosmeticId === item.userCosmeticId
+                    );
+                    return (
+                      <CardWrapper
+                        key={item.userCosmeticId}
+                        $isSelected={isSelected}
+                        onClick={() => handleToggleSelect(item)}
                       >
-                        <TrashIcon src={Trash} alt="delete" />
-                      </DeleteButton>
-                    </CardWrapper>
-                  ))}
+                        <CosmeticCard
+                          name={item.customName || item.productName}
+                          tags={(item.mainIngredients || []).map(
+                            (tag) => `#${tag}`
+                          )}
+                        />
+                        <DeleteButton
+                          onClick={(e) => handleDeleteItem(e, item.userCosmeticId)}
+                        >
+                          <TrashIcon src={Trash} alt="delete" />
+                        </DeleteButton>
+                      </CardWrapper>
+                    );
+                  })}
               </CardListSection>
             </>
           )}
@@ -239,10 +263,52 @@ export default function MyPouch() {
             <ActionButton onClick={() => navigate("/register/search-cosmetic")}>
               추가하기
             </ActionButton>
-            <ActionButton>세트로 묶기</ActionButton>
+            <ActionButton
+              $isSetButtonActive={selectedCosmetics.length >= 2}
+              onClick={() => {
+                if (selectedCosmetics.length >= 2) {
+                  setIsModalOpen(true);
+                }
+              }}
+            >
+              세트로 묶기
+            </ActionButton>
           </ButtonGroup>
         </MainContent>
       </ContentWrapper>
+
+      {isModalOpen && (
+        <ModalOverlay onClick={() => setIsModalOpen(false)}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalTitle>선택한 제품을 세트로 묶을까요?</ModalTitle>
+            <ModalDesc>
+              {selectedCosmetics[0]?.customName || selectedCosmetics[0]?.productName}
+              {selectedCosmetics.length > 1
+                ? ` 외 ${selectedCosmetics.length - 1}개 제품이 한 세트 저장돼요`
+                : "이 한 세트 저장돼요"}
+            </ModalDesc>
+            <ModalInput
+              placeholder="세트 이름을 입력해 주세요 (ex. 진정 꿀조합)"
+              value={setName}
+              onChange={(e) => setSetName(e.target.value)}
+            />
+            <ModalButtonGroup>
+              <ModalCancelBtn onClick={() => setIsModalOpen(false)}>
+                기록 수정하기
+              </ModalCancelBtn>
+              <ModalSubmitBtn
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setSelectedCosmetics([]);
+                  setSetName("");
+                }}
+              >
+                완료
+              </ModalSubmitBtn>
+            </ModalButtonGroup>
+          </ModalContent>
+        </ModalOverlay>
+      )}
 
       <NavigationBar />
     </Container>
@@ -378,6 +444,27 @@ const CardListSection = styled.div`
 const CardWrapper = styled.div`
   position: relative;
   width: 100%;
+  cursor: pointer;
+  border-radius: 12px;
+
+  ${(props) =>
+    props.$isSelected &&
+    `
+    & > div {
+      background-color: #82BF8B !important;
+      border: 1px solid #96BE9C !important;
+      color: #000000 !important;
+      
+      * {
+        color: #000000 !important;
+      }
+
+      span, div > span {
+        background-color: #FFF8F2 !important;
+        color: #003B00 !important;
+      }
+    }
+  `}
 `;
 
 const DeleteButton = styled.button`
@@ -407,15 +494,98 @@ const ButtonGroup = styled.div`
 const ActionButton = styled.button`
   flex: 1;
   padding: 12px 0;
-  background-color: #ffffff;
-  border: 1px solid #266210;
-  color: #266210;
+  background-color: ${(props) => (props.$isSetButtonActive ? "#8cb896" : "#ffffff")};
+  border: 1px solid ${(props) => (props.$isSetButtonActive ? "#8cb896" : "#266210")};
+  color: ${(props) => (props.$isSetButtonActive ? "#ffffff" : "#266210")};
   border-radius: 20px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 
   &:active {
-    background-color: #f2f7f1;
+    background-color: ${(props) => (props.$isSetButtonActive ? "#7ca886" : "#f2f7f1")};
   }
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background: #e6F5E8;
+  width: 357px;
+  height: 207px;
+  border-radius: 20px;
+  padding: 24px 20px;
+  text-align: center;
+  box-sizing: border-box;
+`;
+
+const ModalTitle = styled.h3`
+  font-size: 17px;
+  font-weight: 800;
+  color: #141212;
+  margin: 0 0 8px 0;
+`;
+
+const ModalDesc = styled.p`
+  font-size: 12px;
+  color: #777777;
+  margin: 0 0 16px 0;
+`;
+
+const ModalInput = styled.input`
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  background: #ffffff;
+  font-size: 12px;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  outline: none;
+
+  &::placeholder {
+    color: #b5b5b5;
+  }
+`;
+
+const ModalButtonGroup = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const ModalCancelBtn = styled.button`
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 20px;
+  border: 1px solid #8cb896;
+  background: #ffffff;
+  color: #333333;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+`;
+
+const ModalSubmitBtn = styled.button`
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 20px;
+  border: none;
+  background: #8cb896;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
 `;
