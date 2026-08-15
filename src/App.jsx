@@ -6,21 +6,22 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppLayout from './styles/AppLayout';
 import Privacy from './pages/Privacy';
 import HealthConnect from './pages/HealthConnect';
-import TodayNote from './pages/TodayNote';
-import EmptyPouch from './pages/EmptyPouch';
 import ProfileInput from './pages/ProfileInput';
 import SkintypeInput from './pages/SkintypeInput';
 import Notification from './pages/Notification';
+import TodayNote from './pages/TodayNote';
+import Record from './pages/Record';
+import PouchRedirect from './pages/Pouch-Redirect';
+import EmptyPouch from './pages/EmptyPouch';
+import MyPouch from './pages/MyPouch';
+import Set from './pages/Set';
 import SearchCosmetic from './pages/SearchCosmetic';
 import SearchResult from './pages/SearchResult';
 import CustomName from './pages/CustomName';
 import CustomCategory from './pages/CustomCategory';
 import CustomIngredient from './pages/CustomIngredient';
 import MyPage from './pages/Mypage';
-import Record from './pages/Record';
 import EditProfile from './pages/EditProfile';
-import MyPouch from './pages/MyPouch';
-import Set from './pages/Set';
 
 function App() {
   return (
@@ -29,14 +30,15 @@ function App() {
       <AppLayout>
         <Routes>
           <Route path="/privacy" element={<Privacy />} />
-          <Route path="/healthconnect" element={<HealthConnect />} />
+          <Route path="/health-connect" element={<HealthConnect />} />
           <Route path="/onboarding/profile" element={<ProfileInput />} />
           <Route path="/onboarding/skin-type" element={<SkintypeInput />} />
           <Route path="/onboarding/notification" element={<Notification />} />
           <Route path="/todaynote" element={<TodayNote />} />
           <Route path="/record" element={<Record />} />
-          <Route path="/emptypouch" element={<EmptyPouch />} />
-          <Route path="/mypouch" element={<MyPouch />} />
+          <Route path="/pouch-redirect" element={<PouchRedirect />} />
+          <Route path="/empty-pouch" element={<EmptyPouch />} />
+          <Route path="/my-pouch" element={<MyPouch />} />
           <Route path="/set/:setId" element={<Set />} />
           <Route
             path="/register/search-cosmetic"
@@ -53,7 +55,7 @@ function App() {
             element={<CustomIngredient />}
           />
           <Route path="/mypage" element={<MyPage />} />
-          <Route path="/editprofile" element={<EditProfile />} />
+          <Route path="/edit-profile" element={<EditProfile />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
