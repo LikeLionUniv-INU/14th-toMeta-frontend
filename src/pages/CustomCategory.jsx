@@ -50,7 +50,6 @@ export default function CustomCategory() {
       <Content>
         <ProgressBarWrapper>
           <ProgressStep $active={false} />
-          <ProgressStep $active={false} />
           <ProgressStep $active={true} />
           <ProgressStep $active={false} />
         </ProgressBarWrapper>
@@ -102,7 +101,7 @@ const Container = styled.div`
 
 const Content = styled.main`
   flex: 1;
-  padding: 20px 30px;
+  padding: 30px 20px;
   display: flex;
   flex-direction: column;
 `;
@@ -111,7 +110,7 @@ const ProgressBarWrapper = styled.div`
   display: flex;
   gap: 10px;
   width: 100%;
-  margin-bottom: 50px;
+  height: 41px;
 `;
 
 const ProgressStep = styled.div`
@@ -123,14 +122,16 @@ const ProgressStep = styled.div`
 `;
 
 const MainTitle = styled.h2`
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 1.35;
   color: #000000;
-  margin-bottom: 28px;
+  margin-top: 130px;
+  margin-bottom: 26px;
 
   @media ${media.mobileM} {
-    font-size: 32px;
+    font-size: 24px;
+    margin-top: 170px;
   }
 `;
 
@@ -142,10 +143,10 @@ const OptionGroup = styled.div`
 `;
 
 const SelectChip = styled.button`
-  height: 38px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 14px;
+  height: 40px;
+  padding: 10px 14px;
+  border-radius: 20px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   display: inline-flex;
@@ -153,9 +154,9 @@ const SelectChip = styled.button`
   justify-content: center;
   transition: all 0.2s ease;
 
-  background-color: ${(props) => (props.$isSelected ? '#609668' : '#EAF5EA')};
-  color: ${(props) => (props.$isSelected ? '#FFFFFF' : '#111111')};
-  border: 1px solid ${(props) => (props.$isSelected ? '#609668' : '#609668')};
+  background-color: ${(props) => (props.$isSelected ? '#52ba96' : '#e7fdf7')};
+  color: ${(props) => (props.$isSelected ? '#F3f3f3' : '#363636')};
+  border: 1px solid ${(props) => (props.$isSelected ? '#52ba96' : '#89d7bc')};
 
   &:active {
     opacity: 0.8;
@@ -164,7 +165,7 @@ const SelectChip = styled.button`
 
 const BottomButtonGroup = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 20px;
   width: 100%;
   margin-top: 32px;
 
@@ -175,19 +176,21 @@ const BottomButtonGroup = styled.div`
 
 const PrevButton = styled.button`
   height: 52px;
-  background-color: #e5e5e5;
-  color: #333333;
-  font-size: 15px;
-  font-weight: 600;
-  border: none;
-  border-radius: 10px;
+  background-color: #ffffff;
+  color: #609668;
+  font-size: 16px;
+  font-weight: 700;
+  border: 1px solid #609668;
+  border-radius: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+`;
 
-  &:active {
-    background-color: #d8d8d8;
-  }
+const NextButton = styled(PrevButton)`
+  background-color: ${(props) => (props.disabled ? '#ffffff' : '#63bf8e')};
+  color: ${(props) => (props.disabled ? '#609668' : '#ffffff')};
+  border: ${(props) => (props.disabled ? '1px solid #609668' : '1px solid #63bf8e')};
 `;
