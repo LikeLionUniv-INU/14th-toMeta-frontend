@@ -9,21 +9,18 @@ export default function CustomName() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const prevData = location.state || {};
-
   const [productName, setProductName] = useState('');
 
   const isValid = productName.trim().length > 0;
 
   const handlePrev = () => {
-    navigate('/register/custom-routine');
+    navigate('/my-pouch');
   };
   const handleNext = () => {
     if (!isValid) return;
 
     navigate('/register/custom-category', {
       state: {
-        ...prevData,
         productName: productName.trim(),
       },
     });
@@ -33,7 +30,6 @@ export default function CustomName() {
     <Container>
       <Content>
         <ProgressBarWrapper>
-          <ProgressStep $active={false} />
           <ProgressStep $active={true} />
           <ProgressStep $active={false} />
           <ProgressStep $active={false} />
@@ -50,18 +46,24 @@ export default function CustomName() {
             type="text"
             placeholder="제품명을 입력해 주세요"
             value={productName}
-            onChange={(e) => setProductName(e.target.value)}
+            onChange={(e) => {
+              const sanitizedValue = e.target.value.replace(
+                /[^ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z0-9\s]/g,
+                '',
+              );
+              setProductName(sanitizedValue);
+            }}
             autoFocus
           />
         </InputWrapper>
 
         <BottomButtonGroup>
           <PrevButton type="button" onClick={handlePrev}>
-            이전
+            취소
           </PrevButton>
-          <Button onClick={handleNext} disabled={!isValid}>
+          <NextButton onClick={handleNext} disabled={!isValid}>
             다음
-          </Button>
+          </NextButton>
         </BottomButtonGroup>
       </Content>
     </Container>
@@ -83,7 +85,7 @@ const Container = styled.div`
 
 const Content = styled.main`
   flex: 1;
-  padding: 20px 30px;
+  padding: 30px 20px;
   display: flex;
   flex-direction: column;
 `;
@@ -92,7 +94,7 @@ const ProgressBarWrapper = styled.div`
   display: flex;
   gap: 10px;
   width: 100%;
-  margin-bottom: 50px;
+  height: 41px;
 `;
 
 const ProgressStep = styled.div`
@@ -104,27 +106,25 @@ const ProgressStep = styled.div`
 `;
 
 const MainTitle = styled.h2`
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 1.35;
   color: #000000;
-  margin-bottom: 60px;
+  margin-top: 130px;
+  margin-bottom: 38px;
 
   @media ${media.mobileM} {
-    font-size: 32px;
+    font-size: 24px;
+    margin-top: 170px;
   }
 `;
 
 const InputWrapper = styled.div`
   width: 100%;
-  border-bottom: 3px solid #bddec1;
+  border-bottom: 4px solid #cbcbcb;
   padding-bottom: 8px;
   margin-bottom: auto;
   transition: border-color 0.2s ease;
-
-  &:focus-within {
-    border-bottom-color: #609668;
-  }
 `;
 
 const StyledInput = styled.input`
@@ -141,7 +141,7 @@ const StyledInput = styled.input`
 
 const BottomButtonGroup = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 20px;
   width: 100%;
   margin-top: 32px;
 
@@ -152,19 +152,21 @@ const BottomButtonGroup = styled.div`
 
 const PrevButton = styled.button`
   height: 52px;
-  background-color: #e5e5e5;
-  color: #333333;
-  font-size: 15px;
-  font-weight: 600;
-  border: none;
-  border-radius: 10px;
+  background-color: #ffffff;
+  color: #609668;
+  font-size: 16px;
+  font-weight: 700;
+  border: 1px solid #609668;
+  border-radius: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+`;
 
-  &:active {
-    background-color: #d8d8d8;
-  }
+const NextButton = styled(PrevButton)`
+  background-color: ${(props) => (props.disabled ? '#b3b3b3' : '#63bf8e')};
+  color: ${(props) => (props.disabled ? '#fdfffd' : '#ffffff')};
+  border: none;
 `;

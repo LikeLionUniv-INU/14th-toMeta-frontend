@@ -17,7 +17,6 @@ import MyPouch from './pages/MyPouch';
 import Set from './pages/Set';
 import SearchCosmetic from './pages/SearchCosmetic';
 import SearchResult from './pages/SearchResult';
-import CustomRoutine from './pages/CustomRoutine';
 import CustomName from './pages/CustomName';
 import CustomCategory from './pages/CustomCategory';
 import CustomIngredient from './pages/CustomIngredient';
@@ -46,7 +45,6 @@ function App() {
             element={<SearchCosmetic />}
           />
           <Route path="/register/search-result" element={<SearchResult />} />
-          <Route path="/register/custom-routine" element={<CustomRoutine />} />
           <Route path="/register/custom-name" element={<CustomName />} />
           <Route
             path="/register/custom-category"
