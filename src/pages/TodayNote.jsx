@@ -1,14 +1,19 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, forwardRef } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { ko } from 'date-fns/locale';
 import Button from '../components/Button';
 import * as S from './TodayNote.styles';
 import Header from '../components/Header';
 import CosmeticCard from '../components/CosmeticCard';
+import CameraImg from '../assets/images/camera.png';
 
 const TodayNote = () => {
   const navigate = useNavigate();
 
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [skinCondition, setSkinCondition] = useState(null);
   const [morningProducts, setMorningProducts] = useState([]);
   const [nightProducts, setNightProducts] = useState([]);
@@ -21,6 +26,15 @@ const TodayNote = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
 
   const fileInputRef = useRef(null);
+  const datePickerRef = useRef(null);
+
+  const formatDate = (date) => {
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+    const dayOfWeek = days[date.getDay()];
+    return `${month}월 ${day}일 ${dayOfWeek}`;
+  };
 
   // 샘플 데이터
   const setProducts = [
@@ -104,6 +118,7 @@ const TodayNote = () => {
     if (!isFormValid) return;
 
     const recordData = {
+      selectedDate,
       skinCondition,
       morningProducts,
       nightProducts,
@@ -156,8 +171,14 @@ const TodayNote = () => {
 
       <S.Content>
         <S.DateSection>
-          <h2>8월 5일 수요일</h2>
-          <p>날씨 흐림 | 온도 25-34 | 습도 94%</p>
+          <h2>{formatDate(selectedDate)}</h2>
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+            locale={ko}
+            dateFormat="yyyy.MM.dd"
+            customInput={<CustomCalendarButton />}
+          />
         </S.DateSection>
 
         <S.Divider />
@@ -239,7 +260,6 @@ const TodayNote = () => {
             type="file"
             accept="image/*"
             multiple
-            capture="environment"
             ref={fileInputRef}
             onChange={handleFileChange}
             style={{ display: 'none' }}
@@ -247,7 +267,7 @@ const TodayNote = () => {
 
           <S.ImageListContainer>
             <S.CameraButton type="button" onClick={handleCameraClick}>
-              <span className="camera-icon">📷</span>
+              <img src={CameraImg} className="camera-icon" alt="카메라" />
             </S.CameraButton>
 
             {images.map((imgUrl, index) => (
@@ -367,6 +387,30 @@ const TodayNote = () => {
 
 export default TodayNote;
 
+const CustomCalendarButton = forwardRef(({ onClick }, ref) => (
+  <CalendarBtn type="button" onClick={onClick} ref={ref}>
+    📅
+  </CalendarBtn>
+));
+
+const CalendarBtn = styled.button`
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const DatePickerWrapper = styled.div`
+  position: absolute;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+`;
+
 const SelectedTagScrollContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -394,12 +438,12 @@ const SelectedTagChip = styled.div`
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid #96be9c;
-  border-radius: 8px;
+  border: 1px solid #89D7BC;
+  border-radius: 20px;
   padding: 6px 10px;
-  background-color: #ffffff;
+  background-color: #E7FDF7;
   font-size: 12px;
-  color: #333333;
+  color: #363636;
   white-space: nowrap;
   flex-shrink: 0;
 
@@ -419,13 +463,13 @@ const AddMoreTagChip = styled.button`
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  border: 1px solid #96be9c;
-  border-radius: 8px;
+  border: 1px solid #B3B3B3;
+  border-radius: 20px;
   padding: 6px 12px;
-  background-color: #eaf3eb;
+  background-color: #D9D9D9;
   font-size: 12px;
   font-weight: 600;
-  color: #333333;
+  color: #363636;
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
@@ -434,7 +478,6 @@ const AddMoreTagChip = styled.button`
     font-size: 13px;
   }
 `;
-
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -612,7 +655,7 @@ const CardWrapper = styled.div`
   ${(props) =>
     props.$isSelected &&
     `
-    outline: 2.5px solid #96BE9C;s
+    outline: 2.5px solid #96BE9C;
     outline-offset: -1px;
     box-shadow: #96BE9C;
 

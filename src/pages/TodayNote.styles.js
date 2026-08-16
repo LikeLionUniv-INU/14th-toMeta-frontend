@@ -33,17 +33,15 @@ export const Content = styled.div`
 `;
 
 export const DateSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+
   h2 {
     font-size: 24px;
-    font-weight: 400;
-    margin: 0 0 0.3rem 0;
-  }
-
-  p {
-    font-size: 10px;
-    font-weight: 400;
-    color: #000000;
-    margin: 0.1rem;
+    font-weight: 700;
+    margin: 0;
   }
 `;
 
@@ -175,15 +173,15 @@ export const ImageListContainer = styled.div`
 `;
 
 export const CameraButton = styled.button`
-  width: 5.5rem;
-  height: 5.5rem;
+  width: 70px;
+  height: 70px;
   flex-shrink: 0;
-  background-color: #f3f4f6;
-  border-radius: 0.75rem;
+  background-color: #ededed;
+  border-radius: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: none;
+  border: 1px solid #828282;
   cursor: pointer;
   transition: background-color 0.2s;
 
@@ -192,7 +190,9 @@ export const CameraButton = styled.button`
   }
 
   .camera-icon {
-    font-size: 1.75rem;
+    width: 25px;
+    height: 18px;
+    object-fit: contain;
   }
 `;
 
@@ -203,8 +203,8 @@ export const ImageItem = styled.div`
   flex-shrink: 0;
 
   img {
-    width: 100%;
-    height: 100%;
+    width: 70px;
+    height: 70px;
     object-fit: cover;
     border-radius: 0.75rem;
   }
