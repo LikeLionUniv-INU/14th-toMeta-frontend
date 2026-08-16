@@ -68,7 +68,15 @@ export const registerCosmeticFromSearch = async (cosmeticData) => {
 
 export const registerCosmeticManual = async (customData) => {
   if (USE_MOCK) {
-    return { data: { isSuccess: true, result: { userCosmeticId: 11 } } };
+    console.log('[Mock API] 화장품 직접 등록:', customData);
+    return {
+      data: {
+        isSuccess: true,
+        code: 'COMMON_200',
+        message: '요청에 성공했습니다.',
+        result: null,
+      },
+    };
   }
   return api.post('/api/user-cosmetics/manual', customData);
 };
