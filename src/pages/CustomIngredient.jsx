@@ -146,7 +146,7 @@ export default function CustomIngredient() {
             onClick={handleSubmit}
             disabled={!isValid || isSubmitting}
           >
-            {isSubmitting ? '등록 중...' : '다음'}
+            {isSubmitting ? '등록 중...' : '등록'}
           </NextButton>
         </BottomButtonGroup>
       </Content>

@@ -4,41 +4,53 @@ import styled from 'styled-components';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import { media } from '../styles/GlobalStyle';
+import { registerCosmeticFromSearch } from '../api';
 
 export default function SearchResult() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 백엔드에서 전달받은 검색 결과 데이터 예시
-  const searchResults = location.state?.searchResults || [
-    { id: 1, name: '브링그린 티트리 시카 크림', imageUrl: '' },
-    { id: 2, name: '브링그린 티트리 시카 수딩 토너', imageUrl: '' },
-    { id: 3, name: '메디힐 티트리 진정 수딩 크림', imageUrl: '' },
-  ];
+  // SearchCosmetic에서 넘겨받은 실제 검색 결과 배열
+  const searchResults = location.state?.searchResults || [];
 
   const [selectedListId, setSelectedListId] = useState(
     searchResults.length === 1 ? searchResults[0].id : null,
   );
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [selectedRoutines, setSelectedRoutines] = useState({
-    day: false,
-    night: false,
-  });
+  // [확인] 버튼 클릭 시 모달 없이 즉시 백엔드 등록 API 호출
+  const handleConfirmClick = async () => {
+    if (isSubmitting) return;
 
-  const toggleRoutine = (type) => {
-    setSelectedRoutines((prev) => ({
-      ...prev,
-      [type]: !prev[type],
-    }));
-  };
+    // 결과가 여러 개인데 아무것도 선택 안 한 경우 방어
+    const targetId =
+      searchResults.length === 1 ? searchResults[0].id : selectedListId;
 
-  const handleConfirmClick = () => {
-    if (searchResults.length > 1 && !selectedListId) {
+    if (!targetId) {
       alert('사용 중인 제품을 선택해 주세요.');
       return;
     }
-    setIsModalOpen(true);
+
+    try {
+      setIsSubmitting(true);
+
+      // POST /api/user-cosmetics/from-search
+      // Request Body: { "id": targetId }
+      const res = await registerCosmeticFromSearch({ id: targetId });
+
+      if (res.data.isSuccess) {
+        navigate('/pouch-redirect');
+      } else {
+        alert(res.data.message || '화장품 등록에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('검색 화장품 등록 실패:', error);
+      alert(
+        error.message || '등록 중 오류가 발생했습니다. 다시 시도해 주세요.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleRetrySearch = () => {
@@ -46,29 +58,24 @@ export default function SearchResult() {
   };
 
   const handleGoToCustom = () => {
-    navigate('/register/custom-routine');
+    navigate('/register/custom-name');
   };
 
-  const handleFinalRegister = () => {
-    if (!selectedRoutines.day && !selectedRoutines.night) {
-      alert('사용 시점(낮 또는 밤)을 최소 하나 이상 선택해 주세요.');
-      return;
-    }
-
-    const selectedProduct = searchResults.find(
-      (item) =>
-        item.id ===
-        (searchResults.length === 1 ? searchResults[0].id : selectedListId),
+  // 검색 결과 없이 직접 URL로 들어온 경우
+  if (!searchResults || searchResults.length === 0) {
+    return (
+      <Container>
+        <Header title="검색 결과" variant="back" />
+        <Content>
+          <MainTitle>검색 결과가 없습니다.</MainTitle>
+          <ButtonWrapper>
+            <Button onClick={handleRetrySearch}>다시 검색하기</Button>
+            <Button onClick={handleGoToCustom}>직접 입력하기</Button>
+          </ButtonWrapper>
+        </Content>
+      </Container>
     );
-
-    console.log('최종 등록 데이터:', {
-      product: selectedProduct,
-      routines: selectedRoutines,
-    });
-
-    // TODO: 백엔드 등록 API 호출 후 페이지 이동
-    // navigate('/main');
-  };
+  }
 
   return (
     <Container>
@@ -135,95 +142,31 @@ export default function SearchResult() {
           </>
         )}
 
-        {/* 공통 하단 버튼 3개 */}
+        {/* 하단 버튼 영역 */}
         <ButtonWrapper>
           <Button
             onClick={handleConfirmClick}
-            disabled={searchResults.length > 1 && !selectedListId}
+            disabled={
+              (searchResults.length > 1 && !selectedListId) || isSubmitting
+            }
           >
-            확인
+            {isSubmitting ? '등록 중...' : '확인'}
           </Button>
           <ButtonGroup>
-            <Button onClick={handleRetrySearch}>다시 검색</Button>
-            <Button onClick={handleGoToCustom}>직접 입력하기</Button>
+            <Button onClick={handleRetrySearch} disabled={isSubmitting}>
+              다시 검색
+            </Button>
+            <Button onClick={handleGoToCustom} disabled={isSubmitting}>
+              직접 입력하기
+            </Button>
           </ButtonGroup>
         </ButtonWrapper>
       </Content>
-
-      {/* "언제 사용하는 제품인가요?" 모달 */}
-
-      {isModalOpen && (
-        <Overlay onClick={() => setIsModalOpen(false)}>
-          <ModalContainer onClick={(e) => e.stopPropagation()}>
-            <ModalTitle>
-              언제 사용하는
-              <br />
-              제품인가요?
-            </ModalTitle>
-
-            <ModalSubTitle>
-              아침, 밤 둘 다 사용한다면 두 개 모두 선택해 주세요!
-            </ModalSubTitle>
-
-            <RoutineOptions>
-              <RoutineCard
-                $isSelected={selectedRoutines.day}
-                onClick={() => toggleRoutine('day')}
-              >
-                <SunIcon />
-                <span>낮</span>
-              </RoutineCard>
-
-              <RoutineCard
-                $isSelected={selectedRoutines.night}
-                onClick={() => toggleRoutine('night')}
-              >
-                <MoonIcon />
-                <span>밤</span>
-              </RoutineCard>
-            </RoutineOptions>
-
-            <ModalConfirmButton onClick={handleFinalRegister}>
-              확인
-            </ModalConfirmButton>
-          </ModalContainer>
-        </Overlay>
-      )}
     </Container>
   );
 }
 
-/* SVG Icons */
-
-const SunIcon = () => (
-  <svg
-    width="55"
-    height="55"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-  >
-    <circle cx="12" cy="12" r="5" />
-    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-  </svg>
-);
-
-const MoonIcon = () => (
-  <svg
-    width="55"
-    height="55"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-  >
-    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-  </svg>
-);
-
 /* Style Components */
-
 const Container = styled.div`
   width: 100%;
   max-width: 430px;
@@ -256,8 +199,6 @@ const MainTitle = styled.h2`
     margin-bottom: 50px;
   }
 `;
-
-/* 검색 결과가 하나일 때 */
 
 const SingleProductCard = styled.div`
   width: 100%;
@@ -298,8 +239,6 @@ const ProductName = styled.p`
   color: #000000;
   text-align: center;
 `;
-
-/* 검색 결과가 여러 건일 때 */
 
 const ProductList = styled.div`
   display: flex;
@@ -373,8 +312,6 @@ const ListItemName = styled.span`
   text-overflow: ellipsis;
 `;
 
-/* --- 공통 버튼 그룹 --- */
-
 const ButtonWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -392,99 +329,10 @@ const ButtonGroup = styled.div`
     flex: 1;
   }
 
-  Button {
+  button:last-child,
+  button:first-child {
     background-color: white;
     color: #609668;
     border: 1px solid #609668;
   }
-`;
-
-/* Modal Styles */
-
-const Overlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(98, 98, 98, 0.3);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 0 24px;
-`;
-
-const ModalContainer = styled.div`
-  width: 100%;
-  max-width: 370px;
-  background-color: #d9d9d9; /* 시안 기준 회색 모달 배경 */
-  border-radius: 15px;
-  padding: 36px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-`;
-
-const ModalTitle = styled.h3`
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1.25;
-  color: #000000;
-  text-align: center;
-  margin: 0 0 24px 0;
-
-  @media ${media.mobileM} {
-    font-size: 32px;
-  }
-`;
-
-const ModalSubTitle = styled.p`
-  font-size: 10px;
-  font-weight: 500;
-  color: #000000;
-  text-align: center;
-  margin: 0 0 24px 0;
-  word-break: keep-all;
-`;
-
-const RoutineOptions = styled.div`
-  display: flex;
-  gap: 20px;
-  width: 100%;
-  margin-bottom: 24px;
-`;
-
-const RoutineCard = styled.button`
-  flex: 1;
-  height: 150px;
-  background-color: #e8e8e8;
-  border: ${(props) => (props.$isSelected ? '1px solid #000000' : '1px solid #c8c8c8')};
-  border-radius: 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  cursor: pointer;
-  color: #111111;
-  font-size: 24px;
-  font-weight: 500;
-  position: relative;
-  transition: all 0.2s;
-`;
-
-const ModalConfirmButton = styled.button`
-  width: 100%;
-  height: 48px;
-  background-color: #000000;
-  color: #ffffff;
-  border: none;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
 `;

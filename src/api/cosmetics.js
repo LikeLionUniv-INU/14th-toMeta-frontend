@@ -35,23 +35,18 @@ export const getCosmeticOptions = async () => {
 
 export const searchCosmetics = async (params) => {
   if (USE_MOCK) {
-    console.log('[Mock API] 화장품 검색어:', params);
+    const keyword = params?.keyword || '';
+    console.log('[Mock API] 화장품 검색 키워드:', keyword);
     return {
       data: {
         isSuccess: true,
+        code: 'COMMON_200',
+        message: '요청에 성공했습니다.',
         result: [
-          {
-            cosmeticId: 101,
-            name: '다이브인 저분자 히알루론산 토너',
-            brand: '토리든',
-            category: '토너',
-          },
-          {
-            cosmeticId: 102,
-            name: '레드 블레미쉬 시카 크림',
-            brand: '닥터지',
-            category: '크림',
-          },
+          /*
+          { id: 1, name: `${keyword} 시카 진정 크림`, imageUrl: '' },
+          { id: 2, name: `${keyword} 수딩 토너`, imageUrl: '' },
+          { id: 3, name: `${keyword} 배리어 로션`, imageUrl: '' },*/
         ],
       },
     };
@@ -61,7 +56,15 @@ export const searchCosmetics = async (params) => {
 
 export const registerCosmeticFromSearch = async (cosmeticData) => {
   if (USE_MOCK) {
-    return { data: { isSuccess: true, result: { userCosmeticId: 10 } } };
+    console.log('[Mock API] 검색 화장품 등록:', cosmeticData);
+    return {
+      data: {
+        isSuccess: true,
+        code: 'COMMON_200',
+        message: '요청에 성공했습니다.',
+        result: null,
+      },
+    };
   }
   return api.post('/api/user-cosmetics/from-search', cosmeticData);
 };
