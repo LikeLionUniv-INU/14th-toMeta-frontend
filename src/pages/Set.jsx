@@ -46,6 +46,16 @@ export default function Set() {
     setItems((prev) => prev.filter((item) => item.id !== id));
   };
 
+  // 세트 삭제 핸들러 (삭제할 세트 ID와 탭 정보를 state로 넘기며 뒤로 이동)
+  const handleDeleteSet = () => {
+    navigate("/my-pouch", {
+      state: {
+        activeTab,
+        deletedSetId: Number(setId),
+      },
+    });
+  };
+
   return (
     <Container>
       <CustomHeader>
@@ -81,7 +91,6 @@ export default function Set() {
       </SubHeaderMessage>
 
       <ContentWrapper>
-
         <MainContent>
           <CardListSection>
             {items.map((item) => (
@@ -96,7 +105,7 @@ export default function Set() {
 
           <ButtonGroup>
             <AddSetButton onClick={() => { }}>세트에 추가</AddSetButton>
-            <DeleteSetButton onClick={() => { }}>세트 삭제</DeleteSetButton>
+            <DeleteSetButton onClick={handleDeleteSet}>세트 삭제</DeleteSetButton>
           </ButtonGroup>
         </MainContent>
       </ContentWrapper>
