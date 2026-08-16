@@ -6,6 +6,8 @@ import Button from '../components/Button';
 import { media } from '../styles/GlobalStyle';
 import Bell from '../assets/images/bell.svg';
 
+import { updateMyProfile, createNotificationSettings } from '../api';
+
 // 세션스토리지 복호화 유틸리티 함수
 export const getDecryptedData = (key) => {
   try {
@@ -29,6 +31,7 @@ export default function NotificationPermission() {
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // 모달 기본 시간 설정 22:30
   const [pickerValue, setPickerValue] = useState({
@@ -46,33 +49,63 @@ export default function NotificationPermission() {
   }, [isModalOpen]);
 
   const handleFinalSubmit = async (allowNotification) => {
+    if (isLoading) return;
+
     try {
+      setIsLoading(true);
       const onboardingData = getDecryptedData('onboarding_data') || {};
 
-      const formattedTime = allowNotification
-        ? `${pickerValue.hour}:${pickerValue.minute}`
-        : null;
-
-      const finalPayload = {
-        ...onboardingData,
-        allowNotification: allowNotification,
-        notificationTime: formattedTime,
+      // 1. 프로필 데이터 전송 (PATCH /api/users/me/profile)
+      const profilePayload = {
+        nickname: onboardingData.nickname,
+        gender: onboardingData.gender,
+        ageGroup: onboardingData.ageGroup,
+        skinType: onboardingData.skinType,
       };
 
-      console.log('백엔드로 전송할 최종 온보딩 데이터:', finalPayload);
+      const profileRes = await updateMyProfile(profilePayload);
+      if (!profileRes.data.isSuccess) {
+        throw new Error(
+          profileRes.data.message || '프로필 등록에 실패했습니다.',
+        );
+      }
 
-      /* 백엔드 API 호출 위치
-      await axios.post('/api/user/onboarding', finalPayload, {
-        headers: { 'Content-Type': 'application/json' },
-      });
-      */
+      // 2. 알림 설정 페이로드 구성 (HH:mm 포맷)
+      const selectedTime = `${pickerValue.hour}:${pickerValue.minute}`;
+      const notificationPayload = allowNotification
+        ? {
+            dailyReportEnabled: true,
+            recordReminderEnabled: true,
+            recordReminderTime: selectedTime,
+            weeklyReportEnabled: true,
+            weeklyReportTime: selectedTime,
+          }
+        : {
+            dailyReportEnabled: false,
+            recordReminderEnabled: false,
+            recordReminderTime: null,
+            weeklyReportEnabled: false,
+            weeklyReportTime: null,
+          };
 
+      // 3. 알림 설정 등록 호출 (POST /api/users/me/notification-settings)
+      const notificationRes =
+        await createNotificationSettings(notificationPayload);
+      if (!notificationRes.data.isSuccess) {
+        throw new Error(
+          notificationRes.data.message || '알림 설정 등록에 실패했습니다.',
+        );
+      }
+
+      // 4. 모든 등록 완료 시 세션스토리지 비우고 홈으로 이동
       sessionStorage.removeItem('onboarding_data');
       setIsModalOpen(false);
       navigate('/home');
     } catch (error) {
-      console.error('온보딩 데이터 전송 실패:', error);
-      alert('오류가 발생했습니다. 다시 시도해 주세요.');
+      console.error('온보딩 최종 전송 실패:', error);
+      alert(error.message || '오류가 발생했습니다. 다시 시도해 주세요.');
+    } finally {
+      setIsLoading(false);
     }
   };
 

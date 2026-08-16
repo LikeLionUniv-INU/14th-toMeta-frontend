@@ -1,19 +1,74 @@
 import api from './axios';
 
-// 유저 정보 및 기본 정보 등록/수정 (PATCH /api/users/me/profile)
-export const updateMyProfile = (profileData) =>
-  api.patch('/api/users/me/profile', profileData);
+const USE_MOCK = true; // 실서버 연동 시 false로 변경
 
-// 유저 정보 조회 (GET /api/users/me/profile)
-export const getMyProfile = () => api.get('/api/users/me/profile');
+export const updateMyProfile = async (profileData) => {
+  if (USE_MOCK) {
+    console.log('[Mock API] 프로필 업데이트:', profileData);
+    return {
+      data: {
+        isSuccess: true,
+        code: 'COMMON_200',
+        message: '요청에 성공했습니다.',
+        result: null,
+      },
+    };
+  }
+  return api.patch('/api/users/me/profile', profileData);
+};
 
-// 알림 설정 등록 - 온보딩용 (POST /api/users/me/notification-settings)
-export const createNotificationSettings = (settings) =>
-  api.post('/api/users/me/notification-settings', settings);
+export const getMyProfile = async () => {
+  if (USE_MOCK) {
+    return {
+      data: {
+        isSuccess: true,
+        result: {
+          nickname: '도영',
+          gender: 'male',
+          ageGroup: '20s',
+          skinType: 'combination_dry',
+        },
+      },
+    };
+  }
+  return api.get('/api/users/me/profile');
+};
 
-// 알림 설정 수정 - 마이페이지용 (PATCH /api/users/me/notification-settings)
-export const updateNotificationSettings = (settings) =>
-  api.patch('/api/users/me/notification-settings', settings);
+export const createNotificationSettings = async (settings) => {
+  if (USE_MOCK) {
+    console.log('[Mock API] 알림 설정 등록:', settings);
+    return {
+      data: {
+        isSuccess: true,
+        code: 'COMMON_200',
+        message: '요청에 성공했습니다.',
+        result: null,
+      },
+    };
+  }
+  return api.post('/api/users/me/notification-settings', settings);
+};
 
-// 마이페이지 전체 조회 (GET /api/users/me)
-export const getMyPageData = () => api.get('/api/users/me');
+export const updateNotificationSettings = async (settings) => {
+  if (USE_MOCK) {
+    return { data: { isSuccess: true, result: null } };
+  }
+  return api.patch('/api/users/me/notification-settings', settings);
+};
+
+export const getMyPageData = async () => {
+  if (USE_MOCK) {
+    return {
+      data: {
+        isSuccess: true,
+        result: {
+          nickname: '도영',
+          skinType: '복합 건성',
+          registeredCosmeticsCount: 5,
+          totalRecordDays: 14,
+        },
+      },
+    };
+  }
+  return api.get('/api/users/me');
+};

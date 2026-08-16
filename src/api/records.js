@@ -1,19 +1,67 @@
 import api from './axios';
 
-// 홈 화면 조회 (GET /api/home)
-export const getHomeData = () => api.get('/api/home');
+const USE_MOCK = true; // 실서버 연동 시 false로 변경
 
-// 피부 사진 업로드 Presigned URL 발급 (POST /api/images/presigned-upload-urls)
-export const getPresignedUploadUrl = (imageData) =>
-  api.post('/api/images/presigned-upload-urls', imageData);
+export const getHomeData = async () => {
+  if (USE_MOCK) {
+    return {
+      data: {
+        isSuccess: true,
+        result: {
+          userName: '도영',
+          skinScore: 82,
+          weather: { temp: 24, uvIndex: '보통', humidity: 55 },
+          todayRecordExist: false,
+        },
+      },
+    };
+  }
+  return api.get('/api/home');
+};
 
-// 일일 기록 등록 (POST /api/daily-records)
-export const createDailyRecord = (recordData) =>
-  api.post('/api/daily-records', recordData);
+export const getPresignedUploadUrl = async (imageData) => {
+  if (USE_MOCK) {
+    return {
+      data: {
+        isSuccess: true,
+        result: {
+          uploadUrl: 'https://mock-s3-upload-url.com',
+          imageUrl: 'https://placehold.co/400x400',
+        },
+      },
+    };
+  }
+  return api.post('/api/images/presigned-upload-urls', imageData);
+};
 
-// 일일 기록 조회 (GET /api/daily-records/{date})
-export const getDailyRecord = (date) => api.get(`/api/daily-records/${date}`);
+export const createDailyRecord = async (recordData) => {
+  if (USE_MOCK) {
+    console.log('[Mock API] 데일리 기록 등록:', recordData);
+    return { data: { isSuccess: true, result: { recordId: 101 } } };
+  }
+  return api.post('/api/daily-records', recordData);
+};
 
-// 일일 기록 수정 (PATCH /api/daily-records/{date})
-export const updateDailyRecord = (date, recordData) =>
-  api.patch(`/api/daily-records/${date}`, recordData);
+export const getDailyRecord = async (date) => {
+  if (USE_MOCK) {
+    return {
+      data: {
+        isSuccess: true,
+        result: {
+          date,
+          skinCondition: 'GOOD',
+          memo: '피부 상태 양호함',
+          usedCosmetics: [1, 2],
+        },
+      },
+    };
+  }
+  return api.get(`/api/daily-records/${date}`);
+};
+
+export const updateDailyRecord = async (date, recordData) => {
+  if (USE_MOCK) {
+    return { data: { isSuccess: true, result: null } };
+  }
+  return api.patch(`/api/daily-records/${date}`, recordData);
+};
