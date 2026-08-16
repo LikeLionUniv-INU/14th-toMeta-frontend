@@ -125,10 +125,6 @@ const InputWrapper = styled.div`
   padding-bottom: 8px;
   margin-bottom: auto;
   transition: border-color 0.2s ease;
-
-  &:focus-within {
-    border-bottom-color: #52ba96;
-  }
 `;
 
 const StyledInput = styled.input`
@@ -170,7 +166,7 @@ const PrevButton = styled.button`
 `;
 
 const NextButton = styled(PrevButton)`
-  background-color: ${(props) => (props.disabled ? '#ffffff' : '#63bf8e')};
-  color: ${(props) => (props.disabled ? '#609668' : '#ffffff')};
-  border: ${(props) => (props.disabled ? '1px solid #609668' : '1px solid #63bf8e')};
+  background-color: ${(props) => (props.disabled ? '#b3b3b3' : '#63bf8e')};
+  color: ${(props) => (props.disabled ? '#fdfffd' : '#ffffff')};
+  border: none;
 `;

@@ -85,7 +85,7 @@ const BackButton = styled.button`
 
 const Title = styled.h1`
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 400;
   color: #141212;
   margin: 0;
   text-align: center;

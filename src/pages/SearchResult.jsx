@@ -136,16 +136,18 @@ export default function SearchResult() {
         )}
 
         {/* 공통 하단 버튼 3개 */}
-        <ButtonGroup>
+        <ButtonWrapper>
           <Button
             onClick={handleConfirmClick}
             disabled={searchResults.length > 1 && !selectedListId}
           >
             확인
           </Button>
-          <Button onClick={handleRetrySearch}>다시 검색</Button>
-          <Button onClick={handleGoToCustom}>직접 입력하기</Button>
-        </ButtonGroup>
+          <ButtonGroup>
+            <Button onClick={handleRetrySearch}>다시 검색</Button>
+            <Button onClick={handleGoToCustom}>직접 입력하기</Button>
+          </ButtonGroup>
+        </ButtonWrapper>
       </Content>
 
       {/* "언제 사용하는 제품인가요?" 모달 */}
@@ -235,20 +237,23 @@ const Container = styled.div`
 
 const Content = styled.main`
   flex: 1;
-  padding: 30px 20px;
+  padding: 10px 20px 30px 20px;
   display: flex;
   flex-direction: column;
 `;
 
 const MainTitle = styled.h2`
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.35;
   color: #000000;
-  margin-bottom: 32px;
+  margin-top: 65px;
+  margin-bottom: 30px;
 
   @media ${media.mobileM} {
-    font-size: 32px;
+    font-size: 24px;
+    margin-top: 100px;
+    margin-bottom: 50px;
   }
 `;
 
@@ -305,7 +310,7 @@ const ProductList = styled.div`
 
 const ListItem = styled.div`
   width: 100%;
-  height: 69px;
+  height: 60px;
   background-color: #ededed;
   border-radius: 5px;
   padding: 0 16px;
@@ -314,6 +319,10 @@ const ListItem = styled.div`
   gap: 12px;
   cursor: pointer;
   border: ${(props) => (props.$isSelected ? '1px solid #000000' : 'none')};
+
+  @media ${media.mobileM} {
+    height: 69px;
+  }
 `;
 
 const RadioButton = styled.div`
@@ -366,12 +375,28 @@ const ListItemName = styled.span`
 
 /* --- 공통 버튼 그룹 --- */
 
-const ButtonGroup = styled.div`
+const ButtonWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
   margin-top: 24px;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 15px;
+  width: 100%;
+
+  button {
+    flex: 1;
+  }
+
+  Button {
+    background-color: white;
+    color: #609668;
+    border: 1px solid #609668;
+  }
 `;
 
 /* Modal Styles */
@@ -382,12 +407,14 @@ const Overlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(98, 98, 98, 0.3);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 0 20px;
+  padding: 0 24px;
 `;
 
 const ModalContainer = styled.div`

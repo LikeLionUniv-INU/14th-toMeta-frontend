@@ -190,7 +190,7 @@ const PrevButton = styled.button`
 `;
 
 const NextButton = styled(PrevButton)`
-  background-color: ${(props) => (props.disabled ? '#ffffff' : '#63bf8e')};
-  color: ${(props) => (props.disabled ? '#609668' : '#ffffff')};
-  border: ${(props) => (props.disabled ? '1px solid #609668' : '1px solid #63bf8e')};
+  background-color: ${(props) => (props.disabled ? '#b3b3b3' : '#63bf8e')};
+  color: ${(props) => (props.disabled ? '#fdfffd' : '#ffffff')};
+  border: none;
 `;

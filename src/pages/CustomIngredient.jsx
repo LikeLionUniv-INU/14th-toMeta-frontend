@@ -83,12 +83,11 @@ export default function CustomIngredient() {
 
       if (response.ok) {
         alert('등록이 완료되었습니다!');
-        navigate('/main');
+        navigate('/pouch-redirect');
       }
       */
 
-      alert('화장품 등록이 완료되었습니다.');
-      // navigate('/main');
+      navigate('/pouch-redirect');
     } catch (error) {
       console.error('등록 중 에러 발생:', error);
     } finally {
@@ -152,9 +151,12 @@ export default function CustomIngredient() {
           >
             이전
           </PrevButton>
-          <Button onClick={handleSubmit} disabled={!isValid || isSubmitting}>
+          <NextButton
+            onClick={handleSubmit}
+            disabled={!isValid || isSubmitting}
+          >
             {isSubmitting ? '등록 중...' : '다음'}
-          </Button>
+          </NextButton>
         </BottomButtonGroup>
       </Content>
     </Container>
@@ -223,10 +225,6 @@ const InputWrapper = styled.div`
   padding-bottom: 8px;
   margin-bottom: 16px;
   transition: border-color 0.2s ease;
-
-  &:focus-within {
-    border-bottom-color: #52ba96;
-  }
 `;
 
 const StyledInput = styled.input`
@@ -303,7 +301,7 @@ const PrevButton = styled.button`
 `;
 
 const NextButton = styled(PrevButton)`
-  background-color: ${(props) => (props.disabled ? '#ffffff' : '#63bf8e')};
-  color: ${(props) => (props.disabled ? '#609668' : '#ffffff')};
-  border: ${(props) => (props.disabled ? '1px solid #609668' : '1px solid #63bf8e')};
+  background-color: ${(props) => (props.disabled ? '#b3b3b3' : '#63bf8e')};
+  color: ${(props) => (props.disabled ? '#fdfffd' : '#ffffff')};
+  border: none;
 `;
