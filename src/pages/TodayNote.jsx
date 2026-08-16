@@ -1,4 +1,4 @@
-import React, { useState, useRef, forwardRef } from 'react';
+import { useState, useRef, forwardRef } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
@@ -26,7 +26,6 @@ const TodayNote = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
 
   const fileInputRef = useRef(null);
-  const datePickerRef = useRef(null);
 
   const formatDate = (date) => {
     const month = date.getMonth() + 1;
@@ -402,13 +401,6 @@ const CalendarBtn = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-const DatePickerWrapper = styled.div`
-  position: absolute;
-  visibility: hidden;
-  width: 0;
-  height: 0;
 `;
 
 const SelectedTagScrollContainer = styled.div`
