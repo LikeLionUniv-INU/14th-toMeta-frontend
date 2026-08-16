@@ -50,7 +50,7 @@ export default function SearchCosmetic() {
 
   const handleGoToCustom = () => {
     setIsModalOpen(false);
-    navigate('/register/custom-routine');
+    navigate('/register/custom-name');
   };
 
   return (
@@ -90,6 +90,15 @@ export default function SearchCosmetic() {
             </SearchButton>
           </SearchInputWrapper>
         </SearchForm>
+        <NoticeWrapper>
+          <NoticeBox>
+            <h4>💡 검색 Tip</h4>
+            <p>
+              브랜드 명과 제품 명을 함께 입력하면 훨씬 더 정확하게 찾을 수
+              있어요! <br /> (ex. 피쓰 코어 리빌드 크림)
+            </p>
+          </NoticeBox>
+        </NoticeWrapper>
       </Content>
 
       {/* 2-2. 검색 결과 없음 모달 */}
@@ -109,7 +118,7 @@ export default function SearchCosmetic() {
             </ModalDescription>
 
             <ButtonGroup>
-              <ModalButton onClick={handleGoToCustom}>
+              <ModalButton $primary onClick={handleGoToCustom}>
                 직접 입력하기
               </ModalButton>
               <ModalButton onClick={handleRetrySearch}>다시 검색</ModalButton>
@@ -136,19 +145,20 @@ const Container = styled.div`
 
 const Content = styled.main`
   flex: 1;
-  padding: 30px 20px;
+  padding: 10px 20px 30px 20px;
 `;
 
 const MainTitle = styled.h2`
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 1.35;
   color: #000000;
-  margin-top: 80px;
+  margin-top: 130px;
   margin-bottom: 50px;
 
   @media ${media.mobileM} {
-    font-size: 32px;
+    font-size: 24px;
+    margin-top: 170px;
   }
 `;
 
@@ -159,7 +169,7 @@ const SearchForm = styled.form`
 const SearchInputWrapper = styled.div`
   display: flex;
   align-items: center;
-  border-bottom: 2px solid #000000;
+  border-bottom: 4px solid #cbcbcb;
   padding-bottom: 8px;
 `;
 
@@ -168,10 +178,38 @@ const Input = styled.input`
   border: none;
   outline: none;
   font-size: 16px;
+  font-weight: 500;
   color: #000000;
+  margin-left: 5px;
 
   &::placeholder {
     color: #c2c2c2;
+  }
+`;
+
+const NoticeWrapper = styled.div`
+  display: flexbox;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+`;
+
+const NoticeBox = styled.div`
+  padding: 14px;
+  background-color: #e6f5e8;
+  border-radius: 20px;
+
+  h4 {
+    font-size: 14px;
+    margin: 0 0 12px 0;
+  }
+
+  p {
+    font-size: 12px;
+    font-weight: 400;
+    color: #767676;
+    line-height: 1.3;
+    margin: 0;
   }
 `;
 
@@ -187,9 +225,13 @@ const SearchButton = styled.button`
   svg {
     width: 22px;
     height: 22px;
-    color: #111111;
+    color: #c2c2c2;
   }
 `;
+
+{
+  /** modal style components */
+}
 
 const Overlay = styled.div`
   position: fixed;
@@ -197,7 +239,9 @@ const Overlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(98, 98, 98, 0.3);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -207,50 +251,48 @@ const Overlay = styled.div`
 
 const ModalContainer = styled.div`
   width: 100%;
-  max-width: 309px;
-  background-color: #d9d9d9;
-  border-radius: 15px;
-  padding: 50px 20px 24px 20px;
+  background-color: #e6f5e8;
+  border-radius: 20px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 `;
 
 const ModalTitle = styled.h3`
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 700;
-  line-height: 1.3;
-  color: #000000;
-  margin: 0 0 30px 0;
+  line-height: 1.2;
+  color: #003b00;
+  margin: 0 0 11px 0;
 
   @media ${media.mobileM} {
-    font-size: 32px;
+    font-size: 24px;
   }
 `;
 
 const ModalDescription = styled.p`
   font-size: 12px;
   line-height: 1.5;
-  color: #000000;
+  color: #828282;
   margin: 0 0 40px 0;
   word-break: keep-all;
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 16px;
   width: 100%;
 `;
 
 const ModalButton = styled.button`
   flex: 1;
-  height: 49px;
-  background-color: #000000;
-  color: #ffffff;
-  border: none;
-  border-radius: 10px;
+  height: 37px;
+  background-color: ${({ $primary }) => ($primary ? '#fdfdfd' : '#63bf8e')};
+  color: ${({ $primary }) => ($primary ? '#141212' : '#fdfffd')};
+  border: ${({ $primary }) => ($primary ? '1px solid #82bf8b' : '1px solid #63bf8e')};
+  border-radius: 20px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;

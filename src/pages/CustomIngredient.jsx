@@ -17,17 +17,34 @@ export default function CustomIngredient() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 완료 버튼 활성화 로직
-  const isValid = ingredients.length > 0;
+  const isValid = ingredients.length >= 1 && ingredients.length <= 5;
 
   // 성분 추가 로직
   const handleAddIngredient = (e) => {
+    if (e.nativeEvent.isComposing) return;
+
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
       const trimmed = inputIngredient.trim().replace(/,/g, '');
 
-      if (trimmed && !ingredients.includes(trimmed)) {
-        setIngredients([...ingredients, trimmed]);
+      if (!trimmed) return;
+
+      // 1. 이미 5개가 다 찬 상태에서 또 엔터를 누른 경우
+      if (ingredients.length >= 5) {
+        alert('성분은 최대 5개까지만 등록할 수 있습니다.');
         setInputIngredient('');
+        return;
+      }
+
+      // 2. 중복이 아닌 경우 추가
+      if (!ingredients.includes(trimmed)) {
+        const nextList = [...ingredients, trimmed];
+        setIngredients(nextList);
+        setInputIngredient('');
+
+        if (nextList.length > 5) {
+          alert('등록 가능 개수를 초과하였습니다.');
+        }
       }
     }
   };
@@ -46,7 +63,6 @@ export default function CustomIngredient() {
     if (!isValid || isSubmitting) return;
 
     const payload = {
-      usageTime: prevData.routine || '',
       productName: prevData.productName || '',
       productType: prevData.category || '',
       mainIngredients: ingredients,
@@ -67,12 +83,11 @@ export default function CustomIngredient() {
 
       if (response.ok) {
         alert('등록이 완료되었습니다!');
-        navigate('/main');
+        navigate('/pouch-redirect');
       }
       */
 
-      alert('화장품 등록이 완료되었습니다.');
-      // navigate('/main');
+      navigate('/pouch-redirect');
     } catch (error) {
       console.error('등록 중 에러 발생:', error);
     } finally {
@@ -86,7 +101,6 @@ export default function CustomIngredient() {
         <ProgressBarWrapper>
           <ProgressStep $active={false} />
           <ProgressStep $active={false} />
-          <ProgressStep $active={false} />
           <ProgressStep $active={true} />
         </ProgressBarWrapper>
 
@@ -97,13 +111,17 @@ export default function CustomIngredient() {
         </MainTitle>
 
         <SubDescription>
-          가장 앞에 있는 성분 5개를 입력해 주세요!
+          주요 성분을 최소 1개, 최대 5개까지 입력해 주세요!
         </SubDescription>
 
         <InputWrapper>
           <StyledInput
             type="text"
-            placeholder="성분명을 입력 후 엔터를 눌러주세요"
+            placeholder={
+              ingredients.length >= 5
+                ? '5개가 전부 입력되었어요.'
+                : '성분명을 입력 후 엔터를 눌러주세요.'
+            }
             value={inputIngredient}
             onChange={(e) => setInputIngredient(e.target.value)}
             onKeyDown={handleAddIngredient}
@@ -133,9 +151,12 @@ export default function CustomIngredient() {
           >
             이전
           </PrevButton>
-          <Button onClick={handleSubmit} disabled={!isValid || isSubmitting}>
+          <NextButton
+            onClick={handleSubmit}
+            disabled={!isValid || isSubmitting}
+          >
             {isSubmitting ? '등록 중...' : '다음'}
-          </Button>
+          </NextButton>
         </BottomButtonGroup>
       </Content>
     </Container>
@@ -157,7 +178,7 @@ const Container = styled.div`
 
 const Content = styled.main`
   flex: 1;
-  padding: 20px 30px;
+  padding: 30px 20px;
   display: flex;
   flex-direction: column;
 `;
@@ -166,7 +187,7 @@ const ProgressBarWrapper = styled.div`
   display: flex;
   gap: 10px;
   width: 100%;
-  margin-bottom: 50px;
+  height: 41px;
 `;
 
 const ProgressStep = styled.div`
@@ -178,14 +199,16 @@ const ProgressStep = styled.div`
 `;
 
 const MainTitle = styled.h2`
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 1.35;
   color: #000000;
-  margin-bottom: 8px;
+  margin-top: 130px;
+  margin-bottom: 0;
 
   @media ${media.mobileM} {
-    font-size: 32px;
+    font-size: 24px;
+    margin-top: 170px;
   }
 `;
 
@@ -193,19 +216,15 @@ const SubDescription = styled.p`
   font-size: 12px;
   font-weight: 500;
   color: #938888;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 `;
 
 const InputWrapper = styled.div`
   width: 100%;
-  border-bottom: 2px solid #cbcbcb;
+  border-bottom: 4px solid #cbcbcb;
   padding-bottom: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   transition: border-color 0.2s ease;
-
-  &:focus-within {
-    border-bottom-color: #609668;
-  }
 `;
 
 const StyledInput = styled.input`
@@ -213,13 +232,10 @@ const StyledInput = styled.input`
   border: none;
   outline: none;
   font-size: 16px;
-  font-weight: 500;
-  color: #111111;
-  background: transparent;
+  color: #000000;
 
   &::placeholder {
-    color: #b5b5b5;
-    font-weight: 400;
+    color: #c2c2c2;
   }
 `;
 
@@ -227,25 +243,27 @@ const TagList = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
+  gap: 16px;
   margin-bottom: auto;
 `;
 
 const TagChip = styled.div`
   height: 34px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background-color: #eaf5ea;
-  border: 1px solid #609668;
+  padding: 10px 14px;
+  border-radius: 20px;
+  background-color: #e7fdf7;
+  border: 1px solid #89d7bc;
   display: inline-flex;
   align-items: center;
-  gap: 16px;
+  gap: 6px;
   font-size: 12px;
   font-weight: 500;
-  color: #000000;
+  color: #363636;
 `;
 
 const DeleteButton = styled.button`
+  height: 7px;
+  width: 7px;
   background: none;
   border: none;
   color: #000000;
@@ -254,11 +272,6 @@ const DeleteButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-
-  &:hover {
-    opacity: 0.7;
-  }
 `;
 
 const BottomButtonGroup = styled.div`
@@ -273,25 +286,22 @@ const BottomButtonGroup = styled.div`
 `;
 
 const PrevButton = styled.button`
-  height: 50px;
-  background-color: #e5e5e5;
-  color: #333333;
+  height: 52px;
+  background-color: #ffffff;
+  color: #609668;
   font-size: 16px;
   font-weight: 700;
-  border: none;
-  border-radius: 10px;
+  border: 1px solid #609668;
+  border-radius: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+`;
 
-  &:active {
-    background-color: #d8d8d8;
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
+const NextButton = styled(PrevButton)`
+  background-color: ${(props) => (props.disabled ? '#b3b3b3' : '#63bf8e')};
+  color: ${(props) => (props.disabled ? '#fdfffd' : '#ffffff')};
+  border: none;
 `;
