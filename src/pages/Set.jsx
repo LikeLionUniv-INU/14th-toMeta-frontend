@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useParams, useLocation } from "react-router-dom";
-import Header from "../components/Header";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import NavigationBar from "../components/NavigationBar";
 import CosmeticCard from "../components/CosmeticCard";
 import SunIcon from "../assets/images/record/sun.svg";
@@ -17,7 +16,7 @@ const dummySetData = {
     ],
   },
   2: {
-    title: "(사용자 지정 이름)",
+    title: "사용자 지정 이름",
     items: [
       { id: 101, name: "아누아 어성초 77% 진정 토너", tags: ["#토너", "#어성초", "#진정", "#피지조절"] },
       { id: 102, name: "브링그린 티트리 시카 크림", tags: ["#크림", "#속건조", "#수분", "#시카"] },
@@ -30,6 +29,7 @@ const dummySetData = {
 export default function Set() {
   const { setId } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const activeTab = location.state?.activeTab || "morning";
 
@@ -38,26 +38,59 @@ export default function Set() {
     items: [],
   };
 
+  const [title, setTitle] = useState(currentSet.title);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [items, setItems] = useState(currentSet.items);
 
   const handleDeleteItem = (id) => {
     setItems((prev) => prev.filter((item) => item.id !== id));
   };
 
+  // 세트 삭제 핸들러 (삭제할 세트 ID와 탭 정보를 state로 넘기며 뒤로 이동)
+  const handleDeleteSet = () => {
+    navigate("/my-pouch", {
+      state: {
+        activeTab,
+        deletedSetId: Number(setId),
+      },
+    });
+  };
+
   return (
     <Container>
-      <Header title={currentSet.title} variant="back" />
+      <CustomHeader>
+        <BackButton onClick={() => navigate(-1)}>
+          <BackIcon viewBox="0 0 24 24" fill="none">
+            <path
+              d="M15 18L9 12L15 6"
+              stroke="#000000"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </BackIcon>
+        </BackButton>
+
+        {isEditingTitle ? (
+          <TitleInput
+            value={title}
+            autoFocus
+            onChange={(e) => setTitle(e.target.value)}
+            onBlur={() => setIsEditingTitle(false)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") setIsEditingTitle(false);
+            }}
+          />
+        ) : (
+          <TitleText onClick={() => setIsEditingTitle(true)}>{title}</TitleText>
+        )}
+      </CustomHeader>
+
+      <SubHeaderMessage>
+        상단 이름을 터치하면 언제든 변경할 수 있어요!
+      </SubHeaderMessage>
 
       <ContentWrapper>
-        <TabGroup>
-          <DisabledTabButton $active={activeTab === "morning"}>
-            <img src={SunIcon} alt="morning" /> 모닝 스킨케어
-          </DisabledTabButton>
-          <DisabledTabButton $active={activeTab === "night"}>
-            <img src={MoonIcon} alt="night" /> 나이트 스킨케어
-          </DisabledTabButton>
-        </TabGroup>
-
         <MainContent>
           <CardListSection>
             {items.map((item) => (
@@ -70,9 +103,10 @@ export default function Set() {
             ))}
           </CardListSection>
 
-          <AddCosmeticButton>
-            <span>+</span> 내 화장품 등록하기
-          </AddCosmeticButton>
+          <ButtonGroup>
+            <AddSetButton onClick={() => { }}>세트에 추가</AddSetButton>
+            <DeleteSetButton onClick={handleDeleteSet}>세트 삭제</DeleteSetButton>
+          </ButtonGroup>
         </MainContent>
       </ContentWrapper>
 
@@ -89,6 +123,62 @@ const Container = styled.div`
   flex-direction: column;
   box-sizing: border-box;
   padding-bottom: 70px;
+`;
+
+const CustomHeader = styled.header`
+  position: relative;
+  width: 100%;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  box-sizing: border-box;
+`;
+
+const BackButton = styled.button`
+  position: absolute;
+  left: 16px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const BackIcon = styled.svg`
+  width: 24px;
+  height: 24px;
+`;
+
+const TitleText = styled.h1`
+  font-size: 18px;
+  font-weight: 700;
+  color: #111111;
+  margin: 0;
+  cursor: pointer;
+  text-align: center;
+`;
+
+const TitleInput = styled.input`
+  font-size: 18px;
+  font-weight: 700;
+  color: #111111;
+  text-align: center;
+  border: none;
+  border-bottom: 1.5px solid #266210;
+  outline: none;
+  background: transparent;
+  padding: 2px 4px;
+`;
+
+const SubHeaderMessage = styled.p`
+  text-align: center;
+  font-size: 8px;
+  color: #888888;
+  margin: 8px 0 8px 0;
 `;
 
 const ContentWrapper = styled.div`
@@ -131,7 +221,7 @@ const DisabledTabButton = styled.div`
 `;
 
 const MainContent = styled.div`
-  padding: 20px;
+  padding: 0 20px 20px 20px;
 `;
 
 const CardListSection = styled.div`
@@ -165,27 +255,41 @@ const TrashIcon = styled.img`
   display: block;
 `;
 
-const AddCosmeticButton = styled.button`
-  width: 100%;
-  padding: 16px 0;
-  background-color: #ffffff;
-  border: 1.5px dashed #266210;
-  border-radius: 8px;
-  color: #266210;
-  font-size: 16px;
-  font-weight: 700;
+const ButtonGroup = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  cursor: pointer;
+  gap: 12px;
+  width: 100%;
+  margin-top: 8px;
+`;
 
-  span {
-    font-size: 20px;
-    font-weight: 400;
-  }
+const AddSetButton = styled.button`
+  flex: 1;
+  height: 48px;
+  background-color: #ffffff;
+  border: 1.5px solid #6b8e67;
+  border-radius: 24px;
+  color: #43633f;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
 
   &:active {
     background-color: #f2f7f1;
+  }
+`;
+
+const DeleteSetButton = styled.button`
+  flex: 1;
+  height: 48px;
+  background-color: #6b8e67;
+  border: none;
+  border-radius: 24px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:active {
+    background-color: #5d7e59;
   }
 `;

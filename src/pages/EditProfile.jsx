@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Header from "../components/Header.jsx";
 import Button from '../components/Button.jsx';
+import Edit from '../assets/images/edit.png';
 import { useNavigate } from 'react-router-dom';
 
 export default function EditProfile() {
@@ -60,7 +61,7 @@ export default function EditProfile() {
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
             />
-            <PencilIcon>✏️</PencilIcon>
+            <EditIcon src={Edit} alt="수정 아이콘" />
           </InputWrapper>
         </FieldGroup>
 
@@ -134,7 +135,7 @@ const PageContainer = styled.div`
 `;
 
 const ProfileSection = styled.section`
-  background-color: #D7EDDA;
+  background-color: #ffffff;
   padding: 30px 0;
   display: flex;
   flex-direction: column;
@@ -167,14 +168,14 @@ const FormContainer = styled.div`
 `;
 
 const FieldGroup = styled.div`
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 `;
 
 const Label = styled.label`
   display: block;
-  font-size: 12px;
-  font-weight: 400;
-  margin-bottom: 6px;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
   color: #222222;
 `;
 
@@ -188,21 +189,23 @@ const Input = styled.input`
   width: 100%;
   padding: 10px 12px;
   font-size: 12px;
-  border: 1px solid #e2e2e2;
+  font-weight: 400;
+  border: 1px solid #DEE2E6;
   border-radius: 6px;
   outline: none;
   box-sizing: border-box;
-  color: #CBCBCB;
+  color: #828282;
 
   &:focus {
     border-color: #CCCCCC;
   }
 `;
 
-const PencilIcon = styled.span`
+const EditIcon = styled.img`
+  width: 18px;
+  height: 18px;
   position: absolute;
   right: 12px;
-  font-size: 12px;
   pointer-events: none;
 `;
 
@@ -217,14 +220,14 @@ const SelectHeader = styled.div`
   padding: 10px 12px;
   font-size: 12px;
   font-weight: 400;
-  border: 1px solid #CCCCCC;
+  border: 1px solid #EEE2E6;
   border-radius: 6px;
   cursor: pointer;
   background-color: #ffffff;
 `;
 
 const ValueText = styled.span`
-  color: #CBCBCB;
+  color: #828282;
 `;
 
 const ArrowIcon = styled.span`
@@ -236,7 +239,7 @@ const OptionList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 4px 0 0 0;
-  border: 1px solid #CCCCCC;
+  border: 1px solid #EEE2E6;
   border-radius: 6px;
   overflow: hidden;
   background-color: #ffffff;
@@ -247,7 +250,7 @@ const OptionItem = styled.li`
   font-size: 12px;
   font-weight: 400;
   text-align: center;
-  border-bottom: 1px solid #CCCCCC;
+  border-bottom: 1px solid #EEE2E6;
   cursor: pointer;
   color: #333333;
 
