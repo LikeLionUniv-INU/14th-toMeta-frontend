@@ -17,21 +17,21 @@ export default function MyPage() {
   const [isHealthConnected, setIsHealthConnected] = useState(true);
 
   const [toggle, setToggle] = useState({
-    record: true,
     daily: true,
+    record: true,
     weekly: true,
   });
 
   const [times, setTimes] = useState({
-    daily: '23:00',
-    weekly: '23:00',
+    record: '22:00',
+    weekly: '22:00',
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [targetReport, setTargetReport] = useState(null);
   const [pickerValue, setPickerValue] = useState({
     hour: '22',
-    minute: '30',
+    minute: '00',
   });
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function MyPage() {
       const [h, m] = times[targetReport].split(':');
       setPickerValue({
         hour: h || '22',
-        minute: m || '30',
+        minute: m || '00',
       });
     }
   }, [isModalOpen, targetReport, times]);
@@ -74,11 +74,10 @@ export default function MyPage() {
     };
 
     console.log('백엔드로 전송할 리포트 시간 데이터:', payload);
-
   };
 
   const formatDisplayTime = (timeStr) => {
-    if (!timeStr) return '11:00PM';
+    if (!timeStr) return '10:00PM';
     const [h, m] = timeStr.split(':');
     let hour = parseInt(h, 10);
     const ampm = hour >= 12 ? 'PM' : 'AM';
@@ -113,20 +112,20 @@ export default function MyPage() {
         <NotificationList>
 
           <NotificationItem>
-            <ItemText>기록 작성</ItemText>
-            <ToggleWrapper onClick={() => handleToggle('record')} $isActive={toggle.record}>
-              <ToggleCircle $isActive={toggle.record} />
+            <ItemText>일간 리포트 발행</ItemText>
+            <ToggleWrapper onClick={() => handleToggle('daily')} $isActive={toggle.daily}>
+              <ToggleCircle $isActive={toggle.daily} />
             </ToggleWrapper>
           </NotificationItem>
 
           <NotificationItem>
-            <ItemText>일간 리포트 발행</ItemText>
+            <ItemText>기록 작성</ItemText>
             <RightControls>
-              <TimeText onClick={() => handleOpenTimeModal('daily')}>
-                {formatDisplayTime(times.daily)}
+              <TimeText onClick={() => handleOpenTimeModal('record')}>
+                {formatDisplayTime(times.record)}
               </TimeText>
-              <ToggleWrapper onClick={() => handleToggle('daily')} $isActive={toggle.daily}>
-                <ToggleCircle $isActive={toggle.daily} />
+              <ToggleWrapper onClick={() => handleToggle('record')} $isActive={toggle.record}>
+                <ToggleCircle $isActive={toggle.record} />
               </ToggleWrapper>
             </RightControls>
           </NotificationItem>
@@ -150,7 +149,7 @@ export default function MyPage() {
         <ModalOverlay onClick={() => setIsModalOpen(false)}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalTitle>
-              {targetReport === 'daily' ? '일간' : '주간'} 리포트 알림 시간 설정
+              {targetReport === 'record' ? '기록 작성' : '주간 리포트'} 알림 시간 설정
             </ModalTitle>
 
             <PickerWrapper>

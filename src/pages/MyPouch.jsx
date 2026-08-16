@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "../api/axios";
 import Header from "../components/Header";
 import NavigationBar from "../components/NavigationBar";
@@ -11,7 +11,8 @@ import Trash from "../assets/images/trash.png";
 
 export default function MyPouch() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("morning");
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(location.state?.activeTab || "morning");
   const [pouchData, setPouchData] = useState({
     morning: { sets: [], cosmetics: [] },
     night: { sets: [], cosmetics: [] },
@@ -21,6 +22,13 @@ export default function MyPouch() {
   const [selectedCosmetics, setSelectedCosmetics] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [setName, setSetName] = useState("");
+
+  // 2차 모달 (시간대 선택 모달) 상태
+  const [isRoutineModalOpen, setIsRoutineModalOpen] = useState(false);
+  const [selectedRoutines, setSelectedRoutines] = useState({
+    day: false,
+    night: false,
+  });
 
   useEffect(() => {
     setSelectedCosmetics([]);
@@ -149,6 +157,25 @@ export default function MyPouch() {
     setLoading(false);
   }, []);
 
+  // Set 페이지에서 넘어온 삭제 이벤트 처리
+  useEffect(() => {
+    if (location.state?.deletedSetId) {
+      const deletedId = location.state.deletedSetId;
+      const targetTab = location.state.activeTab || activeTab;
+
+      setPouchData((prev) => ({
+        ...prev,
+        [targetTab]: {
+          ...prev[targetTab],
+          sets: prev[targetTab].sets.filter((s) => s.setId !== deletedId),
+        },
+      }));
+
+      // state 초기화 (뒤로가기 시 중복 실행 방지)
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state]);
+
   const currentTabContent = pouchData[activeTab] || { sets: [], cosmetics: [] };
 
   const handleDeleteItem = (e, id) => {
@@ -177,6 +204,58 @@ export default function MyPouch() {
     } else {
       setSelectedCosmetics((prev) => [...prev, item]);
     }
+  };
+
+  // 1차 모달에서 '다음' 버튼 클릭 시
+  const handleFirstModalNext = () => {
+    setIsModalOpen(false);
+    setSelectedRoutines({ day: false, night: false });
+    setIsRoutineModalOpen(true);
+  };
+
+  // 2차 모달 루틴 토글
+  const toggleRoutine = (type) => {
+    setSelectedRoutines((prev) => ({
+      ...prev,
+      [type]: !prev[type],
+    }));
+  };
+
+  // 2차 모달 '세트 만들기' 버튼 클릭 시 최종 생성
+  const handleCreateSet = () => {
+    if (!selectedRoutines.day && !selectedRoutines.night) {
+      alert("낮 또는 밤을 최소 하나 이상 선택해 주세요.");
+      return;
+    }
+
+    const newSet = {
+      setId: Date.now(),
+      name: setName.trim() || "사용자 지정 이름",
+      cosmetics: selectedCosmetics,
+    };
+
+    setPouchData((prev) => {
+      const updated = { ...prev };
+      if (selectedRoutines.day) {
+        updated.morning = {
+          ...updated.morning,
+          sets: [...updated.morning.sets, newSet],
+        };
+      }
+      if (selectedRoutines.night) {
+        updated.night = {
+          ...updated.night,
+          sets: [...updated.night.sets, newSet],
+        };
+      }
+      return updated;
+    });
+
+    // 상태 초기화 및 모달 닫기
+    setIsRoutineModalOpen(false);
+    setSelectedCosmetics([]);
+    setSetName("");
+    setSelectedRoutines({ day: false, night: false });
   };
 
   return (
@@ -277,6 +356,7 @@ export default function MyPouch() {
         </MainContent>
       </ContentWrapper>
 
+      {/* 1차 모달: 세트 이름 입력 */}
       {isModalOpen && (
         <ModalOverlay onClick={() => setIsModalOpen(false)}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
@@ -284,8 +364,8 @@ export default function MyPouch() {
             <ModalDesc>
               {selectedCosmetics[0]?.customName || selectedCosmetics[0]?.productName}
               {selectedCosmetics.length > 1
-                ? ` 외 ${selectedCosmetics.length - 1}개 제품이 한 세트 저장돼요`
-                : "이 한 세트 저장돼요"}
+                ? ` 외 ${selectedCosmetics.length - 1}개 제품이 한 세트로 저장돼요`
+                : "이 한 세트로 저장돼요"}
             </ModalDesc>
             <ModalInput
               placeholder="세트 이름을 입력해 주세요 (ex. 진정 꿀조합)"
@@ -294,19 +374,50 @@ export default function MyPouch() {
             />
             <ModalButtonGroup>
               <ModalCancelBtn onClick={() => setIsModalOpen(false)}>
-                기록 수정하기
+                취소
               </ModalCancelBtn>
-              <ModalSubmitBtn
-                onClick={() => {
-                  setIsModalOpen(false);
-                  setSelectedCosmetics([]);
-                  setSetName("");
-                }}
-              >
-                완료
+              <ModalSubmitBtn onClick={handleFirstModalNext}>
+                다음
               </ModalSubmitBtn>
             </ModalButtonGroup>
           </ModalContent>
+        </ModalOverlay>
+      )}
+
+      {/* 2차 모달: 낮/밤 선택 및 세트 만들기 */}
+      {isRoutineModalOpen && (
+        <ModalOverlay onClick={() => setIsRoutineModalOpen(false)}>
+          <RoutineModalContainer onClick={(e) => e.stopPropagation()}>
+            <RoutineModalTitle>
+              언제 사용하는<br />제품인가요?
+            </RoutineModalTitle>
+
+            <RoutineModalSubTitle>
+              아침, 밤 둘 다 사용한다면 두 개 모두 선택해 주세요!
+            </RoutineModalSubTitle>
+
+            <RoutineOptions>
+              <RoutineCard
+                $isSelected={selectedRoutines.day}
+                onClick={() => toggleRoutine("day")}
+              >
+                <ModalSunSvg />
+                <span>낮</span>
+              </RoutineCard>
+
+              <RoutineCard
+                $isSelected={selectedRoutines.night}
+                onClick={() => toggleRoutine("night")}
+              >
+                <ModalMoonSvg />
+                <span>밤</span>
+              </RoutineCard>
+            </RoutineOptions>
+
+            <RoutineSubmitBtn onClick={handleCreateSet}>
+              세트 만들기
+            </RoutineSubmitBtn>
+          </RoutineModalContainer>
         </ModalOverlay>
       )}
 
@@ -314,6 +425,34 @@ export default function MyPouch() {
     </Container>
   );
 }
+
+/* 2차 모달 내부 아이콘 컴포넌트 */
+const ModalSunSvg = () => (
+  <svg
+    width="50"
+    height="50"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+  >
+    <circle cx="12" cy="12" r="5" />
+    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+  </svg>
+);
+
+const ModalMoonSvg = () => (
+  <svg
+    width="50"
+    height="50"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+  >
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </svg>
+);
 
 const Container = styled.div`
   min-height: 100dvh;
@@ -387,6 +526,7 @@ const SetCard = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  border: 1px solid #96BE9C;
 `;
 
 const SetHeaderRow = styled.div`
@@ -450,18 +590,18 @@ const CardWrapper = styled.div`
   ${(props) =>
     props.$isSelected &&
     `
-    & > div {
-      background-color: #82BF8B !important;
-      border: 1px solid #96BE9C !important;
-      color: #000000 !important;
+    && > div {
+      background-color: #82BF8B;
+      border: 1px solid #96BE9C;
+      color: #000000;
       
       * {
-        color: #000000 !important;
+        color: #000000;
       }
 
       span, div > span {
-        background-color: #FFF8F2 !important;
-        color: #003B00 !important;
+        background-color: #FFF8F2;
+        color: #003B00;
       }
     }
   `}
@@ -520,12 +660,15 @@ const ModalOverlay = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 0 20px;
+  box-sizing: border-box;
 `;
 
 const ModalContent = styled.div`
   background: #e6F5E8;
-  width: 357px;
-  height: 207px;
+  width: 100%;
+  max-width: 357px;
+  min-height: 207px;
   border-radius: 20px;
   padding: 24px 20px;
   text-align: center;
@@ -588,4 +731,76 @@ const ModalSubmitBtn = styled.button`
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+`;
+
+/* 2차 모달 스타일 */
+const RoutineModalContainer = styled.div`
+  width: 100%;
+  max-width: 340px;
+  background-color: #d9d9d9;
+  border-radius: 20px;
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+`;
+
+const RoutineModalTitle = styled.h3`
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #000000;
+  text-align: center;
+  margin: 0 0 12px 0;
+`;
+
+const RoutineModalSubTitle = styled.p`
+  font-size: 11px;
+  font-weight: 500;
+  color: #444444;
+  text-align: center;
+  margin: 0 0 20px 0;
+  word-break: keep-all;
+`;
+
+const RoutineOptions = styled.div`
+  display: flex;
+  gap: 14px;
+  width: 100%;
+  margin-bottom: 20px;
+`;
+
+const RoutineCard = styled.button`
+  flex: 1;
+  height: 140px;
+  background-color: ${(props) => (props.$isSelected ? "#e0e0e0" : "#efefef")};
+  border: ${(props) => (props.$isSelected ? "2px solid #000000" : "1px solid #c8c8c8")};
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  color: #111111;
+  font-size: 18px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+`;
+
+const RoutineSubmitBtn = styled.button`
+  width: 100%;
+  height: 46px;
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:active {
+    background-color: #333333;
+  }
 `;
