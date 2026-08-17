@@ -20,6 +20,7 @@ import SearchResult from './pages/SearchResult';
 import CustomName from './pages/CustomName';
 import CustomCategory from './pages/CustomCategory';
 import CustomIngredient from './pages/CustomIngredient';
+import Report from './pages/Report';
 import MyPage from './pages/Mypage';
 import EditProfile from './pages/EditProfile';
 
@@ -54,6 +55,7 @@ function App() {
             path="/register/custom-ingredient"
             element={<CustomIngredient />}
           />
+          <Route path="/report" element={<Report />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/edit-profile" element={<EditProfile />} />
         </Routes>
