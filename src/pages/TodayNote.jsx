@@ -28,10 +28,8 @@ const TodayNote = () => {
   const [activeType, setActiveType] = useState(null);
   const [selectedProducts, setSelectedProducts] = useState([]);
 
-  // 세트 상세 보기 모달 상태
   const [detailModalSet, setDetailModalSet] = useState(null);
 
-  // 이미 작성된 기록 모달 상태
   const [isAlreadyRecordedModalOpen, setIsAlreadyRecordedModalOpen] = useState(false);
 
   const fileInputRef = useRef(null);
@@ -44,19 +42,15 @@ const TodayNote = () => {
     return `${month}월 ${day}일 ${dayOfWeek}`;
   };
 
-  // 날짜 변경 및 기존 기록 확인 핸들러
   const handleDateChange = (date) => {
     setSelectedDate(date);
 
-    // TODO: 실제 API 연동 시 해당 날짜의 기록 존재 여부를 체크하도록 연동해주세요.
-    // 예시: 이미 작성된 기록이 있는 경우 모달 오픈
-    const hasExistingRecord = true; // 테스트/연동용 플래그
+    const hasExistingRecord = true;
     if (hasExistingRecord) {
       setIsAlreadyRecordedModalOpen(true);
     }
   };
 
-  // 샘플 데이터
   const setProducts = [
     {
       id: 's1',
@@ -398,13 +392,11 @@ const TodayNote = () => {
         </S.SubmitWrapper>
       </S.Content>
 
-      {/* 이미 작성된 기록 알림 모달 */}
       <AlreadyRecordedModal
         isOpen={isAlreadyRecordedModalOpen}
         onClose={() => setIsAlreadyRecordedModalOpen(false)}
       />
 
-      {/* 내 화장품 선택 모달 */}
       <CosmeticSelectModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -416,7 +408,6 @@ const TodayNote = () => {
         onOpenDetail={(setItem) => setDetailModalSet(setItem)}
       />
 
-      {/* 세트 상세 보기 모달 */}
       <SetDetailModal
         setItem={detailModalSet}
         onClose={() => setDetailModalSet(null)}
