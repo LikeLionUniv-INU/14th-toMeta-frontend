@@ -43,10 +43,24 @@ export const searchCosmetics = async (params) => {
         code: 'COMMON_200',
         message: '요청에 성공했습니다.',
         result: [
-          /*
-          { id: 1, name: `${keyword} 시카 진정 크림`, imageUrl: '' },
-          { id: 2, name: `${keyword} 수딩 토너`, imageUrl: '' },
-          { id: 3, name: `${keyword} 배리어 로션`, imageUrl: '' },*/
+          {
+            id: 1,
+            name: `${keyword} 시카 수딩 크림`,
+            imageUrl:
+              'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/thumbnails/10/0000/0022/A00000022655318ko.jpg?l=ko&QT=85&SF=webp&sharpen=1x0.5',
+          } /*,
+          {
+            id: 2,
+            name: `${keyword} 시카 수딩 토너`,
+            imageUrl:
+              'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/thumbnails/10/0000/0018/A00000018918112ko.jpg?l=ko&QT=85&SF=webp&sharpen=1x0.5',
+          },
+          {
+            id: 3,
+            name: `${keyword} 사철쑥 EX 배리어 로션`,
+            imageUrl:
+              'https://dn5hzapyfrpio.cloudfront.net/product/5e3/5e324c90-d78d-11ef-980c-cff2dc08064e.jpeg',
+          },*/,
         ],
       },
     };

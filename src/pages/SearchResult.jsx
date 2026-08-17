@@ -10,6 +10,13 @@ export default function SearchResult() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [isLandscape, setIsLandscape] = useState(true);
+
+  const handleImageLoad = (e) => {
+    const { naturalWidth, naturalHeight } = e.target;
+    setIsLandscape(naturalWidth >= naturalHeight);
+  };
+
   // SearchCosmetic에서 넘겨받은 실제 검색 결과 배열
   const searchResults = location.state?.searchResults || [];
 
@@ -34,8 +41,6 @@ export default function SearchResult() {
     try {
       setIsSubmitting(true);
 
-      // POST /api/user-cosmetics/from-search
-      // Request Body: { "id": targetId }
       const res = await registerCosmeticFromSearch({ id: targetId });
 
       if (res.data.isSuccess) {
@@ -54,28 +59,12 @@ export default function SearchResult() {
   };
 
   const handleRetrySearch = () => {
-    navigate('/register/search');
+    navigate('/register/search-cosmetic');
   };
 
   const handleGoToCustom = () => {
     navigate('/register/custom-name');
   };
-
-  // 검색 결과 없이 직접 URL로 들어온 경우
-  if (!searchResults || searchResults.length === 0) {
-    return (
-      <Container>
-        <Header title="검색 결과" variant="back" />
-        <Content>
-          <MainTitle>검색 결과가 없습니다.</MainTitle>
-          <ButtonWrapper>
-            <Button onClick={handleRetrySearch}>다시 검색하기</Button>
-            <Button onClick={handleGoToCustom}>직접 입력하기</Button>
-          </ButtonWrapper>
-        </Content>
-      </Container>
-    );
-  }
 
   return (
     <Container>
@@ -89,6 +78,7 @@ export default function SearchResult() {
               <ImagePlaceholder>
                 {searchResults[0].imageUrl ? (
                   <ProductImage
+                    $isLandscape={isLandscape}
                     src={searchResults[0].imageUrl}
                     alt={searchResults[0].name}
                   />
@@ -106,7 +96,7 @@ export default function SearchResult() {
         ) : (
           /* 검색 결과가 여러 건일 경우 */
           <>
-            <MainTitle>
+            <MainTitle $alignLeft>
               이 중 어떤 제품을
               <br />
               사용하고 계신가요?
@@ -123,7 +113,7 @@ export default function SearchResult() {
                     <RadioButton $isChecked={isChecked}>
                       {isChecked && <RadioInnerCircle />}
                     </RadioButton>
-                    <SmallImagePlaceholder>
+                    <SmallImagePlaceholder $isSelected={isChecked}>
                       {item.imageUrl ? (
                         <img src={item.imageUrl} alt={item.name} />
                       ) : (
@@ -183,39 +173,49 @@ const Content = styled.main`
   padding: 10px 20px 30px 20px;
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 const MainTitle = styled.h2`
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   line-height: 1.35;
   color: #000000;
-  margin-top: 65px;
+  margin-top: 55px;
   margin-bottom: 30px;
 
+  width: ${(props) => (props.$alignLeft ? '100%' : 'auto')};
+  text-align: ${(props) => (props.$alignLeft ? 'left' : 'center')};
+  align-self: ${(props) => (props.$alignLeft ? 'flex-start' : 'center')};
+
   @media ${media.mobileM} {
-    font-size: 24px;
-    margin-top: 100px;
+    font-size: 28px;
+    margin-top: 80px;
     margin-bottom: 50px;
   }
 `;
 
 const SingleProductCard = styled.div`
-  width: 100%;
-  height: 304px;
-  background-color: #ededed;
-  border-radius: 5px;
-  padding: 28px 20px;
+  width: 80%;
+  height: 280px;
+  background-color: #e9e9e9;
+  border-radius: 20px;
+  padding: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: auto;
+
+  box-shadow: 2px 2px 2px rgba(73, 73, 73, 0.25);
+
+  @media ${media.mobileM} {
+    height: 340px;
+  }
 `;
 
 const ImagePlaceholder = styled.div`
-  width: 110px;
-  height: 300px;
-  border: 1.5px solid #111111;
+  width: 100%;
+  height: 100%;
   background-color: #ffffff;
   display: flex;
   align-items: center;
@@ -224,23 +224,23 @@ const ImagePlaceholder = styled.div`
   font-size: 14px;
   font-weight: 700;
   color: #333333;
-  margin-bottom: 20px;
 `;
 
 const ProductImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: ${({ $isLandscape }) => ($isLandscape ? '100%' : 'auto')};
+  height: ${({ $isLandscape }) => ($isLandscape ? 'auto' : '100%')};
 `;
 
 const ProductName = styled.p`
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 700;
   color: #000000;
   text-align: center;
+  margin: 40px 0 0 0;
 `;
 
 const ProductList = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -250,14 +250,14 @@ const ProductList = styled.div`
 const ListItem = styled.div`
   width: 100%;
   height: 60px;
-  background-color: #ededed;
-  border-radius: 5px;
-  padding: 0 16px;
+  background-color: ${(props) => (props.$isSelected ? '#e7fff7' : '#ffffff')};
+  border-radius: 50px;
+  padding: 10px 20px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 20px;
   cursor: pointer;
-  border: ${(props) => (props.$isSelected ? '1px solid #000000' : 'none')};
+  border: ${(props) => (props.$isSelected ? '1px solid #02ca70' : '1px solid #dee2e6')};
 
   @media ${media.mobileM} {
     height: 69px;
@@ -268,7 +268,7 @@ const RadioButton = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 2px solid ${(props) => (props.$isChecked ? '#000000' : '#888888')};
+  border: ${(props) => (props.$isChecked ? '7px solid #42b58d' : '2px solid #888888')};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -276,16 +276,17 @@ const RadioButton = styled.div`
 `;
 
 const RadioInnerCircle = styled.div`
-  width: 10px;
-  height: 10px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background-color: #303030;
+  background-color: #ffffff;
 `;
 
 const SmallImagePlaceholder = styled.div`
-  width: 40px;
-  height: 40px;
-  border: 1px solid #111111;
+  width: 38px;
+  height: 38px;
+  border: ${(props) => (props.$isSelected ? '1px solid #02ca70' : '1px solid #828282')};
+  border-radius: 8px;
   background-color: #ffffff;
   display: flex;
   align-items: center;
@@ -295,6 +296,7 @@ const SmallImagePlaceholder = styled.div`
   font-weight: 700;
   color: #333333;
   flex-shrink: 0;
+  overflow: hidden;
 
   img {
     width: 100%;
@@ -316,13 +318,12 @@ const ButtonWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-top: 24px;
+  gap: 16px;
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: 15px;
+  gap: 14px;
   width: 100%;
 
   button {
