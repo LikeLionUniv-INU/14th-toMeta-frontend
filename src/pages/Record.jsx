@@ -12,7 +12,6 @@ export default function Record() {
 
   const [recordData, setRecordData] = useState({
     dateText: "8월 5일 수요일",
-    weatherText: "날씨 흐림 | 온도 25-34 | 습도 94%",
     skinStatus: "보통",
     morningRoutine: [
       { id: 1, name: "아누아 어성초 77% 진정 토너", tags: ["#토너", "#어성초", "#진정", "#피지조절"] },
@@ -73,12 +72,7 @@ export default function Record() {
 
         <HeaderRow>
           <DateTitle>{recordData.dateText}</DateTitle>
-          <ReportBadge>데일리 리포트</ReportBadge>
         </HeaderRow>
-
-        <WeatherSubHeader>
-          <WeatherInfo>{recordData.weatherText}</WeatherInfo>
-        </WeatherSubHeader>
 
         <StatusSection>
           <ProfileCircle />
@@ -192,27 +186,6 @@ const DateTitle = styled.h1`
   font-weight: 400;
   margin: 0;
   color: #000000;
-`;
-
-const WeatherSubHeader = styled.div`
-  padding-bottom: 12px;
-  border-bottom: 1.5px solid #B0B0B0;
-  margin: 4px 20px 0 20px;
-`;
-
-const WeatherInfo = styled.span`
-  font-size: 12px;
-  font-weight: 400;
-  color: #000000;
-`;
-
-const ReportBadge = styled.span`
-  font-size: 10px;
-  background-color: #96be9c;
-  color: #FDFFFD;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-weight: 400;
 `;
 
 const StatusSection = styled.div`

@@ -6,6 +6,7 @@ import CosmeticCard from "../components/CosmeticCard";
 import SunIcon from "../assets/images/record/sun.svg";
 import MoonIcon from "../assets/images/record/Moon.svg";
 import Trash from "../assets/images/trash.png";
+import { media } from '../styles/GlobalStyle';
 
 const dummySetData = {
   1: {
@@ -41,12 +42,12 @@ export default function Set() {
   const [title, setTitle] = useState(currentSet.title);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [items, setItems] = useState(currentSet.items);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleDeleteItem = (id) => {
     setItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  // 세트 삭제 핸들러 (삭제할 세트 ID와 탭 정보를 state로 넘기며 뒤로 이동)
   const handleDeleteSet = () => {
     navigate("/my-pouch", {
       state: {
@@ -105,10 +106,29 @@ export default function Set() {
 
           <ButtonGroup>
             <AddSetButton onClick={() => { }}>세트에 추가</AddSetButton>
-            <DeleteSetButton onClick={handleDeleteSet}>세트 삭제</DeleteSetButton>
+            <DeleteSetButton onClick={() => setIsDeleteModalOpen(true)}>세트 삭제</DeleteSetButton>
           </ButtonGroup>
         </MainContent>
       </ContentWrapper>
+
+      {isDeleteModalOpen && (
+        <ModalOverlay onClick={() => setIsDeleteModalOpen(false)}>
+          <ModalContainer onClick={(e) => e.stopPropagation()}>
+            <ModalTitle>이 세트를 삭제할까요?</ModalTitle>
+            <ModalDescription>
+              세트를 삭제해도 등록된 단품 화장품은 그대로 남아있어요!
+            </ModalDescription>
+            <ModalButtonGroup>
+              <ModalCancelButton onClick={() => setIsDeleteModalOpen(false)}>
+                취소
+              </ModalCancelButton>
+              <ModalConfirmButton onClick={handleDeleteSet}>
+                확인
+              </ModalConfirmButton>
+            </ModalButtonGroup>
+          </ModalContainer>
+        </ModalOverlay>
+      )}
 
       <NavigationBar />
     </Container>
@@ -293,3 +313,80 @@ const DeleteSetButton = styled.button`
     background-color: #5d7e59;
   }
 `;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(98, 98, 98, 0.3);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 0 24px;
+`;
+
+const ModalContainer = styled.div`
+  width: 100%;
+  background-color: #e6f5e8;
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+`;
+
+const ModalTitle = styled.h2`
+  font-size: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #003b00;
+    margin: 0 0 11px 0;
+  
+    @media ${media.mobileM} {
+      font-size: 24px;
+    }
+`;
+
+const ModalDescription = styled.p`
+  font-size: 12px;
+  line-height: 1.5;
+  color: #828282;
+  margin: 0 0 40px 0;
+  word-break: keep-all;
+`;
+
+const ModalButtonGroup = styled.div`
+  display: flex;
+  gap: 16px;
+  width: 100%;
+`;
+
+const ModalCancelButton = styled.button`
+  flex: 1;
+  height: 37px;
+  background-color: #fdfdfd;
+  border: 1px solid #82bf8b;
+  border-radius: 20px;
+  color: #000000;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+`;
+
+const ModalConfirmButton = styled.button`
+  flex: 1;
+  height: 37px;
+  background-color: #63bf8e;
+  border: 1px solid #63bf8e;
+  border-radius: 20px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+`

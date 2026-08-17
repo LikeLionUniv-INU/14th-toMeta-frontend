@@ -23,7 +23,6 @@ export default function MyPouch() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [setName, setSetName] = useState("");
 
-  // 2차 모달 (시간대 선택 모달) 상태
   const [isRoutineModalOpen, setIsRoutineModalOpen] = useState(false);
   const [selectedRoutines, setSelectedRoutines] = useState({
     day: false,
@@ -157,7 +156,6 @@ export default function MyPouch() {
     setLoading(false);
   }, []);
 
-  // Set 페이지에서 넘어온 삭제 이벤트 처리
   useEffect(() => {
     if (location.state?.deletedSetId) {
       const deletedId = location.state.deletedSetId;
@@ -171,7 +169,6 @@ export default function MyPouch() {
         },
       }));
 
-      // state 초기화 (뒤로가기 시 중복 실행 방지)
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location.state]);
@@ -206,14 +203,12 @@ export default function MyPouch() {
     }
   };
 
-  // 1차 모달에서 '다음' 버튼 클릭 시
   const handleFirstModalNext = () => {
     setIsModalOpen(false);
     setSelectedRoutines({ day: false, night: false });
     setIsRoutineModalOpen(true);
   };
 
-  // 2차 모달 루틴 토글
   const toggleRoutine = (type) => {
     setSelectedRoutines((prev) => ({
       ...prev,
@@ -221,7 +216,6 @@ export default function MyPouch() {
     }));
   };
 
-  // 2차 모달 '세트 만들기' 버튼 클릭 시 최종 생성
   const handleCreateSet = () => {
     if (!selectedRoutines.day && !selectedRoutines.night) {
       alert("낮 또는 밤을 최소 하나 이상 선택해 주세요.");
@@ -251,7 +245,6 @@ export default function MyPouch() {
       return updated;
     });
 
-    // 상태 초기화 및 모달 닫기
     setIsRoutineModalOpen(false);
     setSelectedCosmetics([]);
     setSetName("");
@@ -356,7 +349,6 @@ export default function MyPouch() {
         </MainContent>
       </ContentWrapper>
 
-      {/* 1차 모달: 세트 이름 입력 */}
       {isModalOpen && (
         <ModalOverlay onClick={() => setIsModalOpen(false)}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
@@ -384,17 +376,12 @@ export default function MyPouch() {
         </ModalOverlay>
       )}
 
-      {/* 2차 모달: 낮/밤 선택 및 세트 만들기 */}
       {isRoutineModalOpen && (
         <ModalOverlay onClick={() => setIsRoutineModalOpen(false)}>
           <RoutineModalContainer onClick={(e) => e.stopPropagation()}>
             <RoutineModalTitle>
-              언제 사용하는<br />제품인가요?
+              언제 사용하는 제품인가요?
             </RoutineModalTitle>
-
-            <RoutineModalSubTitle>
-              아침, 밤 둘 다 사용한다면 두 개 모두 선택해 주세요!
-            </RoutineModalSubTitle>
 
             <RoutineOptions>
               <RoutineCard
@@ -414,6 +401,10 @@ export default function MyPouch() {
               </RoutineCard>
             </RoutineOptions>
 
+            <RoutineModalSubTitle>
+              아침, 밤 둘 다 사용한다면 두 개 모두 선택해 주세요!
+            </RoutineModalSubTitle>
+
             <RoutineSubmitBtn onClick={handleCreateSet}>
               세트 만들기
             </RoutineSubmitBtn>
@@ -426,14 +417,14 @@ export default function MyPouch() {
   );
 }
 
-/* 2차 모달 내부 아이콘 컴포넌트 */
+// 2차 모달 
 const ModalSunSvg = () => (
   <svg
     width="50"
     height="50"
     viewBox="0 0 24 24"
     fill="none"
-    stroke="currentColor"
+    stroke="#F3B37B"
     strokeWidth="1.5"
   >
     <circle cx="12" cy="12" r="5" />
@@ -447,7 +438,7 @@ const ModalMoonSvg = () => (
     height="50"
     viewBox="0 0 24 24"
     fill="none"
-    stroke="currentColor"
+    stroke="#F3B37B"
     strokeWidth="1.5"
   >
     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
@@ -654,12 +645,12 @@ const ModalOverlay = styled.div`
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999;
   padding: 0 20px;
   box-sizing: border-box;
 `;
@@ -736,14 +727,13 @@ const ModalSubmitBtn = styled.button`
 /* 2차 모달 스타일 */
 const RoutineModalContainer = styled.div`
   width: 100%;
-  max-width: 340px;
-  background-color: #d9d9d9;
+  background-color: #e6f5e8;
   border-radius: 20px;
-  padding: 28px 20px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-sizing: border-box;
+  text-align: center;
 `;
 
 const RoutineModalTitle = styled.h3`
@@ -752,15 +742,15 @@ const RoutineModalTitle = styled.h3`
   line-height: 1.3;
   color: #000000;
   text-align: center;
-  margin: 0 0 12px 0;
+  margin: 20px 0 30px 0;
 `;
 
 const RoutineModalSubTitle = styled.p`
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
-  color: #444444;
+  color: #828282;
   text-align: center;
-  margin: 0 0 20px 0;
+  margin: 0 0 50px 0;
   word-break: keep-all;
 `;
 
@@ -774,8 +764,8 @@ const RoutineOptions = styled.div`
 const RoutineCard = styled.button`
   flex: 1;
   height: 140px;
-  background-color: ${(props) => (props.$isSelected ? "#e0e0e0" : "#efefef")};
-  border: ${(props) => (props.$isSelected ? "2px solid #000000" : "1px solid #c8c8c8")};
+  background-color: ${(props) => (props.$isSelected ? "#82BF8B" : "#ffffff")};
+  border: ${(props) => (props.$isSelected ? "1px solid #236F57" : "1px solid #85BBA8")};
   border-radius: 14px;
   display: flex;
   flex-direction: column;
@@ -783,24 +773,20 @@ const RoutineCard = styled.button`
   justify-content: center;
   gap: 12px;
   cursor: pointer;
-  color: #111111;
-  font-size: 18px;
-  font-weight: 600;
+  color: ${(props) => (props.$isSelected ? "#FFFCFC" : "#000000")};
+  font-size: 24px;
+  font-weight: 700;
   transition: all 0.2s ease;
 `;
 
 const RoutineSubmitBtn = styled.button`
   width: 100%;
-  height: 46px;
-  background-color: #000000;
+  height: 40px;
+  background-color: #63BF8E;
   color: #ffffff;
-  border: none;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 700;
+  border: 1px solid #609668;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-
-  &:active {
-    background-color: #333333;
-  }
 `;
