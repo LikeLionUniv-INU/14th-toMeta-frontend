@@ -4,70 +4,66 @@ import styled from 'styled-components';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import { media } from '../styles/GlobalStyle';
+import { registerCosmeticFromSearch } from '../api';
 
 export default function SearchResult() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 백엔드에서 전달받은 검색 결과 데이터 예시
-  const searchResults = location.state?.searchResults || [
-    { id: 1, name: '브링그린 티트리 시카 크림', imageUrl: '' },
-    { id: 2, name: '브링그린 티트리 시카 수딩 토너', imageUrl: '' },
-    { id: 3, name: '메디힐 티트리 진정 수딩 크림', imageUrl: '' },
-  ];
+  const [isLandscape, setIsLandscape] = useState(true);
+
+  const handleImageLoad = (e) => {
+    const { naturalWidth, naturalHeight } = e.target;
+    setIsLandscape(naturalWidth >= naturalHeight);
+  };
+
+  // SearchCosmetic에서 넘겨받은 실제 검색 결과 배열
+  const searchResults = location.state?.searchResults || [];
 
   const [selectedListId, setSelectedListId] = useState(
     searchResults.length === 1 ? searchResults[0].id : null,
   );
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [selectedRoutines, setSelectedRoutines] = useState({
-    day: false,
-    night: false,
-  });
+  // [확인] 버튼 클릭 시 모달 없이 즉시 백엔드 등록 API 호출
+  const handleConfirmClick = async () => {
+    if (isSubmitting) return;
 
-  const toggleRoutine = (type) => {
-    setSelectedRoutines((prev) => ({
-      ...prev,
-      [type]: !prev[type],
-    }));
-  };
+    // 결과가 여러 개인데 아무것도 선택 안 한 경우 방어
+    const targetId =
+      searchResults.length === 1 ? searchResults[0].id : selectedListId;
 
-  const handleConfirmClick = () => {
-    if (searchResults.length > 1 && !selectedListId) {
+    if (!targetId) {
       alert('사용 중인 제품을 선택해 주세요.');
       return;
     }
-    setIsModalOpen(true);
+
+    try {
+      setIsSubmitting(true);
+
+      const res = await registerCosmeticFromSearch({ id: targetId });
+
+      if (res.data.isSuccess) {
+        navigate('/pouch-redirect');
+      } else {
+        alert(res.data.message || '화장품 등록에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('검색 화장품 등록 실패:', error);
+      alert(
+        error.message || '등록 중 오류가 발생했습니다. 다시 시도해 주세요.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleRetrySearch = () => {
-    navigate('/register/search');
+    navigate('/register/search-cosmetic');
   };
 
   const handleGoToCustom = () => {
-    navigate('/register/custom-routine');
-  };
-
-  const handleFinalRegister = () => {
-    if (!selectedRoutines.day && !selectedRoutines.night) {
-      alert('사용 시점(낮 또는 밤)을 최소 하나 이상 선택해 주세요.');
-      return;
-    }
-
-    const selectedProduct = searchResults.find(
-      (item) =>
-        item.id ===
-        (searchResults.length === 1 ? searchResults[0].id : selectedListId),
-    );
-
-    console.log('최종 등록 데이터:', {
-      product: selectedProduct,
-      routines: selectedRoutines,
-    });
-
-    // TODO: 백엔드 등록 API 호출 후 페이지 이동
-    // navigate('/main');
+    navigate('/register/custom-name');
   };
 
   return (
@@ -82,6 +78,7 @@ export default function SearchResult() {
               <ImagePlaceholder>
                 {searchResults[0].imageUrl ? (
                   <ProductImage
+                    $isLandscape={isLandscape}
                     src={searchResults[0].imageUrl}
                     alt={searchResults[0].name}
                   />
@@ -99,7 +96,7 @@ export default function SearchResult() {
         ) : (
           /* 검색 결과가 여러 건일 경우 */
           <>
-            <MainTitle>
+            <MainTitle $alignLeft>
               이 중 어떤 제품을
               <br />
               사용하고 계신가요?
@@ -116,7 +113,7 @@ export default function SearchResult() {
                     <RadioButton $isChecked={isChecked}>
                       {isChecked && <RadioInnerCircle />}
                     </RadioButton>
-                    <SmallImagePlaceholder>
+                    <SmallImagePlaceholder $isSelected={isChecked}>
                       {item.imageUrl ? (
                         <img src={item.imageUrl} alt={item.name} />
                       ) : (
@@ -135,95 +132,31 @@ export default function SearchResult() {
           </>
         )}
 
-        {/* 공통 하단 버튼 3개 */}
+        {/* 하단 버튼 영역 */}
         <ButtonWrapper>
           <Button
             onClick={handleConfirmClick}
-            disabled={searchResults.length > 1 && !selectedListId}
+            disabled={
+              (searchResults.length > 1 && !selectedListId) || isSubmitting
+            }
           >
-            확인
+            {isSubmitting ? '등록 중...' : '확인'}
           </Button>
           <ButtonGroup>
-            <Button onClick={handleRetrySearch}>다시 검색</Button>
-            <Button onClick={handleGoToCustom}>직접 입력하기</Button>
+            <Button onClick={handleRetrySearch} disabled={isSubmitting}>
+              다시 검색
+            </Button>
+            <Button onClick={handleGoToCustom} disabled={isSubmitting}>
+              직접 입력하기
+            </Button>
           </ButtonGroup>
         </ButtonWrapper>
       </Content>
-
-      {/* "언제 사용하는 제품인가요?" 모달 */}
-
-      {isModalOpen && (
-        <Overlay onClick={() => setIsModalOpen(false)}>
-          <ModalContainer onClick={(e) => e.stopPropagation()}>
-            <ModalTitle>
-              언제 사용하는
-              <br />
-              제품인가요?
-            </ModalTitle>
-
-            <ModalSubTitle>
-              아침, 밤 둘 다 사용한다면 두 개 모두 선택해 주세요!
-            </ModalSubTitle>
-
-            <RoutineOptions>
-              <RoutineCard
-                $isSelected={selectedRoutines.day}
-                onClick={() => toggleRoutine('day')}
-              >
-                <SunIcon />
-                <span>낮</span>
-              </RoutineCard>
-
-              <RoutineCard
-                $isSelected={selectedRoutines.night}
-                onClick={() => toggleRoutine('night')}
-              >
-                <MoonIcon />
-                <span>밤</span>
-              </RoutineCard>
-            </RoutineOptions>
-
-            <ModalConfirmButton onClick={handleFinalRegister}>
-              확인
-            </ModalConfirmButton>
-          </ModalContainer>
-        </Overlay>
-      )}
     </Container>
   );
 }
 
-/* SVG Icons */
-
-const SunIcon = () => (
-  <svg
-    width="55"
-    height="55"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-  >
-    <circle cx="12" cy="12" r="5" />
-    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-  </svg>
-);
-
-const MoonIcon = () => (
-  <svg
-    width="55"
-    height="55"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-  >
-    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-  </svg>
-);
-
 /* Style Components */
-
 const Container = styled.div`
   width: 100%;
   max-width: 430px;
@@ -240,41 +173,49 @@ const Content = styled.main`
   padding: 10px 20px 30px 20px;
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 const MainTitle = styled.h2`
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   line-height: 1.35;
   color: #000000;
-  margin-top: 65px;
+  margin-top: 55px;
   margin-bottom: 30px;
 
+  width: ${(props) => (props.$alignLeft ? '100%' : 'auto')};
+  text-align: ${(props) => (props.$alignLeft ? 'left' : 'center')};
+  align-self: ${(props) => (props.$alignLeft ? 'flex-start' : 'center')};
+
   @media ${media.mobileM} {
-    font-size: 24px;
-    margin-top: 100px;
+    font-size: 28px;
+    margin-top: 80px;
     margin-bottom: 50px;
   }
 `;
 
-/* 검색 결과가 하나일 때 */
-
 const SingleProductCard = styled.div`
-  width: 100%;
-  height: 304px;
-  background-color: #ededed;
-  border-radius: 5px;
-  padding: 28px 20px;
+  width: 80%;
+  height: 280px;
+  background-color: #e9e9e9;
+  border-radius: 20px;
+  padding: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: auto;
+
+  box-shadow: 2px 2px 2px rgba(73, 73, 73, 0.25);
+
+  @media ${media.mobileM} {
+    height: 340px;
+  }
 `;
 
 const ImagePlaceholder = styled.div`
-  width: 110px;
-  height: 300px;
-  border: 1.5px solid #111111;
+  width: 100%;
+  height: 100%;
   background-color: #ffffff;
   display: flex;
   align-items: center;
@@ -283,25 +224,23 @@ const ImagePlaceholder = styled.div`
   font-size: 14px;
   font-weight: 700;
   color: #333333;
-  margin-bottom: 20px;
 `;
 
 const ProductImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: ${({ $isLandscape }) => ($isLandscape ? '100%' : 'auto')};
+  height: ${({ $isLandscape }) => ($isLandscape ? 'auto' : '100%')};
 `;
 
 const ProductName = styled.p`
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 700;
   color: #000000;
   text-align: center;
+  margin: 40px 0 0 0;
 `;
 
-/* 검색 결과가 여러 건일 때 */
-
 const ProductList = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -311,14 +250,14 @@ const ProductList = styled.div`
 const ListItem = styled.div`
   width: 100%;
   height: 60px;
-  background-color: #ededed;
-  border-radius: 5px;
-  padding: 0 16px;
+  background-color: ${(props) => (props.$isSelected ? '#e7fff7' : '#ffffff')};
+  border-radius: 50px;
+  padding: 10px 20px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 20px;
   cursor: pointer;
-  border: ${(props) => (props.$isSelected ? '1px solid #000000' : 'none')};
+  border: ${(props) => (props.$isSelected ? '1px solid #02ca70' : '1px solid #dee2e6')};
 
   @media ${media.mobileM} {
     height: 69px;
@@ -329,7 +268,7 @@ const RadioButton = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 2px solid ${(props) => (props.$isChecked ? '#000000' : '#888888')};
+  border: ${(props) => (props.$isChecked ? '7px solid #42b58d' : '2px solid #888888')};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -337,16 +276,17 @@ const RadioButton = styled.div`
 `;
 
 const RadioInnerCircle = styled.div`
-  width: 10px;
-  height: 10px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background-color: #303030;
+  background-color: #ffffff;
 `;
 
 const SmallImagePlaceholder = styled.div`
-  width: 40px;
-  height: 40px;
-  border: 1px solid #111111;
+  width: 38px;
+  height: 38px;
+  border: ${(props) => (props.$isSelected ? '1px solid #02ca70' : '1px solid #828282')};
+  border-radius: 8px;
   background-color: #ffffff;
   display: flex;
   align-items: center;
@@ -356,6 +296,7 @@ const SmallImagePlaceholder = styled.div`
   font-weight: 700;
   color: #333333;
   flex-shrink: 0;
+  overflow: hidden;
 
   img {
     width: 100%;
@@ -373,118 +314,26 @@ const ListItemName = styled.span`
   text-overflow: ellipsis;
 `;
 
-/* --- 공통 버튼 그룹 --- */
-
 const ButtonWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-top: 24px;
+  gap: 16px;
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: 15px;
+  gap: 14px;
   width: 100%;
 
   button {
     flex: 1;
   }
 
-  Button {
+  button:last-child,
+  button:first-child {
     background-color: white;
     color: #609668;
     border: 1px solid #609668;
   }
-`;
-
-/* Modal Styles */
-
-const Overlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(98, 98, 98, 0.3);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 0 24px;
-`;
-
-const ModalContainer = styled.div`
-  width: 100%;
-  max-width: 370px;
-  background-color: #d9d9d9; /* 시안 기준 회색 모달 배경 */
-  border-radius: 15px;
-  padding: 36px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-`;
-
-const ModalTitle = styled.h3`
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1.25;
-  color: #000000;
-  text-align: center;
-  margin: 0 0 24px 0;
-
-  @media ${media.mobileM} {
-    font-size: 32px;
-  }
-`;
-
-const ModalSubTitle = styled.p`
-  font-size: 10px;
-  font-weight: 500;
-  color: #000000;
-  text-align: center;
-  margin: 0 0 24px 0;
-  word-break: keep-all;
-`;
-
-const RoutineOptions = styled.div`
-  display: flex;
-  gap: 20px;
-  width: 100%;
-  margin-bottom: 24px;
-`;
-
-const RoutineCard = styled.button`
-  flex: 1;
-  height: 150px;
-  background-color: #e8e8e8;
-  border: ${(props) => (props.$isSelected ? '1px solid #000000' : '1px solid #c8c8c8')};
-  border-radius: 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  cursor: pointer;
-  color: #111111;
-  font-size: 24px;
-  font-weight: 500;
-  position: relative;
-  transition: all 0.2s;
-`;
-
-const ModalConfirmButton = styled.button`
-  width: 100%;
-  height: 48px;
-  background-color: #000000;
-  color: #ffffff;
-  border: none;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
 `;

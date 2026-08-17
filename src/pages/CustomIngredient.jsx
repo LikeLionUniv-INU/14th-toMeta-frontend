@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import Button from '../components/Button';
 import { media } from '../styles/GlobalStyle';
+import { registerCosmeticManual } from '../api';
 
 export default function CustomIngredient() {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ export default function CustomIngredient() {
 
       // 1. 이미 5개가 다 찬 상태에서 또 엔터를 누른 경우
       if (ingredients.length >= 5) {
-        alert('성분은 최대 5개까지만 등록할 수 있습니다.');
+        alert('주요 성분은 최대 5개까지 입력할 수 있습니다.');
         setInputIngredient('');
         return;
       }
@@ -41,10 +42,8 @@ export default function CustomIngredient() {
         const nextList = [...ingredients, trimmed];
         setIngredients(nextList);
         setInputIngredient('');
-
-        if (nextList.length > 5) {
-          alert('등록 가능 개수를 초과하였습니다.');
-        }
+      } else {
+        alert('이미 추가된 성분입니다.');
       }
     }
   };
@@ -55,41 +54,34 @@ export default function CustomIngredient() {
   };
 
   const handlePrev = () => {
-    navigate('/register/custom-category');
+    navigate('/register/custom-category', { state: prevData });
   };
 
-  // [완료/다음] 버튼 클릭 -> 백엔드 API 명세서 포맷 생성 후 전송
+  // [완료/다음] 버튼 클릭 -> 백엔드 API 전송
   const handleSubmit = async () => {
     if (!isValid || isSubmitting) return;
 
     const payload = {
       productName: prevData.productName || '',
-      productType: prevData.category || '',
+      productType: prevData.category || prevData.productType || '',
       mainIngredients: ingredients,
     };
-
-    console.log('백엔드로 전송할 최종 Payload:', payload);
 
     try {
       setIsSubmitting(true);
 
-      // TODO: 백엔드 API 호출 주석 해제
-      /*
-      const response = await fetch('/api/cosmetics/custom', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      const res = await registerCosmeticManual(payload);
 
-      if (response.ok) {
-        alert('등록이 완료되었습니다!');
+      if (res.data.isSuccess) {
         navigate('/pouch-redirect');
+      } else {
+        alert(res.data.message || '화장품 등록에 실패했습니다.');
       }
-      */
-
-      navigate('/pouch-redirect');
     } catch (error) {
-      console.error('등록 중 에러 발생:', error);
+      console.error('화장품 직접 등록 실패:', error);
+      alert(
+        error.message || '등록 중 오류가 발생했습니다. 다시 시도해 주세요.',
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -142,7 +134,6 @@ export default function CustomIngredient() {
           ))}
         </TagList>
 
-        {/* 하단 가로 정렬 버튼 (이전 | 다음) */}
         <BottomButtonGroup>
           <PrevButton
             type="button"
@@ -155,7 +146,7 @@ export default function CustomIngredient() {
             onClick={handleSubmit}
             disabled={!isValid || isSubmitting}
           >
-            {isSubmitting ? '등록 중...' : '다음'}
+            {isSubmitting ? '등록 중...' : '등록'}
           </NextButton>
         </BottomButtonGroup>
       </Content>
@@ -163,7 +154,7 @@ export default function CustomIngredient() {
   );
 }
 
-/*  Style Components  */
+/* Style Components */
 
 const Container = styled.div`
   width: 100%;
@@ -199,7 +190,7 @@ const ProgressStep = styled.div`
 `;
 
 const MainTitle = styled.h2`
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   line-height: 1.35;
   color: #000000;
@@ -207,7 +198,7 @@ const MainTitle = styled.h2`
   margin-bottom: 0;
 
   @media ${media.mobileM} {
-    font-size: 24px;
+    font-size: 28px;
     margin-top: 170px;
   }
 `;

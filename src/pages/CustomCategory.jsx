@@ -122,7 +122,7 @@ const ProgressStep = styled.div`
 `;
 
 const MainTitle = styled.h2`
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   line-height: 1.35;
   color: #000000;
@@ -130,7 +130,7 @@ const MainTitle = styled.h2`
   margin-bottom: 26px;
 
   @media ${media.mobileM} {
-    font-size: 24px;
+    font-size: 28px;
     margin-top: 170px;
   }
 `;

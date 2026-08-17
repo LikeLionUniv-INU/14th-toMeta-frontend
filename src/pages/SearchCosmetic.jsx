@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../components/Header';
 import { media } from '../styles/GlobalStyle';
+import { searchCosmetics } from '../api';
 
 export default function SearchCosmetic() {
   const navigate = useNavigate();
@@ -12,31 +13,30 @@ export default function SearchCosmetic() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (!searchTerm.trim() || isLoading) return;
+    const trimmed = searchTerm.trim();
+    if (!trimmed || isLoading) return;
 
     try {
       setIsLoading(true);
 
-      // 1. 백엔드 API 호출
-      // const response = await fetch(`/api/cosmetics/search?name=${encodeURIComponent(searchTerm)}`);
-      // const data = await response.json();
+      const res = await searchCosmetics({ keyword: trimmed });
 
-      // [가상 테스트용 조건문예시]
-      // 실제 구현 시에는 data.length > 0 혹은 data.success 등으로 판단합니다.
-      const isFound = false; // 백엔드에 데이터가 없다고 가정 시 (모달 테스트)
+      if (res.data.isSuccess) {
+        const results = res.data.result || [];
 
-      if (isFound) {
-        // 2-A. 백엔드에 정보가 있는 경우 -> 다음 페이지(SearchResult)로 이동하며 백엔드 데이터 전달
-        navigate('/register/result', {
-          state: { productName: searchTerm /*, resultData: data */ },
-        });
-      } else {
-        // 2-B. 백엔드에 정보가 없는 경우 -> '검색 결과 없음' 모달 띄우기
-        setIsModalOpen(true);
+        if (res?.data?.isSuccess && results.length > 0) {
+          navigate('/register/search-result', {
+            state: {
+              searchResults: results,
+              searchTerm: trimmed,
+            },
+          });
+        } else {
+          setIsModalOpen(true);
+        }
       }
     } catch (error) {
       console.error('검색 중 오류 발생:', error);
-      // 에러 발생 시에도 모달을 띄우거나 에러 처리를 진행합니다.
       setIsModalOpen(true);
     } finally {
       setIsLoading(false);
@@ -72,6 +72,7 @@ export default function SearchCosmetic() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               disabled={isLoading}
+              autoFocus
             />
             <SearchButton type="submit" aria-label="검색" disabled={isLoading}>
               <svg
@@ -90,6 +91,7 @@ export default function SearchCosmetic() {
             </SearchButton>
           </SearchInputWrapper>
         </SearchForm>
+
         <NoticeWrapper>
           <NoticeBox>
             <h4>💡 검색 Tip</h4>
@@ -101,7 +103,7 @@ export default function SearchCosmetic() {
         </NoticeWrapper>
       </Content>
 
-      {/* 2-2. 검색 결과 없음 모달 */}
+      {/* 검색 결과 없음 모달 */}
       {isModalOpen && (
         <Overlay onClick={() => setIsModalOpen(false)}>
           <ModalContainer onClick={(e) => e.stopPropagation()}>
@@ -130,8 +132,7 @@ export default function SearchCosmetic() {
   );
 }
 
-/*  Style Components  */
-
+/* Style Components */
 const Container = styled.div`
   width: 100%;
   max-width: 430px;
@@ -149,7 +150,7 @@ const Content = styled.main`
 `;
 
 const MainTitle = styled.h2`
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   line-height: 1.35;
   color: #000000;
@@ -157,7 +158,7 @@ const MainTitle = styled.h2`
   margin-bottom: 50px;
 
   @media ${media.mobileM} {
-    font-size: 24px;
+    font-size: 28px;
     margin-top: 170px;
   }
 `;
@@ -188,13 +189,14 @@ const Input = styled.input`
 `;
 
 const NoticeWrapper = styled.div`
-  display: flexbox;
+  display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 40px;
 `;
 
 const NoticeBox = styled.div`
+  width: 100%;
   padding: 14px;
   background-color: #e6f5e8;
   border-radius: 20px;
@@ -228,10 +230,6 @@ const SearchButton = styled.button`
     color: #c2c2c2;
   }
 `;
-
-{
-  /** modal style components */
-}
 
 const Overlay = styled.div`
   position: fixed;
