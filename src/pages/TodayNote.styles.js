@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Container = styled.div`
   margin: 0 auto;
   background-color: #ffffff;
-  min-height: 100vh;
+  min-height: 100dvh;
 `;
 
 export const Header = styled.div`
@@ -87,34 +87,92 @@ export const SubDescription = styled.p`
   margin-bottom: 0.5rem;
 `;
 
-export const SkinStatusGroup = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-export const SkinStatusButton = styled.button`
+export const SliderSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  border: none;
-  background: ${({ selected }) => (selected ? '#dcfce7' : 'transparent')};
-  box-shadow: ${({ selected }) => (selected ? '0 0 0 2px #22c55e' : 'none')};
+  padding: 24px 10px 10px 10px;
+  width: 100%;
+  box-sizing: border-box;
+`;
+
+export const SliderTrackContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+`;
+
+export const TrackBackground = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #c4c4c4;
+  z-index: 1;
+`;
+
+export const ActiveTrack = styled.div`
+  position: absolute;
+  left: 0;
+  width: ${({ $percentage }) => $percentage}%;
+  height: 2px;
+  background-color: #111111;
+  z-index: 2;
+`;
+
+export const SliderDot = styled.div`
+  position: absolute;
+  left: ${({ $left }) => $left}%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: ${({ $isPassed }) => ($isPassed ? '#ff3b30' : '#c4c4c4')};
+  z-index: 3;
+`;
+
+export const DrImageThumb = styled.img`
+  position: absolute;
+  left: ${({ $percentage }) => $percentage}%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  z-index: 4;
+  pointer-events: none;
+  transition: left 0.05s ease-out;
+`;
+
+export const HiddenRangeInput = styled.input`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
   cursor: pointer;
-  transition: all 0.2s ease;
+  z-index: 5;
+  margin: 0;
+`;
 
-  .emoji {
-    font-size: 40px;
-    margin-bottom: 0.25rem;
-  }
+export const SliderLabels = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #a0a0a0;
+  margin-top: 6px;
+`;
 
-  .text {
-    font-size: 12px;
-    font-weight: 400;
-    color: #000000;
-  }
+export const CurrentStatusText = styled.div`
+  margin-top: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #111111;
+  text-align: center;
 `;
 
 export const AddButton = styled.button`

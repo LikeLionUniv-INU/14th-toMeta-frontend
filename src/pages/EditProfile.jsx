@@ -5,13 +5,24 @@ import Button from '../components/Button.jsx';
 import Edit from '../assets/images/edit.png';
 import { useNavigate } from 'react-router-dom';
 
+const INITIAL_PROFILE = {
+  nickname: '김도영',
+  gender: '남자',
+  age: '10대',
+  skinType: '건성',
+};
+
 export default function EditProfile() {
   const navigate = useNavigate();
 
-  const [nickname, setNickname] = useState('김도영');
-  const [gender, setGender] = useState('남자');
-  const [age, setAge] = useState('10대');
-  const [skinType, setSkinType] = useState('건성');
+  // 상단 고정 이름
+  const currentNickname = INITIAL_PROFILE.nickname;
+
+  // 수정 입력용 상태 (초기값은 빈 문자열로 두어 placeholder가 보이게 처리)
+  const [nicknameInput, setNicknameInput] = useState('');
+  const [gender, setGender] = useState(INITIAL_PROFILE.gender);
+  const [age, setAge] = useState(INITIAL_PROFILE.age);
+  const [skinType, setSkinType] = useState(INITIAL_PROFILE.skinType);
 
   const [openDropdown, setOpenDropdown] = useState(null);
 
@@ -31,7 +42,12 @@ export default function EditProfile() {
   };
 
   const handleSave = () => {
-    const updatedProfile = { nickname, gender, age, skinType };
+    const updatedProfile = {
+      nickname: nicknameInput.trim() ? nicknameInput.trim() : currentNickname,
+      gender,
+      age,
+      skinType,
+    };
 
     console.log('저장할 데이터:', updatedProfile);
 
@@ -49,7 +65,8 @@ export default function EditProfile() {
             <circle cx="12" cy="7" r="4" />
           </svg>
         </ProfileAvatar>
-        <ProfileName>{nickname} 님</ProfileName>
+        {/* 상단 이름은 기존 닉네임으로 고정 */}
+        <ProfileName>{currentNickname} 님</ProfileName>
       </ProfileSection>
 
       <FormContainer>
@@ -58,8 +75,10 @@ export default function EditProfile() {
           <InputWrapper>
             <Input
               type="text"
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
+              placeholder={currentNickname}
+              value={nicknameInput}
+              $isModified={nicknameInput.length > 0}
+              onChange={(e) => setNicknameInput(e.target.value)}
             />
             <EditIcon src={Edit} alt="수정 아이콘" />
           </InputWrapper>
@@ -69,6 +88,7 @@ export default function EditProfile() {
           label="성별"
           value={gender}
           options={genderOptions}
+          isModified={gender !== INITIAL_PROFILE.gender}
           isOpen={openDropdown === 'gender'}
           onToggle={() => toggleDropdown('gender')}
           onSelect={(val) => handleSelect('gender', val)}
@@ -78,6 +98,7 @@ export default function EditProfile() {
           label="나이"
           value={age}
           options={ageOptions}
+          isModified={age !== INITIAL_PROFILE.age}
           isOpen={openDropdown === 'age'}
           onToggle={() => toggleDropdown('age')}
           onSelect={(val) => handleSelect('age', val)}
@@ -87,6 +108,7 @@ export default function EditProfile() {
           label="피부타입"
           value={skinType}
           options={skinTypeOptions}
+          isModified={skinType !== INITIAL_PROFILE.skinType}
           isOpen={openDropdown === 'skinType'}
           onToggle={() => toggleDropdown('skinType')}
           onSelect={(val) => handleSelect('skinType', val)}
@@ -100,13 +122,13 @@ export default function EditProfile() {
   );
 }
 
-function CustomSelect({ label, value, options, isOpen, onToggle, onSelect }) {
+function CustomSelect({ label, value, options, isOpen, onToggle, onSelect, isModified }) {
   return (
     <FieldGroup>
       <Label>{label}</Label>
       <DropdownContainer>
         <SelectHeader onClick={onToggle}>
-          <ValueText>{value}</ValueText>
+          <ValueText $isModified={isModified}>{value}</ValueText>
           <ArrowIcon>{isOpen ? '▲' : '▼'}</ArrowIcon>
         </SelectHeader>
         {isOpen && (
@@ -194,7 +216,11 @@ const Input = styled.input`
   border-radius: 6px;
   outline: none;
   box-sizing: border-box;
-  color: #828282;
+  color: ${(props) => (props.$isModified ? '#000000' : '#828282')};
+
+  &::placeholder {
+    color: #828282;
+  }
 
   &:focus {
     border-color: #CCCCCC;
@@ -227,7 +253,7 @@ const SelectHeader = styled.div`
 `;
 
 const ValueText = styled.span`
-  color: #828282;
+  color: ${(props) => (props.$isModified ? '#000000' : '#828282')};
 `;
 
 const ArrowIcon = styled.span`

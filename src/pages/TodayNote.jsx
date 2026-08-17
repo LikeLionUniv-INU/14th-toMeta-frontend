@@ -7,14 +7,17 @@ import { ko } from 'date-fns/locale';
 import Button from '../components/Button';
 import * as S from './TodayNote.styles';
 import Header from '../components/Header';
-import CosmeticCard from '../components/CosmeticCard';
+import CosmeticSelectModal from '../components/modal/CosmeticSelectModal';
+import SetDetailModal from '../components/modal/SetDetailModal';
+import AlreadyRecordedModal from '../components/modal/AlreadyRecordedModal';
 import CameraImg from '../assets/images/camera.png';
+import DrImg from '../assets/images/dr-acne.png';
 
 const TodayNote = () => {
   const navigate = useNavigate();
 
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [skinCondition, setSkinCondition] = useState(null);
+  const [skinCondition, setSkinCondition] = useState(3);
   const [morningProducts, setMorningProducts] = useState([]);
   const [nightProducts, setNightProducts] = useState([]);
   const [foodInput, setFoodInput] = useState('');
@@ -24,6 +27,12 @@ const TodayNote = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeType, setActiveType] = useState(null);
   const [selectedProducts, setSelectedProducts] = useState([]);
+
+  // 세트 상세 보기 모달 상태
+  const [detailModalSet, setDetailModalSet] = useState(null);
+
+  // 이미 작성된 기록 모달 상태
+  const [isAlreadyRecordedModalOpen, setIsAlreadyRecordedModalOpen] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -35,10 +44,39 @@ const TodayNote = () => {
     return `${month}월 ${day}일 ${dayOfWeek}`;
   };
 
+  // 날짜 변경 및 기존 기록 확인 핸들러
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+
+    // TODO: 실제 API 연동 시 해당 날짜의 기록 존재 여부를 체크하도록 연동해주세요.
+    // 예시: 이미 작성된 기록이 있는 경우 모달 오픈
+    const hasExistingRecord = true; // 테스트/연동용 플래그
+    if (hasExistingRecord) {
+      setIsAlreadyRecordedModalOpen(true);
+    }
+  };
+
   // 샘플 데이터
   const setProducts = [
-    { id: 's1', name: '진정템', tags: ['#어성초', '#진정', '#피지조절'] },
-    { id: 's2', name: '(사용자 지정 이름)', tags: ['#티트리', '#진정', '#수분보충'] },
+    {
+      id: 's1',
+      name: '진정템',
+      tags: ['#어성초', '#진정', '#피지조절'],
+      items: [
+        { id: 'si1', name: '브링그린 티트리 시카 크림', tags: ['#크림', '#속건조', '#수분', '#시카'] },
+        { id: 'si2', name: '에스트라 아토베리어 365크림', tags: ['#크림', '#속건조', '#수분', '#진정'] },
+        { id: 'si3', name: '듀이트리 핏 앤 퀵 더블패드', tags: ['#패드', '#유수분', '#수분', '#진정'] },
+      ],
+    },
+    {
+      id: 's2',
+      name: '(사용자 지정 이름)',
+      tags: ['#티트리', '#진정', '#수분보충'],
+      items: [
+        { id: 'si4', name: '아누아 어성초 77% 진정 토너', tags: ['#토너', '#어성초', '#진정', '#피지조절'] },
+        { id: 'si5', name: '브링그린 티트리 시카 크림', tags: ['#크림', '#속건조', '#수분', '#시카'] },
+      ],
+    },
   ];
 
   const individualProducts = [
@@ -49,14 +87,14 @@ const TodayNote = () => {
   ];
 
   const skinStatusOptions = [
-    { id: 1, label: '매우 좋음', emoji: '😆' },
-    { id: 2, label: '좋음', emoji: '😊' },
-    { id: 3, label: '보통', emoji: '🙂' },
-    { id: 4, label: '나쁨', emoji: '😐' },
-    { id: 5, label: '매우 나쁨', emoji: '😑' },
+    { id: 1, label: '매우 나쁨' },
+    { id: 2, label: '나쁨' },
+    { id: 3, label: '보통' },
+    { id: 4, label: '좋음' },
+    { id: 5, label: '매우 좋음' },
   ];
 
-  const isBadSkin = Number(skinCondition) === 4 || Number(skinCondition) === 5;
+  const isBadSkin = Number(skinCondition) === 1 || Number(skinCondition) === 2;
 
   const isFormValid =
     skinCondition !== null &&
@@ -131,7 +169,11 @@ const TodayNote = () => {
 
   const renderProductRows = (products, type) => {
     const allItems = [
-      ...products.map((name) => ({ type: 'product', name })),
+      ...products.map((name) => ({
+        type: 'product',
+        name,
+        isSet: setProducts.some((set) => set.name === name),
+      })),
       { type: 'add-button' },
     ];
 
@@ -146,8 +188,8 @@ const TodayNote = () => {
           <TagRow key={rowIndex}>
             {rowItems.map((item, itemIndex) =>
               item.type === 'product' ? (
-                <SelectedTagChip key={itemIndex}>
-                  <span>{item.name}</span>
+                <SelectedTagChip key={itemIndex} $isSet={item.isSet}>
+                  <span>{item.isSet ? `SET | ${item.name}` : item.name}</span>
                   <button type="button" onClick={() => handleRemoveProduct(type, item.name)}>
                     ✕
                   </button>
@@ -164,6 +206,9 @@ const TodayNote = () => {
     );
   };
 
+  const currentStatusObj = skinStatusOptions.find((item) => item.id === Number(skinCondition));
+  const sliderPercentage = ((Number(skinCondition || 3) - 1) / 4) * 100;
+
   return (
     <S.Container>
       <Header title={"기록"} variant="back" />
@@ -171,13 +216,15 @@ const TodayNote = () => {
       <S.Content>
         <S.DateSection>
           <h2>{formatDate(selectedDate)}</h2>
-          <DatePicker
-            selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
-            locale={ko}
-            dateFormat="yyyy.MM.dd"
-            customInput={<CustomCalendarButton />}
-          />
+          <DatePickerWrapper>
+            <DatePicker
+              selected={selectedDate}
+              onChange={handleDateChange}
+              locale={ko}
+              dateFormat="yyyy.MM.dd"
+              customInput={<CustomCalendarButton />}
+            />
+          </DatePickerWrapper>
         </S.DateSection>
 
         <S.Divider />
@@ -186,19 +233,54 @@ const TodayNote = () => {
           <S.Label>
             오늘 내 피부 상태는?<span className="required">*</span>
           </S.Label>
-          <S.SkinStatusGroup>
-            {skinStatusOptions.map((item) => (
-              <S.SkinStatusButton
-                key={item.id}
-                type="button"
-                selected={Number(skinCondition) === item.id}
-                onClick={() => setSkinCondition(item.id)}
+          <SkinSliderContainer>
+            <SliderTrackWrapper>
+              <SliderTrackBase />
+              <SliderTrackFill $condition={skinCondition ?? 3} />
+
+              {[1, 2, 3, 4, 5].map((level) => (
+                <SliderDot
+                  key={level}
+                  $left={`${(level - 1) * 25}%`}
+                  $isActive={(skinCondition ?? 3) >= level}
+                  $condition={skinCondition ?? 3}
+                />
+              ))}
+
+              <HiddenSliderInput
+                type="range"
+                min="1"
+                max="5"
+                step="1"
+                value={skinCondition ?? 3}
+                onChange={(e) => setSkinCondition(Number(e.target.value))}
+              />
+
+              <SliderThumbHandle
+                $left={`${((skinCondition ?? 3) - 1) * 25}%`}
               >
-                <span className="emoji">{item.emoji}</span>
-                <span className="text">{item.label}</span>
-              </S.SkinStatusButton>
-            ))}
-          </S.SkinStatusGroup>
+                <DrAcneImage src={DrImg} alt="피부 상태 조절 핸들" />
+              </SliderThumbHandle>
+            </SliderTrackWrapper>
+
+            <SliderLabelWrapper>
+              {skinStatusOptions.map((opt) => {
+                const isSelected = (skinCondition ?? 3) === opt.id;
+                const isEdge = opt.id === 1 || opt.id === 5;
+
+                return (
+                  <SliderPointLabel
+                    key={opt.id}
+                    $left={`${(opt.id - 1) * 25}%`}
+                    $isSelected={isSelected}
+                    $isEdge={isEdge}
+                  >
+                    {isSelected ? opt.label : (isEdge ? opt.label : '')}
+                  </SliderPointLabel>
+                );
+              })}
+            </SliderLabelWrapper>
+          </SkinSliderContainer>
         </S.Section>
 
         <S.SectionDivider />
@@ -316,70 +398,29 @@ const TodayNote = () => {
         </S.SubmitWrapper>
       </S.Content>
 
-      {isModalOpen && (
-        <ModalOverlay onClick={() => setIsModalOpen(false)}>
-          <ModalContainer onClick={(e) => e.stopPropagation()}>
-            <ModalHeader>
-              <ModalTitle>내 화장품</ModalTitle>
-              <CloseButton type="button" onClick={() => setIsModalOpen(false)}>✕</CloseButton>
-            </ModalHeader>
+      {/* 이미 작성된 기록 알림 모달 */}
+      <AlreadyRecordedModal
+        isOpen={isAlreadyRecordedModalOpen}
+        onClose={() => setIsAlreadyRecordedModalOpen(false)}
+      />
 
-            <ModalContent>
-              <SetSection>
-                {setProducts.map((setItem) => {
-                  const isSelected = selectedProducts.includes(setItem.name);
-                  return (
-                    <SetCard
-                      key={setItem.id}
-                      $isSelected={isSelected}
-                      onClick={() => handleToggleProduct(setItem.name)}
-                    >
-                      <SetCardLeft>
-                        <SetTitle>{setItem.name} <span>∨</span></SetTitle>
-                        <TagList>
-                          {setItem.tags.map((tag, i) => (
-                            <SetTag key={i}>{tag}</SetTag>
-                          ))}
-                        </TagList>
-                      </SetCardLeft>
-                      <ArrowButton
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate('/cosmetic-set');
-                        }}
-                      >
-                        ＞
-                      </ArrowButton>
-                    </SetCard>
-                  );
-                })}
-              </SetSection>
+      {/* 내 화장품 선택 모달 */}
+      <CosmeticSelectModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        setProducts={setProducts}
+        individualProducts={individualProducts}
+        selectedProducts={selectedProducts}
+        onToggleProduct={handleToggleProduct}
+        onSubmit={handleModalSubmit}
+        onOpenDetail={(setItem) => setDetailModalSet(setItem)}
+      />
 
-              <ModalDivider />
-
-              <IndividualSection>
-                {individualProducts.map((item) => {
-                  const isSelected = selectedProducts.includes(item.name);
-                  return (
-                    <CardWrapper
-                      key={item.id}
-                      $isSelected={isSelected}
-                      onClick={() => handleToggleProduct(item.name)}
-                    >
-                      <CosmeticCard name={item.name} tags={item.tags} />
-                    </CardWrapper>
-                  );
-                })}
-              </IndividualSection>
-            </ModalContent>
-
-            <ModalFooter>
-              <Button onClick={handleModalSubmit}>완료</Button>
-            </ModalFooter>
-          </ModalContainer>
-        </ModalOverlay>
-      )}
+      {/* 세트 상세 보기 모달 */}
+      <SetDetailModal
+        setItem={detailModalSet}
+        onClose={() => setDetailModalSet(null)}
+      />
     </S.Container>
   );
 };
@@ -401,6 +442,15 @@ const CalendarBtn = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const DatePickerWrapper = styled.div`
+  position: relative;
+  z-index: 10;
+
+  .react-datepicker-popper {
+    z-index: 10;
+  }
 `;
 
 const SelectedTagScrollContainer = styled.div`
@@ -430,10 +480,10 @@ const SelectedTagChip = styled.div`
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid #89D7BC;
+  border: 1px solid ${(props) => (props.$isSet ? '#96BE9C' : '#89D7BC')};
   border-radius: 20px;
   padding: 6px 10px;
-  background-color: #E7FDF7;
+  background-color: ${(props) => (props.$isSet ? '#FFF1E5' : '#E7FDF7')};
   font-size: 12px;
   color: #363636;
   white-space: nowrap;
@@ -471,203 +521,116 @@ const AddMoreTagChip = styled.button`
   }
 `;
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
+const SkinSliderContainer = styled.div`
+  width: 100%;
+  padding: 24px 10px 10px 10px;
+  box-sizing: border-box;
+`;
+
+const SliderTrackWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 4px;
+  display: flex;
+  align-items: center;
+`;
+
+const SliderTrackBase = styled.div`
+  position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  z-index: 1000;
+  height: 3px;
+  background-color: #d1d5db;
+  border-radius: 2px;
 `;
 
-const ModalContainer = styled.div`
-  width: 100%;
-  max-height: 85dvh;
-  background-color: #ffffff;
-  border-radius: 20px 20px 0 0;
-  padding: 30px 0 20px 0;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  overflow-x: hidden;
-`;
+const getConditionColor = (condition) => {
+  switch (Number(condition)) {
+    case 2:
+      return '#FF5900';
+    case 3:
+      return '#FF8237';
+    case 4:
+      return '#FFAA6E';
+    case 5:
+      return '#FFD6A5';
+    case 1:
+    default:
+      return '#FF5757';
+  }
+};
 
-const ModalHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  padding: 0 20px;
-  position: relative;
-`;
-
-const ModalTitle = styled.h3`
-  font-size: 18px;
-  font-weight: 700;
-  color: #111;
-  margin: 0;
-  width: 100%;
-  text-align: center;
-`;
-
-const CloseButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  color: #333;
+const SliderTrackFill = styled.div`
   position: absolute;
-  right: 20px;
+  left: 0;
+  width: ${(props) => `${(props.$condition - 1) * 25}%`};
+  height: 3px;
+  background-color: ${(props) => getConditionColor(props.$condition)};
+  border-radius: 2px;
+  transition: width 0.15s ease, background-color 0.15s ease;
 `;
 
-const ModalContent = styled.div`
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-`;
-
-const SetSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 0 20px;
-`;
-
-const SetCard = styled.div`
-  background-color: ${(props) => (props.$isSelected ? '#96BE9C' : '#FFF8F2')};
-  border: 1px solid #96be9c;
-  border-radius: 12px;
-  padding: 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: ${(props) => (props.$isSelected ? '#ffffff' : '#141212')};
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-
-  &:active {
-    transform: scale(0.98);
-  }
-
-  ${(props) =>
-    props.$isSelected &&
-    `
-    outline: 2.5px solid #96BE9C;
-    outline-offset: -1px;
-    box-shadow: #96BE9C;
-    
-    span {
-      color: #ffffff;
-    }
-  `}
-`;
-
-const SetCardLeft = styled.div`
-  flex: 1;
-`;
-
-const SetTitle = styled.div`
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-
-  span {
-    font-size: 10px;
-  }
-`;
-
-const TagList = styled.div`
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-`;
-
-const SetTag = styled.span`
-  font-size: 10px;
-  padding: 3px 8px;
-  border-radius: 10px;
-  transition: all 0.2s ease;
+const SliderDot = styled.div`
+  position: absolute;
+  left: ${(props) => props.$left};
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
   background-color: ${(props) =>
-    props.parentIsSelected ? '#FFF8F2' : '#96BE9C'};
-  color: ${(props) => (props.parentIsSelected ? '#003B00' : '#FFF8F2')};
+    props.$isActive ? getConditionColor(props.$condition) : '#d1d5db'};
+  z-index: 2;
+  transition: background-color 0.15s ease;
 `;
 
-const ArrowButton = styled.button`
-  background: none;
-  border: none;
-  color: inherit;
-  font-size: 18px;
-  cursor: pointer;
-  padding: 0 4px;
-`;
-
-const ModalDivider = styled.div`
-  height: 8px;
-  background-color: #f2f2f2;
+const HiddenSliderInput = styled.input`
+  position: absolute;
   width: 100%;
-  margin: 6px 0;
-  flex-shrink: 0;
-`;
-
-const IndividualSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 0 20px;
-`;
-
-const CardWrapper = styled.div`
+  height: 40px;
+  opacity: 0;
   cursor: pointer;
-  border-radius: 12px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-
-  &:active {
-    transform: scale(0.98);
-  }
-
-  & > div {
-    background-color: #ffffff;
-    color: #000000;
-
-    span {
-      background-color: #96BE9C;
-      color: #FFF1E5;
-    }
-  }
-
-  ${(props) =>
-    props.$isSelected &&
-    `
-    outline: 2.5px solid #96BE9C;
-    outline-offset: -1px;
-    box-shadow: #96BE9C;
-
-    & > div {
-      background-color: #96BE9C;
-      border-color: #96BE9C;
-
-      p, h1, h2, h3, h4, div {
-        color: #ffffff;
-      }
-
-      span {
-        background-color: #FFF8F2;
-        color: #003B00;
-      }
-    }
-  `}
+  z-index: 5;
+  margin: 0;
 `;
 
-const ModalFooter = styled.div`
-  margin-top: 16px;
-  padding: 0 20px;
+const SliderThumbHandle = styled.div`
+  position: absolute;
+  left: ${(props) => props.$left};
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  pointer-events: none;
+  transition: left 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const DrAcneImage = styled.img`
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  user-select: none;
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15));
+`;
+
+const SliderLabelWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 24px;
+  margin-top: 26px;
+`;
+
+const SliderPointLabel = styled.span`
+  position: absolute;
+  left: ${(props) => props.$left};
+  transform: translateX(-50%);
+  white-space: nowrap;
+  transition: all 0.15s ease;
+
+  font-size: ${(props) => (props.$isSelected ? '14px' : '11px')};
+  font-weight: ${(props) => (props.$isSelected ? '700' : '400')};
+  color: ${(props) => (props.$isSelected ? '#000000' : '#a0a0a0')};
+  display: ${(props) => (props.$isSelected || props.$isEdge ? 'block' : 'none')};
 `;
