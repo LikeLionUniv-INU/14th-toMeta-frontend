@@ -346,6 +346,7 @@ export default function MyPouch() {
               세트로 묶기
             </ActionButton>
           </ButtonGroup>
+          <GuideText>자주 쓰는 화장품을 묶어 나만의 루틴 세트를 만들어보세요!</GuideText>
         </MainContent>
       </ContentWrapper>
 
@@ -625,9 +626,9 @@ const ButtonGroup = styled.div`
 const ActionButton = styled.button`
   flex: 1;
   padding: 12px 0;
-  background-color: ${(props) => (props.$isSetButtonActive ? "#8cb896" : "#ffffff")};
-  border: 1px solid ${(props) => (props.$isSetButtonActive ? "#8cb896" : "#266210")};
-  color: ${(props) => (props.$isSetButtonActive ? "#ffffff" : "#266210")};
+  background-color: ${(props) => (props.$isSetButtonActive ? "#63BF8E" : "#ffffff")};
+  border: 1px solid ${(props) => (props.$isSetButtonActive ? "#609668" : "#609668")};
+  color: ${(props) => (props.$isSetButtonActive ? "#ffffff" : "#609668")};
   border-radius: 20px;
   font-size: 14px;
   font-weight: 600;
@@ -636,6 +637,15 @@ const ActionButton = styled.button`
   &:active {
     background-color: ${(props) => (props.$isSetButtonActive ? "#7ca886" : "#f2f7f1")};
   }
+`;
+
+const GuideText = styled.p`
+  font-weight: 500;
+  font-size: 10px;
+  color: #7C7C7C;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 0;
 `;
 
 const ModalOverlay = styled.div`

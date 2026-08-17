@@ -7,26 +7,47 @@ export const getCosmeticOptions = async () => {
     return {
       data: {
         isSuccess: true,
-        result: [
-          {
-            userCosmeticId: 1,
-            name: '수분 진정 토너',
-            brand: '토리든',
-            type: 'TONER',
-          },
-          {
-            userCosmeticId: 2,
-            name: '시카 릴리프 세럼',
-            brand: '닥터지',
-            type: 'SERUM',
-          },
-          {
-            userCosmeticId: 3,
-            name: '장벽 강화 크림',
-            brand: '에스트라',
-            type: 'CREAM',
-          },
-        ],
+        code: "COMMON_200",
+        message: "요청에 성공했습니다.",
+        result: {
+          sets: [
+            {
+              setId: 1,
+              name: "진정템",
+              usageTime: "morning",
+              mainIngredients: ["어성초", "진정", "피지조절"],
+            },
+            {
+              setId: 2,
+              name: "사용자 지정 이름",
+              usageTime: "both",
+              mainIngredients: ["티트리", "진정", "수분보충"],
+            },
+          ],
+          cosmetics: [
+            {
+              userCosmeticId: 11,
+              productName: "아누아 어성초 77% 진정 토너",
+              brandName: "아누아",
+              productType: "toner",
+              mainIngredients: ["어성초", "진정", "피지조절"],
+            },
+            {
+              userCosmeticId: 12,
+              productName: "토리든 다이브인 저분자 히알루론산 세럼",
+              brandName: "토리든",
+              productType: "serum",
+              mainIngredients: ["히알루론산", "수분", "속건조"],
+            },
+            {
+              userCosmeticId: 13,
+              productName: "브링그린 티트리 시카 크림",
+              brandName: "브링그린",
+              productType: "cream",
+              mainIngredients: ["티트리", "시카", "진정"],
+            },
+          ],
+        },
       },
     };
   }
@@ -48,19 +69,7 @@ export const searchCosmetics = async (params) => {
             name: `${keyword} 시카 수딩 크림`,
             imageUrl:
               'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/thumbnails/10/0000/0022/A00000022655318ko.jpg?l=ko&QT=85&SF=webp&sharpen=1x0.5',
-          } /*,
-          {
-            id: 2,
-            name: `${keyword} 시카 수딩 토너`,
-            imageUrl:
-              'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/thumbnails/10/0000/0018/A00000018918112ko.jpg?l=ko&QT=85&SF=webp&sharpen=1x0.5',
           },
-          {
-            id: 3,
-            name: `${keyword} 사철쑥 EX 배리어 로션`,
-            imageUrl:
-              'https://dn5hzapyfrpio.cloudfront.net/product/5e3/5e324c90-d78d-11ef-980c-cff2dc08064e.jpeg',
-          },*/,
         ],
       },
     };
