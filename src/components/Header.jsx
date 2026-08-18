@@ -1,5 +1,5 @@
 //  뒤로 가기 버튼이 있을 때 사용 예시
-//  <Header title={"헤더 명"} varient="back" />;
+//  <Header title={"헤더 명"} variant="back" />;
 //  기본 설정은 뒤로가기 없이 되어있습니다.
 
 import React from 'react';

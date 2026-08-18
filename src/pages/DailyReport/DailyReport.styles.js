@@ -595,32 +595,45 @@ export const SaveButton = styled.button`
 `;
 
 export const NoteInputBox = styled.div`
-  background-color: #ffffff;
-  border: 1px solid #89d7bc;
-  border-radius: 20px;
-  padding: 10px 16px;
-  height: 112px;
-  box-sizing: border-box;
-
-  @media ${media.mobileM} {
-    padding: 10px 20px;
-  }
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 
   textarea {
     width: 100%;
-    height: 100%;
-    border: none;
-    outline: none;
+    min-height: 90px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid #10b981;
+    background-color: #ffffff;
+    font-size: 13px;
+    color: #212529;
     resize: none;
-    font-size: 12px;
-    color: #141212;
+    outline: none;
+    box-sizing: border-box;
     font-family: inherit;
-    background: transparent;
 
     &::placeholder {
-      color: #a8a8a8;
+      color: #94a3b8;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
     }
   }
+`;
+
+export const NoteActionRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2px;
+`;
+
+export const CharCount = styled.span`
+  font-size: 12px;
+  color: #94a3b8;
 `;
 
 export const BottomBanner = styled.div`
