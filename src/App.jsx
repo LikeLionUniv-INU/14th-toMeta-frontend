@@ -37,7 +37,11 @@ function App() {
           <Route path="/onboarding/skin-type" element={<SkintypeInput />} />
           <Route path="/onboarding/notification" element={<Notification />} />
           <Route path="/todaynote" element={<TodayNote />} />
+
+          {/* 기록 페이지 라우트 (단일 & 날짜 파라미터) */}
           <Route path="/record" element={<Record />} />
+          <Route path="/record/:date" element={<Record />} />
+
           <Route path="/pouch-redirect" element={<PouchRedirect />} />
           <Route path="/empty-pouch" element={<EmptyPouch />} />
           <Route path="/my-pouch" element={<MyPouch />} />
@@ -57,7 +61,10 @@ function App() {
             element={<CustomIngredient />}
           />
           <Route path="/report" element={<Report />} />
+          {/* 리포트 페이지 라우트 */}
           <Route path="/report/daily" element={<DailyReport />} />
+          <Route path="/report/daily/:date" element={<DailyReport />} />
+
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/edit-profile" element={<EditProfile />} />
         </Routes>

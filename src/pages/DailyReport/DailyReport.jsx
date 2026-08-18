@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getMyProfile } from '../../api/user';
 import { getDailyReport, updateDailyReportNote } from '../../api/reports';
 import * as S from './DailyReport.styles';
@@ -15,7 +16,10 @@ import {
 } from './ReportIcons';
 
 export default function DailyReport({ date }) {
-  const targetDate = date || new Date().toISOString().slice(0, 10);
+  const { date: paramDate } = useParams();
+  const navigate = useNavigate();
+
+  const targetDate = paramDate || date || new Date().toISOString().slice(0, 10);
 
   const [userProfile, setUserProfile] = useState(null);
   const [reportData, setReportData] = useState(null);
@@ -219,14 +223,14 @@ export default function DailyReport({ date }) {
 
   return (
     <S.Wrapper>
-      <Header title={'일간 리포트'} varient="back" />
+      <Header title={'일간 리포트'} variant="back" />
       <S.Container $blur={isCollecting}>
         {/* 날짜 섹션 */}
         <S.DateSection>
           <S.DateText>
             {formatDateTitle(reportData?.date || targetDate)}
           </S.DateText>
-          <S.SubLink>
+          <S.SubLink onClick={() => navigate(`/record/${targetDate}`)}>
             내 기록 확인하기 <span>&gt;</span>
           </S.SubLink>
         </S.DateSection>
@@ -488,7 +492,7 @@ export default function DailyReport({ date }) {
             <S.ModalDescription>
               오늘을 기록하면 리포트를 일찍 만나볼 수 있어요.
             </S.ModalDescription>
-            <S.ModalButton onClick={() => alert('오늘 기록하기 페이지로 이동')}>
+            <S.ModalButton onClick={() => navigate('/todaynote')}>
               오늘 기록하기
             </S.ModalButton>
           </S.CollectingModal>
