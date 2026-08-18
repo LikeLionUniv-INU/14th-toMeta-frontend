@@ -44,17 +44,62 @@ export const createDailyRecord = async (recordData) => {
 
 export const getDailyRecord = async (date) => {
   if (USE_MOCK) {
-    return {
-      data: {
-        isSuccess: true,
-        result: {
-          date,
-          skinCondition: 'GOOD',
-          memo: '피부 상태 양호함',
-          usedCosmetics: [1, 2],
+    // 2026-08-12 날짜 조회 시 목 데이터 반환 예시 (그 외 날짜는 404 처리)
+    if (date === '2026-08-12') {
+      return {
+        data: {
+          isSuccess: true,
+          code: 'COMMON_200',
+          message: '요청에 성공했습니다.',
+          result: {
+            recordId: 37,
+            date: '2026-08-12',
+            skinStatus: 'bad',
+            morningSelections: [
+              {
+                selectionType: 'SET',
+                cosmeticSetId: 3,
+                name: '진정템',
+                ingredientTags: ['어성초', '판테놀', '나이아신아마이드'],
+              },
+              {
+                selectionType: 'COSMETIC',
+                userCosmeticId: 11,
+                name: '에스트라 아토베리어 365 크림',
+                ingredientTags: ['세라마이드', '스쿠알란', '판테놀'],
+              },
+            ],
+            nightSelections: [
+              {
+                selectionType: 'COSMETIC',
+                userCosmeticId: 15,
+                name: '브링그린 티트리 진정크림',
+                ingredientTags: ['티트리', '판테놀'],
+              },
+            ],
+            foodMemo: '아침에 마라탕',
+            images: [
+              {
+                imageKey: 'daily-records/uuid-1.jpg',
+                imageUrl: 'https://placehold.co/400x400',
+              },
+            ],
+            memo: '오늘 오후부터 볼 쪽이 조금 따가웠음',
+          },
         },
+      };
+    }
+    const error = new Error('해당 날짜의 기록을 찾을 수 없습니다.');
+    error.response = {
+      status: 404,
+      data: {
+        isSuccess: false,
+        code: 'RECORD_4041',
+        message: '해당 날짜의 기록을 찾을 수 없습니다.',
+        result: null,
       },
     };
+    return Promise.reject(error);
   }
   return api.get(`/api/daily-records/${date}`);
 };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Header from "../components/Header";
 import Button from "../components/Button";
@@ -8,8 +9,8 @@ import MoonIcon from "../assets/images/record/Moon.svg";
 import { getCosmeticOptions } from "../api/cosmetics";
 
 export default function Record() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("morning");
-  const [isEditing, setIsEditing] = useState(false);
 
   const [recordData, setRecordData] = useState({
     dateText: "8월 5일 수요일",
@@ -55,40 +56,17 @@ export default function Record() {
 
   const cosmeticList = optionsData.cosmetics;
 
-  const handleFoodChange = (e) => {
-    setRecordData((prev) => ({
-      ...prev,
-      food: e.target.value,
-    }));
+  const handleEditClick = () => {
+    navigate("/todaynote");
   };
 
-  const handleRemovePhoto = (index) => {
-    setRecordData((prev) => ({
-      ...prev,
-      skinPhotos: prev.skinPhotos.filter((_, i) => i !== index),
-    }));
-  };
-
-  const handleToggleEdit = async () => {
-    if (isEditing) {
-      try {
-        console.log("백엔드로 전송할 수정 데이터:", recordData);
-        // await axios.put('/api/records', recordData);
-        alert("수정사항이 저장되었습니다.");
-        setIsEditing(false);
-      } catch (error) {
-        console.error("저장 중 오류 발생:", error);
-      }
-    } else {
-      setIsEditing(true);
-    }
-  };
+  const hasFood = Boolean(recordData.food && recordData.food.trim());
+  const hasPhotos = Boolean(recordData.skinPhotos && recordData.skinPhotos.length > 0);
 
   return (
     <Container>
       <Header title={"기록"} variant="back" />
       <ContentWrapper>
-
         <HeaderRow>
           <DateTitle>{recordData.dateText}</DateTitle>
         </HeaderRow>
@@ -141,26 +119,18 @@ export default function Record() {
               />
             ))}
           </CardList>
-          {isEditing && <EditText>edit</EditText>}
         </CardListSection>
 
-        {(recordData.food || (recordData.skinPhotos && recordData.skinPhotos.length > 0) || isEditing) && (
+        {(hasFood || hasPhotos) && (
           <OptionalSection>
-            <OptionalGroup>
-              <SectionTitle>오늘 먹은 음식</SectionTitle>
-              {isEditing ? (
-                <FoodInput
-                  value={recordData.food}
-                  onChange={handleFoodChange}
-                  placeholder="오늘 드신 음식을 작성해주세요."
-                />
-              ) : (
-                <FoodCard>{recordData.food || "기록된 음식이 없습니다."}</FoodCard>
-              )}
-              {isEditing && <EditText>edit</EditText>}
-            </OptionalGroup>
+            {hasFood && (
+              <OptionalGroup>
+                <SectionTitle>오늘 먹은 음식</SectionTitle>
+                <FoodCard>{recordData.food}</FoodCard>
+              </OptionalGroup>
+            )}
 
-            {recordData.skinPhotos && recordData.skinPhotos.length > 0 && (
+            {hasPhotos && (
               <OptionalGroup>
                 <SectionTitle>오늘 나의 피부 사진</SectionTitle>
                 <SubDescription>
@@ -171,11 +141,6 @@ export default function Record() {
                   {recordData.skinPhotos.map((photo, index) => (
                     <PhotoItem key={index}>
                       <PhotoBox src={photo} alt={`skin-${index}`} />
-                      {isEditing && (
-                        <DeleteBadge type="button" onClick={() => handleRemovePhoto(index)}>
-                          −
-                        </DeleteBadge>
-                      )}
                     </PhotoItem>
                   ))}
                 </PhotoGrid>
@@ -186,9 +151,7 @@ export default function Record() {
       </ContentWrapper>
 
       <ButtonWrapper>
-        <Button onClick={handleToggleEdit}>
-          {isEditing ? "저장하기" : "수정하기"}
-        </Button>
+        <Button onClick={handleEditClick}>수정하기</Button>
       </ButtonWrapper>
     </Container>
   );
@@ -286,7 +249,7 @@ const TabButton = styled.button`
     width: 18px;
     height: 18px;
     transition: filter 0.2s ease;
-    
+
     filter: ${(props) =>
     props.$active
       ? "brightness(0) saturate(100%) invert(29%) sepia(85%) saturate(750%) hue-rotate(72deg) brightness(88%) contrast(96%)"
@@ -324,7 +287,7 @@ const SetCard = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  border: 1px solid #96BE9C;
+  border: 1px solid #96be9c;
 `;
 
 const SetTitle = styled.span`
@@ -348,15 +311,6 @@ const SetTag = styled.span`
   font-weight: 500;
 `;
 
-const EditText = styled.span`
-  font-size: 12px;
-  color: #777;
-  text-decoration: underline;
-  text-align: right;
-  margin-top: 6px;
-  display: block;
-`;
-
 const OptionalSection = styled.div`
   margin: 24px 20px 0 20px;
   padding-top: 16px;
@@ -377,32 +331,18 @@ const SectionTitle = styled.h3`
 const SubDescription = styled.p`
   font-size: 12px;
   font-weight: 500;
-  color: #B4B4B4;
+  color: #b4b4b4;
   margin: 0 0 10px 0;
 `;
 
 const FoodCard = styled.div`
   padding: 12px;
   border: 1px solid #89d7bc;
-  background-color: #F3FFFB;
+  background-color: #f3fffb;
   border-radius: 20px;
   font-size: 11px;
   font-weight: 500;
   color: #141212;
-`;
-
-const FoodInput = styled.textarea`
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #96be9c;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 500;
-  color: #141212;
-  box-sizing: border-box;
-  resize: none;
-  height: 60px;
-  outline: none;
 `;
 
 const PhotoGrid = styled.div`
@@ -424,25 +364,6 @@ const PhotoBox = styled.img`
   object-fit: cover;
   background-color: #eee;
   display: block;
-`;
-
-const DeleteBadge = styled.button`
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background-color: #e53e3e;
-  color: #ffffff;
-  border: none;
-  font-size: 16px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  line-height: 1;
 `;
 
 const ButtonWrapper = styled.div`
