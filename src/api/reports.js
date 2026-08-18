@@ -5,7 +5,7 @@ const USE_MOCK = true; // 실서버 연동 시 false로 변경
 export const getDailyReport = async (date) => {
   if (USE_MOCK) {
     // 1. 당일 생성된 리포트가 없는 경우 Mock 테스트 시 주석 해제하여 확인 가능
-    return {
+    /*return {
       data: {
         isSuccess: true,
         code: 'COMMON_200',
@@ -19,10 +19,10 @@ export const getDailyReport = async (date) => {
           note: null,
         },
       },
-    };
+    };*/
 
     // 2. 정상 리포트 생성 완료 Mock 데이터
-    /*return {
+    return {
       data: {
         isSuccess: true,
         code: 'COMMON_200',
@@ -47,7 +47,7 @@ export const getDailyReport = async (date) => {
           note: null,
         },
       },
-    };*/
+    };
   }
   return api.get(`/api/reports/daily/${date}`);
 };

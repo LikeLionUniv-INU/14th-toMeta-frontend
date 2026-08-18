@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { media } from '../../styles/GlobalStyle';
 
 export const Wrapper = styled.div`
   display: flex;
@@ -8,12 +9,11 @@ export const Wrapper = styled.div`
   width: 100%;
   padding: 0;
   position: relative;
-
   background-color: #fbfcff;
 `;
 
 export const Container = styled.div`
-  margin: 10px 30px 20px 30px;
+  margin: 10px 20px 20px 20px;
   display: flex;
   flex-direction: column;
   justify-content: ${(props) => (props.$center ? 'center' : 'flex-start')};
@@ -29,14 +29,22 @@ export const Container = styled.div`
 export const DateSection = styled.div`
   text-align: center;
   gap: 8px;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
+
+  @media ${media.mobileM} {
+    margin-bottom: 40px;
+  }
 `;
 
 export const DateText = styled.h1`
-  font-size: 24px;
-  font-weight: 800;
+  font-size: 20px;
+  font-weight: 700;
   color: #141212;
   margin: 0;
+
+  @media ${media.mobileM} {
+    font-size: 24px;
+  }
 `;
 
 export const SubLink = styled.button`
@@ -54,28 +62,44 @@ export const SubLink = styled.button`
 export const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 15px;
-  margin-bottom: 40px;
+  gap: 12px;
+  margin-bottom: 30px;
   width: 100%;
   box-sizing: border-box;
+
+  @media ${media.mobileM} {
+    gap: 15px;
+    margin-bottom: 40px;
+  }
 `;
 
 export const Column = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  min-width: 0; /* 내부 요소 넘침 방지 */
+  gap: 12px;
+  min-width: 0;
+
+  @media ${media.mobileM} {
+    gap: 14px;
+  }
 `;
 
 export const CardTitle = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 7px;
-  font-size: 16px;
+  gap: 5px;
+  font-size: 13px;
   font-weight: 700;
   color: #374151;
-  margin: 0 6px 6px 6px;
+  margin: 0 2px 2px 2px;
+  white-space: nowrap;
+
+  @media ${media.mobileM} {
+    gap: 7px;
+    font-size: 16px;
+    margin: 0 6px 6px 6px;
+  }
 `;
 
 export const SleepCard = styled.div`
@@ -83,21 +107,31 @@ export const SleepCard = styled.div`
   border-radius: 24px;
   padding: 14px 8px;
   min-width: 0;
-  height: 208px;
+  height: 190px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  @media ${media.mobileM} {
+    padding: 14px 8px;
+    height: 208px;
+  }
 `;
 
 export const GaugeWrapper = styled.div`
   position: relative;
-  width: 133px;
-  height: 133px;
+  width: 120px;
+  height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: auto;
+
+  @media ${media.mobileM} {
+    width: 133px;
+    height: 133px;
+  }
 `;
 
 export const GaugeCenterText = styled.div`
@@ -109,26 +143,42 @@ export const GaugeCenterText = styled.div`
   .time {
     display: flex;
     align-items: baseline;
-    gap: 3px;
+    gap: 2px;
 
     .bold {
-      font-size: 26px;
+      font-size: 22px;
       font-weight: 700;
       color: #141212;
+
+      @media ${media.mobileM} {
+        font-size: 26px;
+      }
     }
     .unit {
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 500;
       margin: 0 1px;
       color: #141212;
+
+      @media ${media.mobileM} {
+        font-size: 14px;
+      }
+    }
+
+    @media ${media.mobileM} {
+      gap: 3px;
     }
   }
 
   .target {
-    font-size: 12px;
+    font-size: 11px;
     color: #141212;
     font-weight: 500;
     align-self: flex-end;
+
+    @media ${media.mobileM} {
+      font-size: 12px;
+    }
   }
 `;
 
@@ -137,69 +187,100 @@ export const TempCard = styled.div`
   border-radius: 24px;
   padding: 14px 8px;
   min-width: 0;
-  height: 160px;
+  height: 148px;
   box-sizing: border-box;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  @media ${media.mobileM} {
+    padding: 14px 8px;
+    height: 160px;
+  }
 `;
 
 export const TempBar = styled.div`
   position: absolute;
-  left: 20px;
-  top: 50px;
+  left: 14px;
+  top: 46px;
   bottom: 16px;
-  width: 6px;
+  width: 5px;
   border-radius: 9999px;
   background: linear-gradient(to top, #ed652b, #fffbde);
+
+  @media ${media.mobileM} {
+    left: 20px;
+    top: 50px;
+    bottom: 16px;
+    width: 6px;
+  }
 `;
 
 export const ExerciseCard = styled.div`
   background-color: #eaf4fe;
   border-radius: 24px;
   padding: 14px 8px;
-  height: 97px;
-  min-width: 0%;
+  height: 88px;
+  min-width: 0;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  @media ${media.mobileM} {
+    padding: 14px 8px;
+    height: 97px;
+  }
 `;
 
 export const CalorieCard = styled.div`
   background-color: #ffdfed;
   border-radius: 24px;
   padding: 14px 8px;
-  height: 97px;
+  height: 88px;
   min-width: 0;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  @media ${media.mobileM} {
+    padding: 14px 8px;
+    height: 97px;
+  }
 `;
 
-/* 생리주기 카드 */
 export const CycleCard = styled.div`
   background-color: #fff9e6;
   border-radius: 24px;
   padding: 14px 8px;
-  height: 255px;
+  height: 236px;
   min-width: 0;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  @media ${media.mobileM} {
+    padding: 14px 8px;
+    height: 255px;
+  }
 `;
 
 export const CycleChartWrapper = styled.div`
   position: relative;
-  width: 104px;
-  height: 104px;
+  width: 98px;
+  height: 98px;
   margin: auto;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media ${media.mobileM} {
+    width: 104px;
+    height: 104px;
+  }
 `;
 
 export const CycleChartImage = styled.img`
@@ -227,7 +308,7 @@ export const NeedleArrow = styled.div`
   position: absolute;
   bottom: 0;
   width: 2px;
-  height: 20px;
+  height: 18px;
   background-color: #e11d48;
   border-radius: 9999px;
 
@@ -255,23 +336,36 @@ export const NeedleArrow = styled.div`
     background-color: #e11d48;
     border-radius: 50%;
   }
+
+  @media ${media.mobileM} {
+    height: 20px;
+  }
 `;
 
 export const CycleDescription = styled.div`
-  font-size: 9.5px;
+  font-size: 8.5px;
   color: #6b7280;
   text-align: center;
   line-height: 1.35;
-  margin-top: 4px;
+  margin-top: 2px;
 
   p {
     margin: 0;
   }
   .bold {
-    font-size: 10.5px;
+    font-size: 9.5px;
     font-weight: 700;
     color: #1f2937;
     margin-bottom: 2px;
+
+    @media ${media.mobileM} {
+      font-size: 10.5px;
+    }
+  }
+
+  @media ${media.mobileM} {
+    font-size: 9.5px;
+    margin-top: 4px;
   }
 `;
 
@@ -279,27 +373,39 @@ export const OxygenCard = styled.div`
   background-color: #e8f7f7;
   border-radius: 24px;
   padding: 14px 8px;
-  height: 255px;
+  height: 236px;
   box-sizing: border-box;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  @media ${media.mobileM} {
+    padding: 14px 8px;
+    height: 255px;
+  }
 `;
 
 export const OxygenBar = styled.div`
   position: absolute;
-  left: 20px;
-  top: 50px;
+  left: 14px;
+  top: 46px;
   bottom: 16px;
-  width: 6px;
+  width: 5px;
   border-radius: 20px;
   background: linear-gradient(to top, #2b92ed, #e5fff9);
+
+  @media ${media.mobileM} {
+    left: 20px;
+    top: 50px;
+    bottom: 16px;
+    width: 6px;
+  }
 `;
 
 export const OxygenDescription = styled.div`
-  padding-left: 30px;
-  font-size: 8px;
+  padding-left: 22px;
+  font-size: 7.5px;
   color: #6c6c6c;
   line-height: 1.25;
 
@@ -308,7 +414,16 @@ export const OxygenDescription = styled.div`
   }
   .bold {
     font-weight: 700;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
+
+    @media ${media.mobileM} {
+      margin-bottom: 4px;
+    }
+  }
+
+  @media ${media.mobileM} {
+    padding-left: 30px;
+    font-size: 8px;
   }
 `;
 
@@ -317,8 +432,8 @@ export const ValueWrapper = styled.div`
   flex-direction: ${(props) => props.$direction || 'row'};
   align-items: flex-end;
   justify-content: end;
-  gap: 3px;
-  margin: 0 6px 6px 0;
+  gap: 2px;
+  margin: 0 4px 4px 0;
   ${(props) =>
     props.$top &&
     `
@@ -326,37 +441,58 @@ export const ValueWrapper = styled.div`
   `}
 
   .bold {
-    font-size: 26px;
+    font-size: 22px;
     font-weight: 700;
     color: #141212;
+
+    @media ${media.mobileM} {
+      font-size: 26px;
+    }
   }
   .unit {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     margin: 0px 1px;
     color: #141212;
+
+    @media ${media.mobileM} {
+      font-size: 14px;
+    }
+  }
+
+  @media ${media.mobileM} {
+    gap: 3px;
+    margin: 0 6px 6px 0;
   }
 `;
 
 export const MainValue = styled.span`
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 900;
   color: #111827;
   line-height: 1;
+
+  @media ${media.mobileM} {
+    font-size: 22px;
+  }
 `;
 
 export const UnitText = styled.span`
-  font-size: 11px;
+  font-size: 10px;
   color: #6b7280;
   font-weight: 600;
   margin-top: 2px;
+
+  @media ${media.mobileM} {
+    font-size: 11px;
+  }
 `;
 
 export const StatusBadge = styled.span`
   margin-top: 4px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  padding: 2px 8px;
+  padding: 2px 6px;
   border: 1px solid #c8c8c8;
   border-radius: 12px;
   display: inline-flex;
@@ -364,25 +500,30 @@ export const StatusBadge = styled.span`
   justify-content: center;
   line-height: 1;
 
+  @media ${media.mobileM} {
+    font-size: 11px;
+    padding: 2px 8px;
+  }
+
   ${({ $status }) => {
     switch ($status) {
-      case 'warning': // 주황색 (주의)
+      case 'warning':
         return `
           color: #ff922b;
           background-color: #fff4e6;
         `;
-      case 'danger': // 빨간색 (위험)
-      case 'high': // 빨간색 (높음)
+      case 'danger':
+      case 'high':
         return `
           color: #fa5252;
           background-color: #fff5f5;
         `;
-      case 'low': // 파란색 (낮음)
+      case 'low':
         return `
           color: #3a41ff;
           background-color: #e1e5ff;
         `;
-      case 'normal': // 초록색 (정상)
+      case 'normal':
       default:
         return `
           color: #40c057;
@@ -397,20 +538,28 @@ export const SectionBlock = styled.div`
 `;
 
 export const SectionHeading = styled.h2`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #000000;
   margin: 0 0 8px 0;
+
+  @media ${media.mobileM} {
+    font-size: 20px;
+  }
 `;
 
 export const InfoBox = styled.div`
   background-color: #ffffff;
   border: 1px solid #89d7bc;
   border-radius: 20px;
-  padding: 10px 20px;
+  padding: 10px 16px;
   font-size: 12px;
   color: #141212;
   line-height: 1.45;
+
+  @media ${media.mobileM} {
+    padding: 10px 20px;
+  }
 `;
 
 export const SectionHeaderRow = styled.div`
@@ -449,9 +598,13 @@ export const NoteInputBox = styled.div`
   background-color: #ffffff;
   border: 1px solid #89d7bc;
   border-radius: 20px;
-  padding: 10px 20px;
+  padding: 10px 16px;
   height: 112px;
   box-sizing: border-box;
+
+  @media ${media.mobileM} {
+    padding: 10px 20px;
+  }
 
   textarea {
     width: 100%;
@@ -473,15 +626,24 @@ export const NoteInputBox = styled.div`
 export const BottomBanner = styled.div`
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 16px;
+
+  @media ${media.mobileM} {
+    gap: 30px;
+  }
 `;
 
 export const AvatarPlaceholder = styled.div`
-  width: 90px;
-  height: 90px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   background-color: #d1d5db;
   flex-shrink: 0;
+
+  @media ${media.mobileM} {
+    width: 90px;
+    height: 90px;
+  }
 `;
 
 export const SpeechBubble = styled.div`
@@ -532,7 +694,6 @@ export const ErrorMessage = styled.div`
   font-weight: 600;
 `;
 
-/** 모달 스타일 */
 export const CollectingOverlay = styled.div`
   position: fixed;
   top: 0;
