@@ -6,6 +6,8 @@ import {
 } from '../../api/reports';
 import { getMyProfile } from '../../api/user';
 import Header from '../../components/Header';
+import WeeklyStatusCard from '../../components/WeeklyStatusCard';
+import StatusFace from '../../components/StatusFace';
 import MetricLineChart from './components/MetricLineChart';
 import MetricBarChart from './components/MetricBarChart';
 import SleepBarChart from './components/SleepBarChart';
@@ -13,6 +15,42 @@ import CyclePhaseCalendar from './components/CyclePhaseCalendar';
 import { LINE_CHART_CONFIG } from './components/lineChartConfig';
 import { BAR_CHART_CONFIG } from './components/barChartConfig';
 import * as S from './WeeklyReport.styles';
+
+// 피부 상태 5단계 컬러칩
+const SKIN_STATUS_COLORS = {
+  very_bad: '#ff5900',
+  bad: '#ff8237',
+  normal: '#ffaa6e',
+  good: '#ffd3ad',
+  very_good: '#fffbdc',
+};
+
+const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
+
+const MONTH_NAMES_EN = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+// title 첫 단어("8월 첫째 주" -> "8월")에서 월, endDate("2026-08-02")에서 연도를 꺼내
+// "August 2026" 형태로 조합한다. 파싱에 실패하면 원래 title을 그대로 사용한다.
+const getEnglishMonthYearTitle = (title, endDate) => {
+  const monthMatch = title?.match(/^(\d+)월/);
+  const year = endDate?.split('-')[0];
+  if (!monthMatch || !year) return title;
+  const monthName = MONTH_NAMES_EN[Number(monthMatch[1]) - 1];
+  return monthName ? `${monthName} ${year}` : title;
+};
 
 const WeeklyReport = () => {
   const { reportId } = useParams();
@@ -108,6 +146,14 @@ const WeeklyReport = () => {
   const tabs = getTabsByGender(userData?.gender);
   const nickname = userData?.nickname || '회원';
 
+  // 상태 탭용: 요일별 컬러칩 데이터 (null이면 흰색으로 비워둠)
+  const skinStatusDays = (reportData.skinStatus || []).map((item) => ({
+    date: item.date,
+    day: DAY_NAMES[new Date(item.date).getDay()],
+    color: item.value ? SKIN_STATUS_COLORS[item.value] : null,
+    children: item.value ? <StatusFace level={item.value} /> : null,
+  }));
+
   return (
     <S.Container>
       <Header title="주간 리포트" variant="back" />
@@ -129,7 +175,13 @@ const WeeklyReport = () => {
         </S.TabContainer>
 
         {/* 2. 그래프 영역 */}
-        {LINE_CHART_CONFIG[selectedTab] ? (
+        {selectedTab === '상태' ? (
+          <WeeklyStatusCard
+            title={getEnglishMonthYearTitle(reportData.title, reportData.endDate)}
+            subtitle="이번 주 피부 상태를 확인해 보세요."
+            days={skinStatusDays}
+          />
+        ) : LINE_CHART_CONFIG[selectedTab] ? (
           <MetricLineChart
             data={reportData[LINE_CHART_CONFIG[selectedTab].dataKey]}
             unit={LINE_CHART_CONFIG[selectedTab].unit}

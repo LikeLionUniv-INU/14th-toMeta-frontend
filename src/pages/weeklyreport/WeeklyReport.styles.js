@@ -37,7 +37,7 @@ export const TabContainer = styled.div`
   gap: 8px;
   overflow-x: auto;
   white-space: nowrap;
-  padding-bottom: 4px;
+  padding-bottom: 0;
 
   &::-webkit-scrollbar {
     display: none;
@@ -147,8 +147,8 @@ export const Divider = styled.div`
 
 export const SummaryContainer = styled.div`
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  align-items: center;
+  gap: 20px;
   margin-top: 4px;
 `;
 
@@ -161,14 +161,28 @@ export const AvatarCircle = styled.div`
 `;
 
 export const SummaryBubble = styled.div`
+  position: relative;
   background-color: #e6fcf5;
-  color: #0ca678;
-  font-size: 13px;
+  color: #000000;
+  font-size: 10px;
   line-height: 1.45;
   padding: 12px 14px;
-  border-radius: 16px;
-  border-top-left-radius: 4px;
+  border-radius: 20px;
   flex: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: 20px solid #e6fcf5;
+  }
 `;
 
 export const AnalysisList = styled.div`
@@ -181,7 +195,7 @@ export const AnalysisBubble = styled.div`
   background-color: #ffffff;
   border: 1px solid #89d7bc;
   color: #141212;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
   padding: 14px 10px;
   border-radius: 20px;

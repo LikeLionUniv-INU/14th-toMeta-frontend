@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export const ChartWrapper = styled.div`
   position: relative;
   width: 100%;
+  background-color: #ffffff;
 `;
 
 export const UnitLabel = styled.span`

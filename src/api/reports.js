@@ -87,12 +87,12 @@ export const getWeeklyReportDetail = async (reportId) => {
 
           // 1. 상태 (월~일)
           skinStatus: [
-            { date: '2026-07-27', value: 'good' },
+            { date: '2026-07-27', value: 'very_bad' },
             { date: '2026-07-28', value: 'bad' },
-            { date: '2026-07-29', value: 'good' },
+            { date: '2026-07-29', value: 'normal' },
             { date: '2026-07-30', value: null },
             { date: '2026-07-31', value: 'good' },
-            { date: '2026-08-01', value: 'bad' },
+            { date: '2026-08-01', value: 'very_good' },
             { date: '2026-08-02', value: 'good' },
           ],
 
