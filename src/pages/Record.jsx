@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Header from "../components/Header";
 import Button from "../components/Button";
 import CosmeticCard from "../components/CosmeticCard";
 import SunIcon from "../assets/images/record/sun.svg";
 import MoonIcon from "../assets/images/record/Moon.svg";
+import { getCosmeticOptions } from "../api/cosmetics";
 
 export default function Record() {
   const [activeTab, setActiveTab] = useState("morning");
@@ -13,16 +14,6 @@ export default function Record() {
   const [recordData, setRecordData] = useState({
     dateText: "8월 5일 수요일",
     skinStatus: "보통",
-    morningRoutine: [
-      { id: 1, name: "아누아 어성초 77% 진정 토너", tags: ["#토너", "#어성초", "#진정", "#피지조절"] },
-      { id: 2, name: "브링그린 티트리 시카 크림", tags: ["#크림", "#속건조", "#수분", "#시카"] },
-      { id: 3, name: "에스트라 아토베리어 365크림", tags: ["#크림", "#속건조", "#수분", "#진정"] },
-      { id: 4, name: "듀이트리 핏 앤 퀵 더블패드", tags: ["#패드", "#유수분", "#수분", "#진정"] },
-    ],
-    nightRoutine: [
-      { id: 101, name: "아누아 어성초 77% 진정 토너", tags: ["#토너", "#진정"] },
-      { id: 102, name: "에스트라 아토베리어 365크림", tags: ["#크림", "#보습"] },
-    ],
     food: "아침에 감자탕을 먹었다.",
     skinPhotos: [
       "https://via.placeholder.com/100",
@@ -31,10 +22,38 @@ export default function Record() {
     ],
   });
 
-  const currentRoutine =
-    activeTab === "morning"
-      ? recordData.morningRoutine
-      : recordData.nightRoutine;
+  const [optionsData, setOptionsData] = useState({
+    sets: [],
+    cosmetics: [],
+  });
+
+  useEffect(() => {
+    const fetchCosmeticOptions = async () => {
+      try {
+        const response = await getCosmeticOptions();
+        if (response.data && response.data.isSuccess) {
+          const result = response.data.result;
+          if (result) {
+            setOptionsData({
+              sets: result.sets || [],
+              cosmetics: result.cosmetics || (Array.isArray(result) ? result : []),
+            });
+          }
+        }
+      } catch (error) {
+        console.error("화장품 옵션 조회 중 오류 발생:", error);
+      }
+    };
+
+    fetchCosmeticOptions();
+  }, []);
+
+  const filteredSets = optionsData.sets.filter((item) => {
+    if (!item.usageTime || item.usageTime === "both") return true;
+    return item.usageTime === activeTab;
+  });
+
+  const cosmeticList = optionsData.cosmetics;
 
   const handleFoodChange = (e) => {
     setRecordData((prev) => ({
@@ -87,23 +106,38 @@ export default function Record() {
             $active={activeTab === "morning"}
             onClick={() => setActiveTab("morning")}
           >
-            <img src={SunIcon} /> 모닝 스킨케어
+            <img src={SunIcon} alt="morning" /> 모닝 스킨케어
           </TabButton>
           <TabButton
             $active={activeTab === "night"}
             onClick={() => setActiveTab("night")}
           >
-            <img src={MoonIcon} /> 나이트 스킨케어
+            <img src={MoonIcon} alt="night" /> 나이트 스킨케어
           </TabButton>
         </TabGroup>
 
         <CardListSection>
           <CardList>
-            {currentRoutine.map((item) => (
+            {filteredSets.map((set) => (
+              <SetCard key={set.setId}>
+                <SetTitle>{set.name}</SetTitle>
+                <SetTagGroup>
+                  {(set.mainIngredients || []).map((tag, idx) => (
+                    <SetTag key={idx}>
+                      {tag.startsWith("#") ? tag : `#${tag}`}
+                    </SetTag>
+                  ))}
+                </SetTagGroup>
+              </SetCard>
+            ))}
+
+            {cosmeticList.map((item) => (
               <CosmeticCard
-                key={item.id}
-                name={item.name}
-                tags={item.tags}
+                key={item.userCosmeticId}
+                name={item.productName || item.name}
+                tags={(item.mainIngredients || []).map((tag) =>
+                  tag.startsWith("#") ? tag : `#${tag}`
+                )}
               />
             ))}
           </CardList>
@@ -270,6 +304,48 @@ const CardList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-height: 250px;
+  overflow-y: auto;
+  padding-right: 2px;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 4px;
+  }
+`;
+
+const SetCard = styled.div`
+  background-color: #fff8f2;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid #96BE9C;
+`;
+
+const SetTitle = styled.span`
+  font-size: 14px;
+  font-weight: 700;
+  color: #141212;
+`;
+
+const SetTagGroup = styled.div`
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+`;
+
+const SetTag = styled.span`
+  background-color: #96be9c;
+  color: #ffffff;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-weight: 500;
 `;
 
 const EditText = styled.span`
