@@ -6,6 +6,8 @@ import {
 } from '../../api/reports';
 import { getMyProfile } from '../../api/user';
 import Header from '../../components/Header';
+import MetricLineChart from './components/MetricLineChart';
+import { LINE_CHART_CONFIG } from './components/lineChartConfig';
 import * as S from './WeeklyReport.styles';
 
 const WeeklyReport = () => {
@@ -16,7 +18,7 @@ const WeeklyReport = () => {
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
   const [reportData, setReportData] = useState(null);
-  const [selectedTab, setSelectedTab] = useState('피부온도');
+  const [selectedTab, setSelectedTab] = useState('상태');
 
   // Note 상태 관리
   const [note, setNote] = useState('');
@@ -122,15 +124,25 @@ const WeeklyReport = () => {
           ))}
         </S.TabContainer>
 
-        {/* 2. 그래프 영역 Placeholder */}
-        <S.ChartAreaPlaceholder>
-          <p className="placeholder-text">
-            📊 <strong>{selectedTab}</strong> 데이터 차트 영역
-          </p>
-          <span className="placeholder-sub">
-            (추후 완성된 그래프 컴포넌트가 들어갈 자리입니다)
-          </span>
-        </S.ChartAreaPlaceholder>
+        {/* 2. 그래프 영역 */}
+        {LINE_CHART_CONFIG[selectedTab] ? (
+          <MetricLineChart
+            data={reportData[LINE_CHART_CONFIG[selectedTab].dataKey]}
+            unit={LINE_CHART_CONFIG[selectedTab].unit}
+            domain={LINE_CHART_CONFIG[selectedTab].domain}
+            ticks={LINE_CHART_CONFIG[selectedTab].ticks}
+            normalRange={LINE_CHART_CONFIG[selectedTab].normalRange}
+          />
+        ) : (
+          <S.ChartAreaPlaceholder>
+            <p className="placeholder-text">
+              📊 <strong>{selectedTab}</strong> 데이터 차트 영역
+            </p>
+            <span className="placeholder-sub">
+              (추후 완성된 그래프 컴포넌트가 들어갈 자리입니다)
+            </span>
+          </S.ChartAreaPlaceholder>
+        )}
 
         {/* 3. 사진 모아보기 */}
         <S.Section>

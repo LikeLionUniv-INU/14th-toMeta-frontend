@@ -161,7 +161,7 @@ export const getWeeklyReportDetail = async (reportId) => {
             },
           ],
 
-          // 3. 피부온도 (와이어프레임 그래프 수치 매칭)
+          // 3. 평균 피부온도
           skinTemperature: [
             { date: '2026-07-27', value: 30.0 }, // 월
             { date: '2026-07-28', value: 33.8 }, // 화
@@ -183,15 +183,15 @@ export const getWeeklyReportDetail = async (reportId) => {
             { date: '2026-08-02', value: null },
           ],
 
-          // 5. 총 소모 칼로리
+          // 5. 운동 소모 칼로리
           totalCaloriesBurned: [
-            { date: '2026-07-27', value: '1402' },
+            { date: '2026-07-27', value: '66' },
             { date: '2026-07-28', value: null },
-            { date: '2026-07-29', value: '1650' },
-            { date: '2026-07-30', value: '1320' },
-            { date: '2026-07-31', value: '1500' },
-            { date: '2026-08-01', value: '1780' },
-            { date: '2026-08-02', value: '1250' },
+            { date: '2026-07-29', value: '205.6' },
+            { date: '2026-07-30', value: '801' },
+            { date: '2026-07-31', value: null },
+            { date: '2026-08-01', value: '122' },
+            { date: '2026-08-02', value: '421' },
           ],
 
           // 6. 생리주기
