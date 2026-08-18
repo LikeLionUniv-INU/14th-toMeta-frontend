@@ -8,6 +8,7 @@ import { getMyProfile } from '../../api/user';
 import Header from '../../components/Header';
 import MetricLineChart from './components/MetricLineChart';
 import MetricBarChart from './components/MetricBarChart';
+import SleepBarChart from './components/SleepBarChart';
 import { LINE_CHART_CONFIG } from './components/lineChartConfig';
 import { BAR_CHART_CONFIG } from './components/barChartConfig';
 import * as S from './WeeklyReport.styles';
@@ -142,6 +143,8 @@ const WeeklyReport = () => {
             domain={BAR_CHART_CONFIG[selectedTab].domain}
             ticks={BAR_CHART_CONFIG[selectedTab].ticks}
           />
+        ) : selectedTab === '수면 세션' ? (
+          <SleepBarChart data={reportData.sleepSession} />
         ) : (
           <S.ChartAreaPlaceholder>
             <p className="placeholder-text">

@@ -118,7 +118,7 @@ const MetricLineChart = ({
               y1={normalRange[0]}
               y2={normalRange[1]}
               fill="#63bf8e"
-              fillOpacity={0.2}
+              fillOpacity={0.15}
               stroke="none"
             />
           )}

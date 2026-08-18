@@ -25,7 +25,7 @@ export const TooltipBox = styled.div`
 `;
 
 export const TooltipDay = styled.div`
-  font-size: 11px;
+  font-size: 10px;
   color: #898781;
   margin-bottom: 2px;
 `;

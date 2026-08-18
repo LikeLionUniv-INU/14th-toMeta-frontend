@@ -23,8 +23,8 @@ import CustomIngredient from './pages/CustomIngredient';
 import Report from './pages/Report';
 import MyPage from './pages/Mypage';
 import EditProfile from './pages/EditProfile';
-import DailyReport from './pages/DailyReport/DailyReport';
-import WeeklyReport from './pages/WeeklyReport/WeeklyReport';
+import DailyReport from './pages/dailyreport/DailyReport';
+import WeeklyReport from './pages/weeklyreport/WeeklyReport';
 
 function App() {
   return (
