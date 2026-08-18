@@ -1,6 +1,6 @@
 import { useState, useRef, forwardRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/locale';
@@ -13,12 +13,14 @@ import AlreadyRecordedModal from '../components/modal/AlreadyRecordedModal';
 import CameraImg from '../assets/images/camera.png';
 import DrImg from '../assets/images/dr-acne.png';
 import { getCosmeticOptions, getCosmeticSetDetail } from '../api/cosmetics';
-import { getDailyRecord, createDailyRecord } from '../api/records';
+import { getDailyRecord, createDailyRecord, updateDailyRecord } from '../api/records';
 
 const TodayNote = () => {
   const navigate = useNavigate();
+  const { date: paramDate } = useParams();
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(paramDate ? new Date(paramDate) : new Date());
+  const [isEditMode, setIsEditMode] = useState(false);
   const [skinCondition, setSkinCondition] = useState(3);
   const [morningProducts, setMorningProducts] = useState([]);
   const [nightProducts, setNightProducts] = useState([]);
@@ -112,14 +114,18 @@ const TodayNote = () => {
     fetchCosmetics();
   }, []);
 
-  const fetchDailyRecord = async (date) => {
+  const fetchDailyRecord = async (date, isFromUrl = false) => {
     const dateStr = formatDateToYYYYMMDD(date);
     try {
       const response = await getDailyRecord(dateStr);
       if (response.data && response.data.isSuccess) {
         const data = response.data.result;
 
-        setIsAlreadyRecordedModalOpen(true);
+        setIsEditMode(true);
+        if (!isFromUrl) {
+          setIsAlreadyRecordedModalOpen(true);
+        }
+
         setSkinCondition(mapStatusToSkinCondition(data.skinStatus));
         setMorningProducts(data.morningSelections?.map((item) => item.name) || []);
         setNightProducts(data.nightSelections?.map((item) => item.name) || []);
@@ -129,6 +135,7 @@ const TodayNote = () => {
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {
+        setIsEditMode(false);
         setSkinCondition(3);
         setMorningProducts([]);
         setNightProducts([]);
@@ -141,9 +148,18 @@ const TodayNote = () => {
     }
   };
 
+  useEffect(() => {
+    if (paramDate) {
+      const targetDate = new Date(paramDate);
+      setSelectedDate(targetDate);
+      fetchDailyRecord(targetDate, true);
+    }
+  }, [paramDate]);
+
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    fetchDailyRecord(date);
+    const dateStr = formatDateToYYYYMMDD(date);
+    navigate(`/todaynote/${dateStr}`);
   };
 
   const handleOpenDetail = async (setItem) => {
@@ -265,8 +281,8 @@ const TodayNote = () => {
   const handleSubmit = async () => {
     if (!isFormValid) return;
 
+    const formattedDate = formatDateToYYYYMMDD(selectedDate);
     const requestBody = {
-      date: formatDateToYYYYMMDD(selectedDate),
       skinStatus: mapSkinConditionToStatus(skinCondition),
       morningCosmeticIds: getProductIds(morningProducts),
       nightCosmeticIds: getProductIds(nightProducts),
@@ -276,16 +292,28 @@ const TodayNote = () => {
     };
 
     try {
-      const response = await createDailyRecord(requestBody);
-      if (response.data && response.data.isSuccess) {
-        alert('기록이 등록되었습니다.');
-        navigate(-1);
+      if (isEditMode) {
+        const response = await updateDailyRecord(formattedDate, requestBody);
+        if (response.data && response.data.isSuccess) {
+          alert('기록이 수정되었습니다.');
+          navigate(`/record/${formattedDate}`);
+        }
+      } else {
+        const createBody = {
+          date: formattedDate,
+          ...requestBody,
+        };
+        const response = await createDailyRecord(createBody);
+        if (response.data && response.data.isSuccess) {
+          alert('기록이 등록되었습니다.');
+          navigate(`/record/${formattedDate}`);
+        }
       }
     } catch (error) {
       if (error.response && (error.response.status === 409 || error.response.data?.code === 'RECORD_4091')) {
         setIsAlreadyRecordedModalOpen(true);
       } else {
-        alert(error.message || '기록 등록에 실패했습니다.');
+        alert(error.message || '기록 처리에 실패했습니다.');
       }
     }
   };

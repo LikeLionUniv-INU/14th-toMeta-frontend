@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import CosmeticCard from '../components/CosmeticCard';
+import SetDetailModal from '../components/modal/SetDetailModal';
 import SunIcon from '../assets/images/record/sun.svg';
 import MoonIcon from '../assets/images/record/Moon.svg';
-import { getCosmeticOptions } from '../api/cosmetics';
+import AfterIcon from '../assets/images/after.png';
+import { getDailyRecord } from '../api/records';
+import { getCosmeticSetDetail } from '../api/cosmetics';
 
 export default function Record() {
   const { date: paramDate } = useParams();
+  const navigate = useNavigate();
 
-  // 날짜 문자열 변환 함수 (예: '2026-08-05' -> '8월 5일 수요일')
+  // 기준 날짜 (URL 파라미터가 없을 경우 기본값 세팅)
+  const targetDate = paramDate || '2026-08-12';
+
+  // 날짜 문자열 변환 함수 (예: '2026-08-12' -> '8월 12일 수요일')
   const formatDateText = (dateStr) => {
     if (!dateStr) return '오늘의 기록';
     if (dateStr.includes('-')) {
@@ -31,86 +38,92 @@ export default function Record() {
     return dateStr;
   };
 
+  // 피부 상태 텍스트 매핑
+  const mapSkinStatus = (status) => {
+    const statusMap = {
+      good: '좋음',
+      normal: '보통',
+      bad: '나쁨',
+    };
+    return statusMap[status] || status || '보통';
+  };
+
   const [activeTab, setActiveTab] = useState('morning');
-  const [isEditing, setIsEditing] = useState(false);
+  const [selectedSetDetail, setSelectedSetDetail] = useState(null);
 
+  // 일일 기록 상태
   const [recordData, setRecordData] = useState({
-    dateText: '8월 5일 수요일',
-    skinStatus: '보통',
-    food: '아침에 감자탕을 먹었다.',
-    skinPhotos: [
-      'https://via.placeholder.com/100',
-      'https://via.placeholder.com/100',
-      'https://via.placeholder.com/100',
-    ],
-  });
-
-  const [optionsData, setOptionsData] = useState({
-    sets: [],
-    cosmetics: [],
+    dateText: '',
+    skinStatus: '',
+    food: '',
+    skinPhotos: [],
+    morningSelections: [],
+    nightSelections: [],
   });
 
   useEffect(() => {
-    if (paramDate) {
-      setRecordData((prev) => ({
-        ...prev,
-        dateText: formatDateText(paramDate),
-      }));
-    }
-
-    const fetchCosmeticOptions = async () => {
+    const fetchRecord = async () => {
       try {
-        const response = await getCosmeticOptions();
+        const response = await getDailyRecord(targetDate);
         if (response.data && response.data.isSuccess) {
           const result = response.data.result;
-          if (result) {
-            setOptionsData({
-              sets: result.sets || [],
-              cosmetics:
-                result.cosmetics || (Array.isArray(result) ? result : []),
-            });
-          }
+          setRecordData({
+            dateText: formatDateText(result.date || targetDate),
+            skinStatus: mapSkinStatus(result.skinStatus),
+            food: result.foodMemo || '',
+            skinPhotos: (result.images || []).map((img) => img.imageUrl),
+            morningSelections: result.morningSelections || [],
+            nightSelections: result.nightSelections || [],
+          });
         }
       } catch (error) {
-        console.error('화장품 옵션 조회 중 오류 발생:', error);
+        console.error('일일 기록 조회 중 오류 발생:', error);
+        setRecordData((prev) => ({
+          ...prev,
+          dateText: formatDateText(targetDate),
+        }));
       }
     };
 
-    fetchCosmeticOptions();
-  }, []);
+    fetchRecord();
+  }, [targetDate]);
 
-  const filteredSets = optionsData.sets.filter((item) => {
-    if (!item.usageTime || item.usageTime === 'both') return true;
-    return item.usageTime === activeTab;
-  });
+  const currentSelections =
+    activeTab === 'morning'
+      ? recordData.morningSelections
+      : recordData.nightSelections;
 
-  const cosmeticList = optionsData.cosmetics;
-
-  const handleEditClick = () => {
-    navigate("/todaynote");
-  };
-
-  const handleRemovePhoto = (index) => {
-    setRecordData((prev) => ({
-      ...prev,
-      skinPhotos: prev.skinPhotos.filter((_, i) => i !== index),
-    }));
-  };
-
-  const handleToggleEdit = async () => {
-    if (isEditing) {
-      try {
-        console.log('백엔드로 전송할 수정 데이터:', recordData);
-        // await axios.put('/api/records', recordData);
-        alert('수정사항이 저장되었습니다.');
-        setIsEditing(false);
-      } catch (error) {
-        console.error('저장 중 오류 발생:', error);
+  // 세트 클릭 시 상세 조회 API(/api/cosmetic-sets/{setId}) 호출 후 모달 오픈
+  // 세트 클릭 시 상세 조회 API 호출 후 모달 오픈
+  const handleOpenSetDetail = async (setItem) => {
+    try {
+      const response = await getCosmeticSetDetail(setItem.cosmeticSetId);
+      if (response.data && response.data.isSuccess) {
+        const result = response.data.result;
+        const formattedModalData = {
+          name: setItem.name || result.name, // 일일 기록에 명시된 세트 이름을 최우선으로 사용
+          items: (result.cosmetics || []).map((item) => ({
+            id: item.userCosmeticId,
+            name: item.productName || item.customName,
+            tags: (item.mainIngredients || []).map((tag) =>
+              tag.startsWith('#') ? tag : `#${tag}`,
+            ),
+          })),
+        };
+        setSelectedSetDetail(formattedModalData);
       }
-    } else {
-      setIsEditing(true);
+    } catch (error) {
+      console.error('화장품 세트 상세 조회 중 오류 발생:', error);
     }
   };
+
+  // 수정하기 클릭 시 기록 작성/수정 페이지(/todaynote/{date})로 이동
+  const handleNavigateToEdit = () => {
+    navigate(`/todaynote/${targetDate}`);
+  };
+
+  const hasFood = !!(recordData.food && recordData.food.trim());
+  const hasPhotos = !!(recordData.skinPhotos && recordData.skinPhotos.length > 0);
 
   return (
     <Container>
@@ -145,85 +158,81 @@ export default function Record() {
 
         <CardListSection>
           <CardList>
-            {filteredSets.map((set) => (
-              <SetCard key={set.setId}>
-                <SetTitle>{set.name}</SetTitle>
-                <SetTagGroup>
-                  {(set.mainIngredients || []).map((tag, idx) => (
-                    <SetTag key={idx}>
-                      {tag.startsWith('#') ? tag : `#${tag}`}
-                    </SetTag>
-                  ))}
-                </SetTagGroup>
-              </SetCard>
-            ))}
+            {currentSelections.map((item, idx) => {
+              if (item.selectionType === 'SET') {
+                return (
+                  <SetCard
+                    key={`set-${item.cosmeticSetId || idx}`}
+                    onClick={() => handleOpenSetDetail(item)}
+                  >
+                    <SetLeftContent>
+                      <SetTitle>{item.name}</SetTitle>
+                      <SetTagGroup>
+                        {(item.ingredientTags || []).map((tag, tagIdx) => (
+                          <SetTag key={tagIdx}>
+                            {tag.startsWith('#') ? tag : `#${tag}`}
+                          </SetTag>
+                        ))}
+                      </SetTagGroup>
+                    </SetLeftContent>
+                    <ArrowIcon src={AfterIcon} alt="상세보기" />
+                  </SetCard>
+                );
+              }
 
-            {cosmeticList.map((item) => (
-              <CosmeticCard
-                key={item.userCosmeticId}
-                name={item.productName || item.name}
-                tags={(item.mainIngredients || []).map((tag) =>
-                  tag.startsWith('#') ? tag : `#${tag}`,
-                )}
-              />
-            ))}
+              return (
+                <CosmeticCard
+                  key={`cosmetic-${item.userCosmeticId || idx}`}
+                  name={item.name}
+                  tags={(item.ingredientTags || []).map((tag) =>
+                    tag.startsWith('#') ? tag : `#${tag}`,
+                  )}
+                />
+              );
+            })}
           </CardList>
         </CardListSection>
 
-        {(recordData.food ||
-          (recordData.skinPhotos && recordData.skinPhotos.length > 0) ||
-          isEditing) && (
-            <OptionalSection>
+        {(hasFood || hasPhotos) && (
+          <OptionalSection>
+            {hasFood && (
               <OptionalGroup>
                 <SectionTitle>오늘 먹은 음식</SectionTitle>
-                {isEditing ? (
-                  <FoodInput
-                    value={recordData.food}
-                    onChange={handleFoodChange}
-                    placeholder="오늘 드신 음식을 작성해주세요."
-                  />
-                ) : (
-                  <FoodCard>
-                    {recordData.food || '기록된 음식이 없습니다.'}
-                  </FoodCard>
-                )}
-                {isEditing && <EditText>edit</EditText>}
+                <FoodCard>{recordData.food}</FoodCard>
               </OptionalGroup>
+            )}
 
-              {hasPhotos && (
-                <OptionalGroup>
-                  <SectionTitle>오늘 나의 피부 사진</SectionTitle>
-                  <SubDescription>
-                    사진을 남겨두면 주간 리포트에서 한 주간의 변화 추이를 볼 수
-                    있어요!
-                  </SubDescription>
+            {hasPhotos && (
+              <OptionalGroup>
+                <SectionTitle>오늘 나의 피부 사진</SectionTitle>
+                <SubDescription>
+                  사진을 남겨두면 주간 리포트에서 한 주간의 변화 추이를 볼 수
+                  있어요!
+                </SubDescription>
 
-                  <PhotoGrid>
-                    {recordData.skinPhotos.map((photo, index) => (
-                      <PhotoItem key={index}>
-                        <PhotoBox src={photo} alt={`skin-${index}`} />
-                        {isEditing && (
-                          <DeleteBadge
-                            type="button"
-                            onClick={() => handleRemovePhoto(index)}
-                          >
-                            −
-                          </DeleteBadge>
-                        )}
-                      </PhotoItem>
-                    ))}
-                  </PhotoGrid>
-                </OptionalGroup>
-              )}
-            </OptionalSection>
-          )}
+                <PhotoGrid>
+                  {recordData.skinPhotos.map((photo, index) => (
+                    <PhotoItem key={index}>
+                      <PhotoBox src={photo} alt={`skin-${index}`} />
+                    </PhotoItem>
+                  ))}
+                </PhotoGrid>
+              </OptionalGroup>
+            )}
+          </OptionalSection>
+        )}
       </ContentWrapper>
 
       <ButtonWrapper>
-        <Button onClick={handleToggleEdit}>
-          {isEditing ? '저장하기' : '수정하기'}
-        </Button>
+        <Button onClick={handleNavigateToEdit}>수정하기</Button>
       </ButtonWrapper>
+
+      {selectedSetDetail && (
+        <SetDetailModal
+          setItem={selectedSetDetail}
+          onClose={() => setSelectedSetDetail(null)}
+        />
+      )}
     </Container>
   );
 }
@@ -356,15 +365,30 @@ const SetCard = styled.div`
   border-radius: 12px;
   padding: 14px 16px;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #96be9c;
+  cursor: pointer;
+`;
+
+const SetLeftContent = styled.div`
+  display: flex;
   flex-direction: column;
   gap: 8px;
-  border: 1px solid #96be9c;
 `;
 
 const SetTitle = styled.span`
   font-size: 14px;
   font-weight: 700;
   color: #141212;
+`;
+
+const ArrowIcon = styled.img`
+  width: 12px;
+  height: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-right: 4px;
 `;
 
 const SetTagGroup = styled.div`

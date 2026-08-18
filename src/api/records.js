@@ -106,7 +106,18 @@ export const getDailyRecord = async (date) => {
 
 export const updateDailyRecord = async (date, recordData) => {
   if (USE_MOCK) {
-    return { data: { isSuccess: true, result: null } };
+    console.log(`[Mock API] 데일리 기록 수정 (${date}):`, recordData);
+    return {
+      data: {
+        isSuccess: true,
+        code: 'COMMON_200',
+        message: '요청에 성공했습니다.',
+        result: {
+          recordId: 37,
+          date: date,
+        },
+      },
+    };
   }
   return api.patch(`/api/daily-records/${date}`, recordData);
 };
