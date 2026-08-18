@@ -9,6 +9,7 @@ import Header from '../../components/Header';
 import MetricLineChart from './components/MetricLineChart';
 import MetricBarChart from './components/MetricBarChart';
 import SleepBarChart from './components/SleepBarChart';
+import CyclePhaseCalendar from './components/CyclePhaseCalendar';
 import { LINE_CHART_CONFIG } from './components/lineChartConfig';
 import { BAR_CHART_CONFIG } from './components/barChartConfig';
 import * as S from './WeeklyReport.styles';
@@ -145,6 +146,8 @@ const WeeklyReport = () => {
           />
         ) : selectedTab === '수면 세션' ? (
           <SleepBarChart data={reportData.sleepSession} />
+        ) : selectedTab === '생리주기' ? (
+          <CyclePhaseCalendar data={reportData.menstrualCycle} />
         ) : (
           <S.ChartAreaPlaceholder>
             <p className="placeholder-text">
