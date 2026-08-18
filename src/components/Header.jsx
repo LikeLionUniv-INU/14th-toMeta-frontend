@@ -1,10 +1,11 @@
 //  뒤로 가기 버튼이 있을 때 사용 예시
-//  <Header title={"헤더 명"} varient="back" />;
+//  <Header title={"헤더 명"} variant="back" />;
 //  기본 설정은 뒤로가기 없이 되어있습니다.
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { media } from '../styles/GlobalStyle';
 
 export default function Header({ title, onBack, variant = 'default' }) {
   const navigate = useNavigate();
@@ -51,16 +52,19 @@ const HeaderContainer = styled.header`
   top: 0;
   left: 0;
   right: 0;
-  height: 61px;
+  height: 50px;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
   z-index: 100;
-
   background-color: #ffffff;
   border-bottom: 1px solid #96be9c;
+
+  @media ${media.mobileM} {
+    height: 61px;
+  }
 `;
 
 const BackButton = styled.button`
@@ -84,7 +88,7 @@ const BackButton = styled.button`
 `;
 
 const Title = styled.h1`
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 400;
   color: #141212;
   margin: 0;
@@ -93,6 +97,10 @@ const Title = styled.h1`
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
+
+  @media ${media.mobileM} {
+    font-size: 18px;
+  }
 `;
 
 const EmptySpace = styled.div`

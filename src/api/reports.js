@@ -2,27 +2,12 @@ import api from './axios';
 
 const USE_MOCK = true; // 실서버 연동 시 false로 변경
 
+/**
+ * 데일리 리포트 조회
+ */
 export const getDailyReport = async (date) => {
   if (USE_MOCK) {
-    // 1. 당일 생성된 리포트가 없는 경우 Mock 테스트 시 주석 해제하여 확인 가능
     return {
-      data: {
-        isSuccess: true,
-        code: 'COMMON_200',
-        message: '요청에 성공했습니다.',
-        result: {
-          date: date || '2026-08-12',
-          status: 'collecting',
-          healthSummary: null,
-          aiAnalysis: null,
-          personalizedSolution: null,
-          note: null,
-        },
-      },
-    };
-
-    // 2. 정상 리포트 생성 완료 Mock 데이터
-    /*return {
       data: {
         isSuccess: true,
         code: 'COMMON_200',
@@ -47,11 +32,14 @@ export const getDailyReport = async (date) => {
           note: null,
         },
       },
-    };*/
+    };
   }
   return api.get(`/api/reports/daily/${date}`);
 };
 
+/**
+ * 데일리 리포트 Note 수정
+ */
 export const updateDailyReportNote = async (date, noteData) => {
   if (USE_MOCK) {
     return { data: { isSuccess: true, result: null } };
@@ -59,6 +47,9 @@ export const updateDailyReportNote = async (date, noteData) => {
   return api.patch(`/api/reports/daily/${date}/note`, noteData);
 };
 
+/**
+ * 월간 리포트 목록 조회
+ */
 export const getMonthlyReports = async (params) => {
   if (USE_MOCK) {
     return {
@@ -68,8 +59,8 @@ export const getMonthlyReports = async (params) => {
           year: params?.year || 2026,
           month: params?.month || 8,
           weeklyReports: [
-            { reportId: 1, weekRange: '8월 1주차', avgScore: 78 },
-            { reportId: 2, weekRange: '8월 2주차', avgScore: 84 },
+            { reportId: 13, weekRange: '8월 1주차', avgScore: 78 },
+            { reportId: 14, weekRange: '8월 2주차', avgScore: 84 },
           ],
         },
       },
@@ -78,16 +69,185 @@ export const getMonthlyReports = async (params) => {
   return api.get('/api/reports', { params });
 };
 
+/**
+ * 주간 리포트 상세 조회 (와이어프레임 및 명세서 완벽 반영 Mock)
+ */
 export const getWeeklyReportDetail = async (reportId) => {
   if (USE_MOCK) {
     return {
       data: {
         isSuccess: true,
+        code: 'COMMON_200',
+        message: '요청에 성공했습니다.',
         result: {
-          reportId,
-          title: '8월 2주차 피부 분석 리포트',
-          summaryText: '자극도가 전주 대비 15% 감소했습니다.',
-          userNote: '주 3회 팩을 진행함',
+          reportId: Number(reportId) || 13,
+          title: '8월 첫째 주',
+          startDate: '2026-07-27',
+          endDate: '2026-08-02',
+
+          // 1. 상태 (월~일)
+          skinStatus: [
+            { date: '2026-07-27', value: 'very_bad' },
+            { date: '2026-07-28', value: 'bad' },
+            { date: '2026-07-29', value: 'normal' },
+            { date: '2026-07-30', value: null },
+            { date: '2026-07-31', value: 'good' },
+            { date: '2026-08-01', value: 'very_good' },
+            { date: '2026-08-02', value: 'good' },
+          ],
+
+          // 2. 수면 (월~일)
+          sleepSession: [
+            {
+              date: '2026-07-27',
+              sleep: {
+                totalSleep: 420,
+                awake: 15,
+                lightSleep: 210,
+                deepSleep: 120,
+                remSleep: 75,
+              },
+            },
+            {
+              date: '2026-07-28',
+              sleep: {
+                totalSleep: 390,
+                awake: 20,
+                lightSleep: 200,
+                deepSleep: 100,
+                remSleep: 70,
+              },
+            },
+            { date: '2026-07-29', sleep: null },
+            {
+              date: '2026-07-30',
+              sleep: {
+                totalSleep: 450,
+                awake: 10,
+                lightSleep: 230,
+                deepSleep: 130,
+                remSleep: 80,
+              },
+            },
+            {
+              date: '2026-07-31',
+              sleep: {
+                totalSleep: 480,
+                awake: 5,
+                lightSleep: 240,
+                deepSleep: 140,
+                remSleep: 95,
+              },
+            },
+            {
+              date: '2026-08-01',
+              sleep: {
+                totalSleep: 360,
+                awake: 30,
+                lightSleep: 180,
+                deepSleep: 90,
+                remSleep: 60,
+              },
+            },
+            {
+              date: '2026-08-02',
+              sleep: {
+                totalSleep: 430,
+                awake: 15,
+                lightSleep: 215,
+                deepSleep: 125,
+                remSleep: 75,
+              },
+            },
+          ],
+
+          // 3. 평균 피부온도
+          skinTemperature: [
+            { date: '2026-07-27', value: 30.0 }, // 월
+            { date: '2026-07-28', value: 33.8 }, // 화
+            { date: '2026-07-29', value: 31.6 }, // 수
+            { date: '2026-07-30', value: 30.0 }, // 목
+            { date: '2026-07-31', value: 29.0 }, // 금
+            { date: '2026-08-01', value: 33.6 }, // 토
+            { date: '2026-08-02', value: 32.0 }, // 일
+          ],
+
+          // 4. 운동 시간
+          exerciseDuration: [
+            { date: '2026-07-27', value: '45' },
+            { date: '2026-07-28', value: null },
+            { date: '2026-07-29', value: '60' },
+            { date: '2026-07-30', value: null },
+            { date: '2026-07-31', value: '30' },
+            { date: '2026-08-01', value: '50' },
+            { date: '2026-08-02', value: null },
+          ],
+
+          // 5. 운동 소모 칼로리
+          totalCaloriesBurned: [
+            { date: '2026-07-27', value: '66' },
+            { date: '2026-07-28', value: null },
+            { date: '2026-07-29', value: '205.6' },
+            { date: '2026-07-30', value: '801' },
+            { date: '2026-07-31', value: null },
+            { date: '2026-08-01', value: '122' },
+            { date: '2026-08-02', value: '421' },
+          ],
+
+          // 6. 생리주기
+          menstrualCycle: [
+            { date: '2026-07-27', menstrualCycleDay: '14', cycleLength: '28' },
+            { date: '2026-07-28', menstrualCycleDay: '15', cycleLength: '28' },
+            { date: '2026-07-29', menstrualCycleDay: '16', cycleLength: '28' },
+            { date: '2026-07-30', menstrualCycleDay: '17', cycleLength: '28' },
+            { date: '2026-07-31', menstrualCycleDay: '18', cycleLength: '28' },
+            { date: '2026-08-01', menstrualCycleDay: '19', cycleLength: '28' },
+            { date: '2026-08-02', menstrualCycleDay: '20', cycleLength: '28' },
+          ],
+
+          // 7. 평균 산소포화도
+          avgSpo2: [
+            { date: '2026-07-27', value: '97.5' },
+            { date: '2026-07-28', value: null },
+            { date: '2026-07-29', value: '98.0' },
+            { date: '2026-07-30', value: '97.0' },
+            { date: '2026-07-31', value: '99.0' },
+            { date: '2026-08-01', value: '96.8' },
+            { date: '2026-08-02', value: '98.2' },
+          ],
+
+          // 8. 사진 모아보기
+          photos: [
+            {
+              date: '2026-07-27',
+              imageUrl:
+                'https://placehold.co/120x150/e2e8f0/64748b?text=Photo+1',
+            },
+            {
+              date: '2026-07-29',
+              imageUrl:
+                'https://placehold.co/120x150/e2e8f0/64748b?text=Photo+2',
+            },
+            {
+              date: '2026-08-01',
+              imageUrl:
+                'https://placehold.co/120x150/e2e8f0/64748b?text=Photo+3',
+            },
+          ],
+
+          // 9. 요약 & AI 분석
+          weeklySummary: '전반적으로 붉은기와 열감이 많이 감소한 한 주였어요!',
+          aiAnalysis: [
+            '이번 주는 전반적으로 붉은기와 열감이 많이 감소한 한 주였어요!',
+            '화요일에 발생했던 볼 부위의 붉은기와 화농성 여드름이 금요일에는 많이 완화되었어요.',
+            '시카/판테놀 성분이 들어간 제품을 사용했을 때, 피부 상태가 좋다고 기록했어요.',
+            '이번 주는 지난주보다 수분 섭취량이 늘어났어요! 이러한 수분 보충이 피부결 진정과 유지에 긍정적인 도움이 되었을 것으로 기대돼요. 💧',
+          ],
+
+          // 10. 맞춤 솔루션 & 메모
+          personalizedSolution:
+            '이번 주는 취침 시간이 불규칙했어요. 다음 주에는 ‘주 3회 이상 밤 12시 전 눕기’를 목표로 수면 리듬을 맞춰보는 건 어떨까요?',
+          note: '',
         },
       },
     };
@@ -95,9 +255,33 @@ export const getWeeklyReportDetail = async (reportId) => {
   return api.get(`/api/reports/weekly/${reportId}`);
 };
 
+/**
+ * 주간 리포트 Note 수정
+ */
 export const updateWeeklyReportNote = async (reportId, noteData) => {
   if (USE_MOCK) {
-    return { data: { isSuccess: true, result: null } };
+    if (noteData.note && noteData.note.length > 300) {
+      return Promise.reject({
+        response: {
+          data: {
+            isSuccess: false,
+            code: 'REPORT_4002',
+            message: '리포트 Note는 최대 300자까지 입력할 수 있습니다.',
+            result: null,
+          },
+        },
+      });
+    }
+    return {
+      data: {
+        isSuccess: true,
+        code: 'COMMON_200',
+        message: '요청에 성공했습니다.',
+        result: {
+          note: noteData.note,
+        },
+      },
+    };
   }
   return api.patch(`/api/reports/weekly/${reportId}/note`, noteData);
 };

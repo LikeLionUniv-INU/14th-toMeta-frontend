@@ -324,7 +324,7 @@ export default function DailyReport({ date }) {
             <S.ExerciseCard>
               <S.CardTitle>
                 <ExerciseIcon />
-                <span>운동</span>
+                <span>운동 시간</span>
               </S.CardTitle>
               <S.ValueWrapper>
                 {exercise.h > 0 && (
@@ -345,7 +345,7 @@ export default function DailyReport({ date }) {
             <S.CalorieCard>
               <S.CardTitle>
                 <CalorieIcon />
-                <span>칼로리 소모</span>
+                <span>운동 소모 칼로리</span>
               </S.CardTitle>
               <S.ValueWrapper>
                 <span className="bold">{health.totalCaloriesBurned ?? 0}</span>
@@ -455,18 +455,23 @@ export default function DailyReport({ date }) {
 
         {/* Note 입력 영역 */}
         <S.SectionBlock>
-          <S.SectionHeaderRow>
-            <S.SectionHeading>Note</S.SectionHeading>
-            <S.SaveButton onClick={handleSaveNote} disabled={isSavingDisabled}>
-              {isSavingNote ? '저장 중...' : '저장'}
-            </S.SaveButton>
-          </S.SectionHeaderRow>
+          <S.SectionHeading>Note</S.SectionHeading>
           <S.NoteInputBox>
             <textarea
               value={noteText}
               onChange={(e) => setNoteText(e.target.value)}
               placeholder="✏️ 오늘 피부에 대해 남기고 싶은 이야기를 자유롭게 적어보세요!"
+              maxLength={300}
             />
+            <S.NoteActionRow>
+              <S.CharCount>{noteText.length} / 300자</S.CharCount>
+              <S.SaveButton
+                onClick={handleSaveNote}
+                disabled={!noteText.trim() || isSavingNote}
+              >
+                {isSavingNote ? '저장 중...' : '저장'}
+              </S.SaveButton>
+            </S.NoteActionRow>
           </S.NoteInputBox>
         </S.SectionBlock>
 

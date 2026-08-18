@@ -24,7 +24,8 @@ import CustomIngredient from './pages/CustomIngredient';
 import Report from './pages/Report';
 import MyPage from './pages/Mypage';
 import EditProfile from './pages/EditProfile';
-import DailyReport from './pages/DailyReport/DailyReport';
+import DailyReport from './pages/dailyreport/DailyReport';
+import WeeklyReport from './pages/weeklyreport/WeeklyReport';
 
 function App() {
   return (
@@ -65,6 +66,7 @@ function App() {
           {/* 리포트 페이지 라우트 */}
           <Route path="/report/daily" element={<DailyReport />} />
           <Route path="/report/daily/:date" element={<DailyReport />} />
+          <Route path="/report/weekly/:reportId" element={<WeeklyReport />} />
 
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/edit-profile" element={<EditProfile />} />

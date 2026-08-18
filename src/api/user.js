@@ -24,7 +24,7 @@ export const getMyProfile = async () => {
         isSuccess: true,
         result: {
           nickname: '도영',
-          gender: 'male',
+          gender: 'female',
           ageGroup: '20s',
           skinType: 'combination_dry',
         },
