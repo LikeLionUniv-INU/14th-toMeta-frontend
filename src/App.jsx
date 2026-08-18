@@ -22,6 +22,7 @@ import CustomCategory from './pages/CustomCategory';
 import CustomIngredient from './pages/CustomIngredient';
 import MyPage from './pages/Mypage';
 import EditProfile from './pages/EditProfile';
+import DailyReport from './pages/DailyReport/DailyReport';
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
             path="/register/custom-ingredient"
             element={<CustomIngredient />}
           />
+          <Route path="/report/daily" element={<DailyReport />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/edit-profile" element={<EditProfile />} />
         </Routes>
