@@ -10,30 +10,7 @@ import {
   ReferenceArea,
 } from 'recharts';
 import * as S from './MetricLineChart.styles';
-
-const DAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
-
-// null 값은 그래프상 점을 찍지 않고 좌우 데이터끼리만 부드럽게 이어주기 위해 value를 null로 유지
-const formatChartData = (rawData = []) =>
-  rawData.map((item) => {
-    const parsed =
-      item.value === null || item.value === undefined || item.value === ''
-        ? null
-        : Number(item.value);
-    return {
-      date: item.date,
-      day: DAY_LABELS[new Date(item.date).getDay()],
-      value: Number.isNaN(parsed) ? null : parsed,
-    };
-  });
-
-const formatValue = (value) => {
-  const rounded = Math.round(value * 10) / 10;
-  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
-};
-
-// 차트 상단(PLOT_TOP)과 가까운 점은 값 라벨이 잘리므로 점 아래로 내려서 표시
-const PLOT_TOP = 28;
+import { formatChartData, formatValue, PLOT_TOP } from './chartUtils';
 
 // 맨 왼쪽(월요일) 점은 라벨을 오른쪽으로, 맨 오른쪽(일요일) 점은 왼쪽으로 붙여
 // 세로축/차트 경계와 겹치거나 잘리지 않도록 한다
@@ -110,7 +87,7 @@ const MetricLineChart = ({
   unit,
   domain,
   ticks,
-  color = '#7ef0b3',
+  color = '#89d7bc',
   height = 220,
   normalRange,
 }) => {
@@ -140,7 +117,7 @@ const MetricLineChart = ({
             <ReferenceArea
               y1={normalRange[0]}
               y2={normalRange[1]}
-              fill="#7ef0b3"
+              fill="#63bf8e"
               fillOpacity={0.2}
               stroke="none"
             />

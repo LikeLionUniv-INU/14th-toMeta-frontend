@@ -7,7 +7,9 @@ import {
 import { getMyProfile } from '../../api/user';
 import Header from '../../components/Header';
 import MetricLineChart from './components/MetricLineChart';
+import MetricBarChart from './components/MetricBarChart';
 import { LINE_CHART_CONFIG } from './components/lineChartConfig';
+import { BAR_CHART_CONFIG } from './components/barChartConfig';
 import * as S from './WeeklyReport.styles';
 
 const WeeklyReport = () => {
@@ -132,6 +134,13 @@ const WeeklyReport = () => {
             domain={LINE_CHART_CONFIG[selectedTab].domain}
             ticks={LINE_CHART_CONFIG[selectedTab].ticks}
             normalRange={LINE_CHART_CONFIG[selectedTab].normalRange}
+          />
+        ) : BAR_CHART_CONFIG[selectedTab] ? (
+          <MetricBarChart
+            data={reportData[BAR_CHART_CONFIG[selectedTab].dataKey]}
+            unit={BAR_CHART_CONFIG[selectedTab].unit}
+            domain={BAR_CHART_CONFIG[selectedTab].domain}
+            ticks={BAR_CHART_CONFIG[selectedTab].ticks}
           />
         ) : (
           <S.ChartAreaPlaceholder>
