@@ -1,6 +1,6 @@
-import { useState, useRef, forwardRef } from 'react';
+import { useState, useRef, forwardRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/locale';
@@ -12,17 +12,24 @@ import SetDetailModal from '../components/modal/SetDetailModal';
 import AlreadyRecordedModal from '../components/modal/AlreadyRecordedModal';
 import CameraImg from '../assets/images/camera.png';
 import DrImg from '../assets/images/dr-acne.png';
+import { getCosmeticOptions, getCosmeticSetDetail } from '../api/cosmetics';
+import { getDailyRecord, createDailyRecord, updateDailyRecord } from '../api/records';
 
 const TodayNote = () => {
   const navigate = useNavigate();
+  const { date: paramDate } = useParams();
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(paramDate ? new Date(paramDate) : new Date());
+  const [isEditMode, setIsEditMode] = useState(false);
   const [skinCondition, setSkinCondition] = useState(3);
   const [morningProducts, setMorningProducts] = useState([]);
   const [nightProducts, setNightProducts] = useState([]);
   const [foodInput, setFoodInput] = useState('');
   const [images, setImages] = useState([]);
   const [noteInput, setNoteInput] = useState('');
+
+  const [setProducts, setSetProducts] = useState([]);
+  const [individualProducts, setIndividualProducts] = useState([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeType, setActiveType] = useState(null);
@@ -34,6 +41,155 @@ const TodayNote = () => {
 
   const fileInputRef = useRef(null);
 
+  const formatDateToYYYYMMDD = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const mapStatusToSkinCondition = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'very_bad':
+        return 1;
+      case 'bad':
+        return 2;
+      case 'normal':
+        return 3;
+      case 'good':
+        return 4;
+      case 'very_good':
+        return 5;
+      default:
+        return 3;
+    }
+  };
+
+  const mapSkinConditionToStatus = (condition) => {
+    switch (Number(condition)) {
+      case 1:
+        return 'very_bad';
+      case 2:
+        return 'bad';
+      case 3:
+        return 'normal';
+      case 4:
+        return 'good';
+      case 5:
+        return 'very_good';
+      default:
+        return 'normal';
+    }
+  };
+
+  useEffect(() => {
+    const fetchCosmetics = async () => {
+      try {
+        const response = await getCosmeticOptions();
+        if (response.data && response.data.isSuccess) {
+          const { sets = [], cosmetics = [] } = response.data.result || {};
+
+          const formattedSets = sets.map((item) => ({
+            id: item.setId,
+            name: item.name,
+            tags: item.mainIngredients?.map((tag) => (tag.startsWith('#') ? tag : `#${tag}`)) || [],
+            ...item,
+          }));
+
+          const formattedCosmetics = cosmetics.map((item) => ({
+            id: item.userCosmeticId,
+            name: item.productName,
+            tags: item.mainIngredients?.map((tag) => (tag.startsWith('#') ? tag : `#${tag}`)) || [],
+            ...item,
+          }));
+
+          setSetProducts(formattedSets);
+          setIndividualProducts(formattedCosmetics);
+        }
+      } catch (error) {
+        console.error('화장품 목록 조회 실패:', error.message);
+      }
+    };
+
+    fetchCosmetics();
+  }, []);
+
+  const fetchDailyRecord = async (date, isFromUrl = false) => {
+    const dateStr = formatDateToYYYYMMDD(date);
+    try {
+      const response = await getDailyRecord(dateStr);
+      if (response.data && response.data.isSuccess) {
+        const data = response.data.result;
+
+        setIsEditMode(true);
+        if (!isFromUrl) {
+          setIsAlreadyRecordedModalOpen(true);
+        }
+
+        setSkinCondition(mapStatusToSkinCondition(data.skinStatus));
+        setMorningProducts(data.morningSelections?.map((item) => item.name) || []);
+        setNightProducts(data.nightSelections?.map((item) => item.name) || []);
+        setFoodInput(data.foodMemo || '');
+        setNoteInput(data.memo || '');
+        setImages(data.images?.map((img) => img.imageUrl || img.imageKey) || []);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        setIsEditMode(false);
+        setSkinCondition(3);
+        setMorningProducts([]);
+        setNightProducts([]);
+        setFoodInput('');
+        setNoteInput('');
+        setImages([]);
+      } else {
+        console.error('일일 기록 조회 실패:', error.message);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (paramDate) {
+      const targetDate = new Date(paramDate);
+      setSelectedDate(targetDate);
+      fetchDailyRecord(targetDate, true);
+    }
+  }, [paramDate]);
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    const dateStr = formatDateToYYYYMMDD(date);
+    navigate(`/todaynote/${dateStr}`);
+  };
+
+  const handleOpenDetail = async (setItem) => {
+    const targetSetId = setItem?.setId || setItem?.id;
+    if (!targetSetId) return;
+
+    try {
+      const response = await getCosmeticSetDetail(targetSetId);
+      if (response.data && response.data.isSuccess) {
+        const detailData = response.data.result;
+
+        const formattedDetail = {
+          id: detailData.setId,
+          name: detailData.name,
+          usageTime: detailData.usageTime,
+          items: detailData.cosmetics?.map((c) => ({
+            id: c.userCosmeticId,
+            name: c.customName || c.productName,
+            tags: c.mainIngredients?.map((tag) => (tag.startsWith('#') ? tag : `#${tag}`)) || [],
+            ...c,
+          })) || [],
+        };
+
+        setDetailModalSet(formattedDetail);
+      }
+    } catch (error) {
+      console.error('세트 상세 조회 실패:', error.message);
+    }
+  };
+
   const formatDate = (date) => {
     const month = date.getMonth() + 1;
     const day = date.getDate();
@@ -42,43 +198,20 @@ const TodayNote = () => {
     return `${month}월 ${day}일 ${dayOfWeek}`;
   };
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-
-    const hasExistingRecord = true;
-    if (hasExistingRecord) {
-      setIsAlreadyRecordedModalOpen(true);
-    }
+  const getProductIds = (productNames) => {
+    return productNames.reduce((ids, name) => {
+      const matchedSet = setProducts.find((set) => set.name === name);
+      if (matchedSet) {
+        ids.push(matchedSet.setId || matchedSet.id);
+        return ids;
+      }
+      const matchedItem = individualProducts.find((item) => (item.name || item.productName) === name);
+      if (matchedItem) {
+        ids.push(matchedItem.userCosmeticId || matchedItem.id);
+      }
+      return ids;
+    }, []);
   };
-
-  const setProducts = [
-    {
-      id: 's1',
-      name: '진정템',
-      tags: ['#어성초', '#진정', '#피지조절'],
-      items: [
-        { id: 'si1', name: '브링그린 티트리 시카 크림', tags: ['#크림', '#속건조', '#수분', '#시카'] },
-        { id: 'si2', name: '에스트라 아토베리어 365크림', tags: ['#크림', '#속건조', '#수분', '#진정'] },
-        { id: 'si3', name: '듀이트리 핏 앤 퀵 더블패드', tags: ['#패드', '#유수분', '#수분', '#진정'] },
-      ],
-    },
-    {
-      id: 's2',
-      name: '(사용자 지정 이름)',
-      tags: ['#티트리', '#진정', '#수분보충'],
-      items: [
-        { id: 'si4', name: '아누아 어성초 77% 진정 토너', tags: ['#토너', '#어성초', '#진정', '#피지조절'] },
-        { id: 'si5', name: '브링그린 티트리 시카 크림', tags: ['#크림', '#속건조', '#수분', '#시카'] },
-      ],
-    },
-  ];
-
-  const individualProducts = [
-    { id: 'i1', name: '아누아 어성초 77% 진정 토너', tags: ['#토너', '#어성초', '#진정', '#피지조절'] },
-    { id: 'i2', name: '브링그린 티트리 시카 크림', tags: ['#크림', '#속건조', '#수분', '#시카'] },
-    { id: 'i3', name: '에스트라 아토베리어 365크림', tags: ['#크림', '#속건조', '#수분', '#진정'] },
-    { id: 'i4', name: '듀이트리 핏 앤 퀵 더블패드', tags: ['#패드', '#유수분', '#수분', '#진정'] },
-  ];
 
   const skinStatusOptions = [
     { id: 1, label: '매우 나쁨' },
@@ -145,20 +278,44 @@ const TodayNote = () => {
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!isFormValid) return;
 
-    const recordData = {
-      selectedDate,
-      skinCondition,
-      morningProducts,
-      nightProducts,
-      foodInput,
-      images,
-      noteInput,
+    const formattedDate = formatDateToYYYYMMDD(selectedDate);
+    const requestBody = {
+      skinStatus: mapSkinConditionToStatus(skinCondition),
+      morningCosmeticIds: getProductIds(morningProducts),
+      nightCosmeticIds: getProductIds(nightProducts),
+      foodMemo: foodInput,
+      imageKeys: images,
+      memo: noteInput,
     };
 
-    console.log('기록 저장 데이터:', recordData);
+    try {
+      if (isEditMode) {
+        const response = await updateDailyRecord(formattedDate, requestBody);
+        if (response.data && response.data.isSuccess) {
+          alert('기록이 수정되었습니다.');
+          navigate(`/record/${formattedDate}`);
+        }
+      } else {
+        const createBody = {
+          date: formattedDate,
+          ...requestBody,
+        };
+        const response = await createDailyRecord(createBody);
+        if (response.data && response.data.isSuccess) {
+          alert('기록이 등록되었습니다.');
+          navigate(`/record/${formattedDate}`);
+        }
+      }
+    } catch (error) {
+      if (error.response && (error.response.status === 409 || error.response.data?.code === 'RECORD_4091')) {
+        setIsAlreadyRecordedModalOpen(true);
+      } else {
+        alert(error.message || '기록 처리에 실패했습니다.');
+      }
+    }
   };
 
   const renderProductRows = (products, type) => {
@@ -199,9 +356,6 @@ const TodayNote = () => {
       </SelectedTagScrollContainer>
     );
   };
-
-  const currentStatusObj = skinStatusOptions.find((item) => item.id === Number(skinCondition));
-  const sliderPercentage = ((Number(skinCondition || 3) - 1) / 4) * 100;
 
   return (
     <S.Container>
@@ -405,7 +559,7 @@ const TodayNote = () => {
         selectedProducts={selectedProducts}
         onToggleProduct={handleToggleProduct}
         onSubmit={handleModalSubmit}
-        onOpenDetail={(setItem) => setDetailModalSet(setItem)}
+        onOpenDetail={handleOpenDetail}
       />
 
       <SetDetailModal

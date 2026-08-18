@@ -9,6 +9,7 @@ import HealthConnect from './pages/HealthConnect';
 import ProfileInput from './pages/ProfileInput';
 import SkintypeInput from './pages/SkintypeInput';
 import Notification from './pages/Notification';
+import RecordRedirect from './pages/Record-Redirect';
 import TodayNote from './pages/TodayNote';
 import Record from './pages/Record';
 import PouchRedirect from './pages/Pouch-Redirect';
@@ -37,9 +38,9 @@ function App() {
           <Route path="/onboarding/profile" element={<ProfileInput />} />
           <Route path="/onboarding/skin-type" element={<SkintypeInput />} />
           <Route path="/onboarding/notification" element={<Notification />} />
+          <Route path="/record-redirect" element={<RecordRedirect />} />
           <Route path="/todaynote" element={<TodayNote />} />
-
-          {/* 기록 페이지 라우트 (단일 & 날짜 파라미터) */}
+          <Route path="/todaynote/:date" element={<TodayNote />} />
           <Route path="/record" element={<Record />} />
           <Route path="/record/:date" element={<Record />} />
 

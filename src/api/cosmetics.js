@@ -151,12 +151,27 @@ export const getCosmeticSetDetail = async (setId) => {
     return {
       data: {
         isSuccess: true,
+        code: "COMMON_200",
+        message: "요청에 성공했습니다.",
         result: {
-          setId,
-          setName: '모닝 진정 케어 세트',
+          setId: Number(setId),
+          name: setId === 1 ? "진정템" : "진정 꿀조합",
+          usageTime: "morning",
           cosmetics: [
-            { userCosmeticId: 1, name: '수분 토너' },
-            { userCosmeticId: 2, name: '진정 앰플' },
+            {
+              userCosmeticId: 12,
+              productName: "아누아 어성초 77% 진정 토너",
+              customName: null,
+              productType: "skin_toner",
+              mainIngredients: ["어성초", "진정", "피지조절"],
+            },
+            {
+              userCosmeticId: 15,
+              productName: "토리든 다이브인 저분자 히알루론산 세럼",
+              customName: null,
+              productType: "serum",
+              mainIngredients: ["히알루론산", "수분", "속건조"],
+            },
           ],
         },
       },
