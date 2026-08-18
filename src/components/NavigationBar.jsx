@@ -17,7 +17,7 @@ export default function NavigationBar() {
   };
 
   const navList = [
-    { name: '기록', path: ['/record'], icon: recordIcon },
+    { name: '기록', path: ['/record-redirect', '/record', '/todaynote'], icon: recordIcon },
     { name: '보관함', path: ['/pouch-redirect', '/my-pouch', '/empty-pouch'], icon: storageIcon },
     { name: '홈', path: ['/home'], icon: homeIcon },
     { name: '리포트', path: ['/report'], icon: reportIcon },
