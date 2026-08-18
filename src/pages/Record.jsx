@@ -1,25 +1,47 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import Header from "../components/Header";
-import Button from "../components/Button";
-import CosmeticCard from "../components/CosmeticCard";
-import SunIcon from "../assets/images/record/sun.svg";
-import MoonIcon from "../assets/images/record/Moon.svg";
-import { getCosmeticOptions } from "../api/cosmetics";
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
+import Header from '../components/Header';
+import Button from '../components/Button';
+import CosmeticCard from '../components/CosmeticCard';
+import SunIcon from '../assets/images/record/sun.svg';
+import MoonIcon from '../assets/images/record/Moon.svg';
+import { getCosmeticOptions } from '../api/cosmetics';
 
 export default function Record() {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("morning");
+  const { date: paramDate } = useParams();
+
+  // 날짜 문자열 변환 함수 (예: '2026-08-05' -> '8월 5일 수요일')
+  const formatDateText = (dateStr) => {
+    if (!dateStr) return '오늘의 기록';
+    if (dateStr.includes('-')) {
+      const [year, month, day] = dateStr.split('-').map(Number);
+      const dateObj = new Date(year, month - 1, day);
+      const days = [
+        '일요일',
+        '월요일',
+        '화요일',
+        '수요일',
+        '목요일',
+        '금요일',
+        '토요일',
+      ];
+      return `${month}월 ${day}일 ${days[dateObj.getDay()]}`;
+    }
+    return dateStr;
+  };
+
+  const [activeTab, setActiveTab] = useState('morning');
+  const [isEditing, setIsEditing] = useState(false);
 
   const [recordData, setRecordData] = useState({
-    dateText: "8월 5일 수요일",
-    skinStatus: "보통",
-    food: "아침에 감자탕을 먹었다.",
+    dateText: '8월 5일 수요일',
+    skinStatus: '보통',
+    food: '아침에 감자탕을 먹었다.',
     skinPhotos: [
-      "https://via.placeholder.com/100",
-      "https://via.placeholder.com/100",
-      "https://via.placeholder.com/100",
+      'https://via.placeholder.com/100',
+      'https://via.placeholder.com/100',
+      'https://via.placeholder.com/100',
     ],
   });
 
@@ -29,6 +51,13 @@ export default function Record() {
   });
 
   useEffect(() => {
+    if (paramDate) {
+      setRecordData((prev) => ({
+        ...prev,
+        dateText: formatDateText(paramDate),
+      }));
+    }
+
     const fetchCosmeticOptions = async () => {
       try {
         const response = await getCosmeticOptions();
@@ -37,12 +66,13 @@ export default function Record() {
           if (result) {
             setOptionsData({
               sets: result.sets || [],
-              cosmetics: result.cosmetics || (Array.isArray(result) ? result : []),
+              cosmetics:
+                result.cosmetics || (Array.isArray(result) ? result : []),
             });
           }
         }
       } catch (error) {
-        console.error("화장품 옵션 조회 중 오류 발생:", error);
+        console.error('화장품 옵션 조회 중 오류 발생:', error);
       }
     };
 
@@ -50,7 +80,7 @@ export default function Record() {
   }, []);
 
   const filteredSets = optionsData.sets.filter((item) => {
-    if (!item.usageTime || item.usageTime === "both") return true;
+    if (!item.usageTime || item.usageTime === 'both') return true;
     return item.usageTime === activeTab;
   });
 
@@ -60,12 +90,31 @@ export default function Record() {
     navigate("/todaynote");
   };
 
-  const hasFood = Boolean(recordData.food && recordData.food.trim());
-  const hasPhotos = Boolean(recordData.skinPhotos && recordData.skinPhotos.length > 0);
+  const handleRemovePhoto = (index) => {
+    setRecordData((prev) => ({
+      ...prev,
+      skinPhotos: prev.skinPhotos.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleToggleEdit = async () => {
+    if (isEditing) {
+      try {
+        console.log('백엔드로 전송할 수정 데이터:', recordData);
+        // await axios.put('/api/records', recordData);
+        alert('수정사항이 저장되었습니다.');
+        setIsEditing(false);
+      } catch (error) {
+        console.error('저장 중 오류 발생:', error);
+      }
+    } else {
+      setIsEditing(true);
+    }
+  };
 
   return (
     <Container>
-      <Header title={"기록"} variant="back" />
+      <Header title={'기록'} variant="back" />
       <ContentWrapper>
         <HeaderRow>
           <DateTitle>{recordData.dateText}</DateTitle>
@@ -81,14 +130,14 @@ export default function Record() {
 
         <TabGroup>
           <TabButton
-            $active={activeTab === "morning"}
-            onClick={() => setActiveTab("morning")}
+            $active={activeTab === 'morning'}
+            onClick={() => setActiveTab('morning')}
           >
             <img src={SunIcon} alt="morning" /> 모닝 스킨케어
           </TabButton>
           <TabButton
-            $active={activeTab === "night"}
-            onClick={() => setActiveTab("night")}
+            $active={activeTab === 'night'}
+            onClick={() => setActiveTab('night')}
           >
             <img src={MoonIcon} alt="night" /> 나이트 스킨케어
           </TabButton>
@@ -102,7 +151,7 @@ export default function Record() {
                 <SetTagGroup>
                   {(set.mainIngredients || []).map((tag, idx) => (
                     <SetTag key={idx}>
-                      {tag.startsWith("#") ? tag : `#${tag}`}
+                      {tag.startsWith('#') ? tag : `#${tag}`}
                     </SetTag>
                   ))}
                 </SetTagGroup>
@@ -114,44 +163,66 @@ export default function Record() {
                 key={item.userCosmeticId}
                 name={item.productName || item.name}
                 tags={(item.mainIngredients || []).map((tag) =>
-                  tag.startsWith("#") ? tag : `#${tag}`
+                  tag.startsWith('#') ? tag : `#${tag}`,
                 )}
               />
             ))}
           </CardList>
         </CardListSection>
 
-        {(hasFood || hasPhotos) && (
-          <OptionalSection>
-            {hasFood && (
+        {(recordData.food ||
+          (recordData.skinPhotos && recordData.skinPhotos.length > 0) ||
+          isEditing) && (
+            <OptionalSection>
               <OptionalGroup>
                 <SectionTitle>오늘 먹은 음식</SectionTitle>
-                <FoodCard>{recordData.food}</FoodCard>
+                {isEditing ? (
+                  <FoodInput
+                    value={recordData.food}
+                    onChange={handleFoodChange}
+                    placeholder="오늘 드신 음식을 작성해주세요."
+                  />
+                ) : (
+                  <FoodCard>
+                    {recordData.food || '기록된 음식이 없습니다.'}
+                  </FoodCard>
+                )}
+                {isEditing && <EditText>edit</EditText>}
               </OptionalGroup>
-            )}
 
-            {hasPhotos && (
-              <OptionalGroup>
-                <SectionTitle>오늘 나의 피부 사진</SectionTitle>
-                <SubDescription>
-                  사진을 남겨두면 주간 리포트에서 한 주간의 변화 추이를 볼 수 있어요!
-                </SubDescription>
+              {hasPhotos && (
+                <OptionalGroup>
+                  <SectionTitle>오늘 나의 피부 사진</SectionTitle>
+                  <SubDescription>
+                    사진을 남겨두면 주간 리포트에서 한 주간의 변화 추이를 볼 수
+                    있어요!
+                  </SubDescription>
 
-                <PhotoGrid>
-                  {recordData.skinPhotos.map((photo, index) => (
-                    <PhotoItem key={index}>
-                      <PhotoBox src={photo} alt={`skin-${index}`} />
-                    </PhotoItem>
-                  ))}
-                </PhotoGrid>
-              </OptionalGroup>
-            )}
-          </OptionalSection>
-        )}
+                  <PhotoGrid>
+                    {recordData.skinPhotos.map((photo, index) => (
+                      <PhotoItem key={index}>
+                        <PhotoBox src={photo} alt={`skin-${index}`} />
+                        {isEditing && (
+                          <DeleteBadge
+                            type="button"
+                            onClick={() => handleRemovePhoto(index)}
+                          >
+                            −
+                          </DeleteBadge>
+                        )}
+                      </PhotoItem>
+                    ))}
+                  </PhotoGrid>
+                </OptionalGroup>
+              )}
+            </OptionalSection>
+          )}
       </ContentWrapper>
 
       <ButtonWrapper>
-        <Button onClick={handleEditClick}>수정하기</Button>
+        <Button onClick={handleToggleEdit}>
+          {isEditing ? '저장하기' : '수정하기'}
+        </Button>
       </ButtonWrapper>
     </Container>
   );
@@ -236,8 +307,8 @@ const TabButton = styled.button`
 
   font-size: 14px;
   font-weight: 700;
-  color: ${(props) => (props.$active ? "#266210" : "gray")};
-  border-bottom: ${(props) => (props.$active ? "2px solid #266210" : "none")};
+  color: ${(props) => (props.$active ? '#266210' : 'gray')};
+  border-bottom: ${(props) => (props.$active ? '2px solid #266210' : 'none')};
   background: none;
   border-top: none;
   border-left: none;
@@ -252,8 +323,8 @@ const TabButton = styled.button`
 
     filter: ${(props) =>
     props.$active
-      ? "brightness(0) saturate(100%) invert(29%) sepia(85%) saturate(750%) hue-rotate(72deg) brightness(88%) contrast(96%)"
-      : "brightness(0) saturate(100%) invert(50%) opacity(0.7)"};
+      ? 'brightness(0) saturate(100%) invert(29%) sepia(85%) saturate(750%) hue-rotate(72deg) brightness(88%) contrast(96%)'
+      : 'brightness(0) saturate(100%) invert(50%) opacity(0.7)'};
   }
 `;
 
