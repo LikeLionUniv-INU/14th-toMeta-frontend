@@ -54,8 +54,9 @@ export const DateSection = styled.div`
   position: relative;
 
   h2 {
-    font-size: 20px;
-    font-weight: 700;
+    font-family: 'Eommakkaturi', sans-serif;
+    font-size: 24px;
+    font-weight: 400;
     margin: 0;
   }
 
@@ -85,8 +86,19 @@ export const Divider = styled.hr`
   margin: 1px;
 `;
 
-export const Section = styled.section`
+export const Section = styled.section``;
 
+export const TodayLabel = styled.div`
+  font-family: 'Eommakkaturi', sans-serif;
+  display: block;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  font-size: 18px;
+
+  .required {
+    color: red;
+    margin-left: 2px;
+  }
 `;
 
 export const Label = styled.div`
@@ -101,8 +113,8 @@ export const Label = styled.div`
   }
 
   .optional {
-    color: #0C10FF;
-    font-size: 10px;
+    color: #0c10ff;
+    font-size: 12px;
     font-weight: 400;
     margin-left: 4px;
   }
@@ -393,9 +405,5 @@ export const ImageItem = styled.div`
 `;
 
 export const SubmitWrapper = styled.div`
-  padding-top: 13px;
-
-  @media ${media.mobileM} {
-    padding-top: 1rem;
-  }
+  padding-top: 1rem;
 `;

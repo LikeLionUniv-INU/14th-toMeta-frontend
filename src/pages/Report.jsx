@@ -11,7 +11,9 @@ const Report = () => {
   const navigate = useNavigate();
   const today = new Date();
 
-  const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
+  const [currentDate, setCurrentDate] = useState(
+    new Date(today.getFullYear(), today.getMonth(), 1),
+  );
   const [selectedDate, setSelectedDate] = useState(11);
 
   const currentYear = currentDate.getFullYear();
@@ -78,7 +80,9 @@ const Report = () => {
           month: currentMonth + 1,
         });
         const fetchedWeeklyReports = response.data.result.weeklyReports || [];
-        setWeeklyReports(fetchedWeeklyReports.filter((report) => report.available));
+        setWeeklyReports(
+          fetchedWeeklyReports.filter((report) => report.available),
+        );
       } catch (error) {
         console.error('[Report] 월별 리포트 목록 조회 실패:', error);
       }
@@ -97,7 +101,9 @@ const Report = () => {
     if (currentDailyStatus[day]) {
       const formattedMonth = String(currentMonth + 1).padStart(2, '0');
       const formattedDay = String(day).padStart(2, '0');
-      navigate(`/report/daily/${currentYear}-${formattedMonth}-${formattedDay}`);
+      navigate(
+        `/report/daily/${currentYear}-${formattedMonth}-${formattedDay}`,
+      );
     }
   };
 
@@ -194,7 +200,6 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: space-between;
   box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 `;
 
 const Content = styled.main`
@@ -267,7 +272,9 @@ const DayCell = styled.div`
   background-color: ${(props) => props.$bgColor || 'transparent'};
   border-radius: 12px;
   box-sizing: border-box;
-  transition: transform 0.1s ease, background-color 0.2s ease;
+  transition:
+    transform 0.1s ease,
+    background-color 0.2s ease;
 
   ${(props) =>
     props.$hasReport &&
@@ -293,7 +300,9 @@ const DayCircle = styled.div`
     if (props.$isSunday) return '#E85B4E';
     return '#333333';
   }};
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 `;
 
 const IndicatorSection = styled.section`
@@ -307,7 +316,7 @@ const IndicatorSection = styled.section`
 
 const IndicatorLabel = styled.span`
   font-size: 11px;
-  color: #8E8E8E;
+  color: #8e8e8e;
 `;
 
 const ColorBarImage = styled.img`
@@ -323,7 +332,7 @@ const GuideText = styled.p`
   justify-content: center;
   gap: 4px;
   margin: 0 0 16px 0;
-  color: #7C7C7C;
+  color: #7c7c7c;
   font-size: 10px;
   font-weight: 400;
 `;
@@ -343,7 +352,7 @@ const ReportButton = styled.button`
   width: 100%;
   height: 52px;
   border: 1px solid #609668;
-  background-color: #F6FFFC;
+  background-color: #f6fffc;
   border-radius: 20px;
   font-size: 14px;
   font-weight: 600;

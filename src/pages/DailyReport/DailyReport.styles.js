@@ -19,9 +19,6 @@ export const Container = styled.div`
   justify-content: ${(props) => (props.$center ? 'center' : 'flex-start')};
   align-items: ${(props) => (props.$center ? 'center' : 'stretch')};
   box-sizing: border-box;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
-    Arial, sans-serif;
   filter: ${(props) => (props.$blur ? 'blur(6px)' : 'none')};
   transition: filter 0.2s ease;
 `;

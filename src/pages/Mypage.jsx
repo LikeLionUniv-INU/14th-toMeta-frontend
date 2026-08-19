@@ -40,8 +40,11 @@ export default function MyPage() {
     const fetchMyPageData = async () => {
       try {
         const response = await getMyPageData();
-        const { nickname: fetchedNickname, healthConnectLinked, notificationSettings } =
-          response.data.result;
+        const {
+          nickname: fetchedNickname,
+          healthConnectLinked,
+          notificationSettings,
+        } = response.data.result;
 
         setNickname(fetchedNickname);
         setIsHealthConnected(healthConnectLinked);
@@ -113,7 +116,8 @@ export default function MyPage() {
     const payload = {
       dailyReportEnabled: toggle.daily,
       recordReminderEnabled: toggle.record,
-      recordReminderTime: targetReport === 'record' ? formatted24 : times.record,
+      recordReminderTime:
+        targetReport === 'record' ? formatted24 : times.record,
       weeklyReportEnabled: toggle.weekly,
       weeklyReportTime: targetReport === 'weekly' ? formatted24 : times.weekly,
     };
@@ -143,7 +147,16 @@ export default function MyPage() {
 
       <ProfileSection>
         <ProfileAvatar>
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#006014" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="40"
+            height="40"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#006014"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             <circle cx="12" cy="7" r="4" />
           </svg>
@@ -162,10 +175,12 @@ export default function MyPage() {
 
         <SectionTitle>앱 푸시 알림</SectionTitle>
         <NotificationList>
-
           <NotificationItem>
             <ItemText>일간 리포트 발행</ItemText>
-            <ToggleWrapper onClick={() => handleToggle('daily')} $isActive={toggle.daily}>
+            <ToggleWrapper
+              onClick={() => handleToggle('daily')}
+              $isActive={toggle.daily}
+            >
               <ToggleCircle $isActive={toggle.daily} />
             </ToggleWrapper>
           </NotificationItem>
@@ -176,7 +191,10 @@ export default function MyPage() {
               <TimeText onClick={() => handleOpenTimeModal('record')}>
                 {formatDisplayTime(times.record)}
               </TimeText>
-              <ToggleWrapper onClick={() => handleToggle('record')} $isActive={toggle.record}>
+              <ToggleWrapper
+                onClick={() => handleToggle('record')}
+                $isActive={toggle.record}
+              >
                 <ToggleCircle $isActive={toggle.record} />
               </ToggleWrapper>
             </RightControls>
@@ -188,12 +206,14 @@ export default function MyPage() {
               <TimeText onClick={() => handleOpenTimeModal('weekly')}>
                 {formatDisplayTime(times.weekly)}
               </TimeText>
-              <ToggleWrapper onClick={() => handleToggle('weekly')} $isActive={toggle.weekly}>
+              <ToggleWrapper
+                onClick={() => handleToggle('weekly')}
+                $isActive={toggle.weekly}
+              >
                 <ToggleCircle $isActive={toggle.weekly} />
               </ToggleWrapper>
             </RightControls>
           </NotificationItem>
-
         </NotificationList>
       </ContentSection>
 
@@ -201,7 +221,8 @@ export default function MyPage() {
         <ModalOverlay onClick={() => setIsModalOpen(false)}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalTitle>
-              {targetReport === 'record' ? '기록 작성' : '주간 리포트'} 알림 시간 설정
+              {targetReport === 'record' ? '기록 작성' : '주간 리포트'} 알림
+              시간 설정
             </ModalTitle>
 
             <PickerWrapper>
@@ -235,9 +256,7 @@ export default function MyPage() {
               >
                 취소
               </ModalSubButton>
-              <Button onClick={handleSaveTime}>
-                확인 및 설정 완료
-              </Button>
+              <Button onClick={handleSaveTime}>확인 및 설정 완료</Button>
             </ModalButtonGroup>
           </ModalContent>
         </ModalOverlay>
@@ -254,7 +273,6 @@ const PageContainer = styled.div`
   background-color: #ffffff;
   padding-bottom: 73px;
   box-sizing: border-box;
-  font-family: sans-serif;
   position: relative;
 `;
 
@@ -267,7 +285,7 @@ const Header = styled.header`
 `;
 
 const ProfileSection = styled.section`
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   padding: 30px 0;
   display: flex;
   flex-direction: column;
@@ -297,7 +315,7 @@ const ProfileName = styled.div`
 const EditButton = styled.button`
   width: 108px;
   background-color: #67c3a3;
-  color: #FFFFFF;
+  color: #ffffff;
   border: none;
   padding: 6px 14px;
   border-radius: 20px;
@@ -387,7 +405,7 @@ const ToggleCircle = styled.div`
   border-radius: 50%;
   transform: ${(props) => (props.$isActive ? 'translateX(20px)' : 'translateX(0)')};
   transition: transform 0.2s ease-in-out;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 `;
 
 const ModalOverlay = styled.div`

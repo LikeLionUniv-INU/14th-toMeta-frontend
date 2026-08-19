@@ -193,6 +193,7 @@ const SkintypeChip = styled.button`
 
   &:active {
     opacity: 0.8;
+    transform: scale(0.95);
   }
 `;
 
