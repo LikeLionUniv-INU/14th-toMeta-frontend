@@ -122,30 +122,34 @@ const Home = () => {
             </S.Pin>
           </S.PinsRight>
 
-          {yesterdayReport?.recordExists ? (
-            <>
-              <S.ReportCardHeading>지난 리포트 요약</S.ReportCardHeading>
-              <S.ReportCardBox>{yesterdayReport.summary}</S.ReportCardBox>
+          <S.ReportCardHeading>지난 리포트 요약</S.ReportCardHeading>
+          <S.ReportCardBox>
+            {yesterdayReport?.recordExists ? yesterdayReport.summary : '-'}
+          </S.ReportCardBox>
 
-              <div style={{ height: 12 }} />
+          <div style={{ height: 12 }} />
 
-              <S.ReportCardHeading>오늘 실천 가이드</S.ReportCardHeading>
-              <S.ReportCardBox>{yesterdayReport.actionGuide}</S.ReportCardBox>
+          <S.ReportCardHeading>오늘 실천 가이드</S.ReportCardHeading>
+          <S.ReportCardBox>
+            {yesterdayReport?.recordExists ? yesterdayReport.actionGuide : '-'}
+          </S.ReportCardBox>
 
-              {yesterdayReport.reportAvailable && latestDailyReport && (
-                <S.ReportCardButton
-                  onClick={() =>
-                    navigate(`/report/daily/${latestDailyReport.date}`)
-                  }
-                >
-                  지난 리포트 보러가기
-                </S.ReportCardButton>
-              )}
-            </>
-          ) : (
-            <S.EmptyReportBox>
-              아직 어제 기록이 없어요. 오늘부터 기록을 시작해 보세요!
-            </S.EmptyReportBox>
+          {yesterdayReport?.recordExists &&
+            yesterdayReport.reportAvailable &&
+            latestDailyReport && (
+              <S.ReportCardButton
+                onClick={() =>
+                  navigate(`/report/daily/${latestDailyReport.date}`)
+                }
+              >
+                지난 리포트 보러가기
+              </S.ReportCardButton>
+            )}
+
+          {!yesterdayReport?.recordExists && (
+            <S.ReportCardOverlay>
+              어제 기록이 없어 리포트를 불러올 수 없어요.
+            </S.ReportCardOverlay>
           )}
         </S.ReportCard>
 

@@ -173,14 +173,20 @@ export const ReportCardButton = styled.button`
   }
 `;
 
-export const EmptyReportBox = styled.div`
-  background-color: #f8fafc;
-  border: 1px dashed #cbd5e1;
-  border-radius: 14px;
-  padding: 18px 14px;
+export const ReportCardOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background-color: rgba(130, 130, 130, 0.82);
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  font-size: 12px;
-  color: #64748b;
+  padding: 24px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #ffffff;
 `;
 
 /* 하단 피부 관리 팁 말풍선 */
