@@ -16,6 +16,7 @@ import { LINE_CHART_CONFIG } from './components/lineChartConfig';
 import { BAR_CHART_CONFIG } from './components/barChartConfig';
 import { SKIN_STATUS_COLORS, DAY_NAMES } from '../../constants/skinStatus';
 import { formatEnglishMonthYear } from '../../utils/dateFormat';
+import surprisedDr from '../../assets/images/dr-acne/surprised-dr.svg';
 import * as S from './WeeklyReport.styles';
 
 const WeeklyReport = () => {
@@ -202,7 +203,7 @@ const WeeklyReport = () => {
         <S.Section>
           <S.SectionTitle>이번 주 내 피부는...</S.SectionTitle>
           <S.SummaryContainer>
-            <S.AvatarCircle />
+            <S.AvatarCircle src={surprisedDr} />
             <S.SummaryBubble>{reportData.weeklySummary}</S.SummaryBubble>
           </S.SummaryContainer>
         </S.Section>

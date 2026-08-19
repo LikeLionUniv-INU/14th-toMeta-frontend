@@ -85,15 +85,15 @@ export const PinsGroup = styled.div`
   position: absolute;
   top: -12px;
   display: flex;
-  gap: 12px;
+  gap: 15px;
 `;
 
 export const PinsLeft = styled(PinsGroup)`
-  left: 15%;
+  left: 10%;
 `;
 
 export const PinsRight = styled(PinsGroup)`
-  right: 15%;
+  right: 10%;
 `;
 
 export const Pin = styled.div`
@@ -104,6 +104,7 @@ export const Pin = styled.div`
 `;
 
 export const PinBar = styled.span`
+  z-index: 1;
   width: 100%;
   height: 20px;
   border-radius: 4px;
@@ -113,7 +114,7 @@ export const PinBar = styled.span`
 export const PinHole = styled.span`
   width: 10px;
   height: 10px;
-  margin-top: -3px;
+  margin-top: -2px;
   border-radius: 50%;
   background-color: #d9d9d9;
 `;
@@ -196,12 +197,11 @@ export const TipContainer = styled.div`
   gap: 20px;
 `;
 
-export const AvatarCircle = styled.div`
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
-  background-color: #e2e8f0;
+export const AvatarImage = styled.img`
+  width: 90px;
+  height: auto;
   flex-shrink: 0;
+  transform: scaleX(-1);
 `;
 
 export const TipBubble = styled.div`

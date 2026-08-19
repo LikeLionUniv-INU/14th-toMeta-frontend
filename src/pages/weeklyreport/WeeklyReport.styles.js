@@ -152,17 +152,15 @@ export const SummaryContainer = styled.div`
   margin-top: 4px;
 `;
 
-export const AvatarCircle = styled.div`
+export const AvatarCircle = styled.img`
   width: 54px;
   height: 54px;
-  border-radius: 50%;
-  background-color: #e2e8f0;
   flex-shrink: 0;
 `;
 
 export const SummaryBubble = styled.div`
   position: relative;
-  background-color: #e6fcf5;
+  background-color: #cbf8e6;
   color: #000000;
   font-size: 10px;
   line-height: 1.45;
@@ -181,7 +179,7 @@ export const SummaryBubble = styled.div`
     height: 0;
     border-top: 5px solid transparent;
     border-bottom: 5px solid transparent;
-    border-right: 20px solid #e6fcf5;
+    border-right: 20px solid #cbf8e6;
   }
 `;
 

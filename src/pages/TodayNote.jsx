@@ -5,21 +5,27 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/locale';
 import Button from '../components/Button';
-import * as S from './TodayNote.styles';
 import Header from '../components/Header';
 import CosmeticSelectModal from '../components/modal/CosmeticSelectModal';
 import SetDetailModal from '../components/modal/SetDetailModal';
 import AlreadyRecordedModal from '../components/modal/AlreadyRecordedModal';
 import CameraImg from '../assets/images/camera.png';
-import DrImg from '../assets/images/dr-acne.png';
+import DrImg from '../assets/images/dr-acne/dr.normal.svg';
+import * as S from './TodayNote.styles';
 import { getCosmeticOptions, getCosmeticSetDetail } from '../api/cosmetics';
-import { getDailyRecord, createDailyRecord, updateDailyRecord } from '../api/records';
+import {
+  getDailyRecord,
+  createDailyRecord,
+  updateDailyRecord,
+} from '../api/records';
 
 const TodayNote = () => {
   const navigate = useNavigate();
   const { date: paramDate } = useParams();
 
-  const [selectedDate, setSelectedDate] = useState(paramDate ? new Date(paramDate) : new Date());
+  const [selectedDate, setSelectedDate] = useState(
+    paramDate ? new Date(paramDate) : new Date(),
+  );
   const [isEditMode, setIsEditMode] = useState(false);
   const [skinCondition, setSkinCondition] = useState(3);
   const [morningProducts, setMorningProducts] = useState([]);
@@ -37,7 +43,8 @@ const TodayNote = () => {
 
   const [detailModalSet, setDetailModalSet] = useState(null);
 
-  const [isAlreadyRecordedModalOpen, setIsAlreadyRecordedModalOpen] = useState(false);
+  const [isAlreadyRecordedModalOpen, setIsAlreadyRecordedModalOpen] =
+    useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -92,14 +99,20 @@ const TodayNote = () => {
           const formattedSets = sets.map((item) => ({
             id: item.setId,
             name: item.name,
-            tags: item.mainIngredients?.map((tag) => (tag.startsWith('#') ? tag : `#${tag}`)) || [],
+            tags:
+              item.mainIngredients?.map((tag) =>
+                tag.startsWith('#') ? tag : `#${tag}`,
+              ) || [],
             ...item,
           }));
 
           const formattedCosmetics = cosmetics.map((item) => ({
             id: item.userCosmeticId,
             name: item.productName,
-            tags: item.mainIngredients?.map((tag) => (tag.startsWith('#') ? tag : `#${tag}`)) || [],
+            tags:
+              item.mainIngredients?.map((tag) =>
+                tag.startsWith('#') ? tag : `#${tag}`,
+              ) || [],
             ...item,
           }));
 
@@ -127,11 +140,15 @@ const TodayNote = () => {
         }
 
         setSkinCondition(mapStatusToSkinCondition(data.skinStatus));
-        setMorningProducts(data.morningSelections?.map((item) => item.name) || []);
+        setMorningProducts(
+          data.morningSelections?.map((item) => item.name) || [],
+        );
         setNightProducts(data.nightSelections?.map((item) => item.name) || []);
         setFoodInput(data.foodMemo || '');
         setNoteInput(data.memo || '');
-        setImages(data.images?.map((img) => img.imageUrl || img.imageKey) || []);
+        setImages(
+          data.images?.map((img) => img.imageUrl || img.imageKey) || [],
+        );
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -175,12 +192,16 @@ const TodayNote = () => {
           id: detailData.setId,
           name: detailData.name,
           usageTime: detailData.usageTime,
-          items: detailData.cosmetics?.map((c) => ({
-            id: c.userCosmeticId,
-            name: c.customName || c.productName,
-            tags: c.mainIngredients?.map((tag) => (tag.startsWith('#') ? tag : `#${tag}`)) || [],
-            ...c,
-          })) || [],
+          items:
+            detailData.cosmetics?.map((c) => ({
+              id: c.userCosmeticId,
+              name: c.customName || c.productName,
+              tags:
+                c.mainIngredients?.map((tag) =>
+                  tag.startsWith('#') ? tag : `#${tag}`,
+                ) || [],
+              ...c,
+            })) || [],
         };
 
         setDetailModalSet(formattedDetail);
@@ -193,7 +214,15 @@ const TodayNote = () => {
   const formatDate = (date) => {
     const month = date.getMonth() + 1;
     const day = date.getDate();
-    const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+    const days = [
+      '일요일',
+      '월요일',
+      '화요일',
+      '수요일',
+      '목요일',
+      '금요일',
+      '토요일',
+    ];
     const dayOfWeek = days[date.getDay()];
     return `${month}월 ${day}일 ${dayOfWeek}`;
   };
@@ -205,7 +234,9 @@ const TodayNote = () => {
         ids.push(matchedSet.setId || matchedSet.id);
         return ids;
       }
-      const matchedItem = individualProducts.find((item) => (item.name || item.productName) === name);
+      const matchedItem = individualProducts.find(
+        (item) => (item.name || item.productName) === name,
+      );
       if (matchedItem) {
         ids.push(matchedItem.userCosmeticId || matchedItem.id);
       }
@@ -237,7 +268,9 @@ const TodayNote = () => {
 
   const handleToggleProduct = (productName) => {
     if (selectedProducts.includes(productName)) {
-      setSelectedProducts((prev) => prev.filter((item) => item !== productName));
+      setSelectedProducts((prev) =>
+        prev.filter((item) => item !== productName),
+      );
     } else {
       setSelectedProducts((prev) => [...prev, productName]);
     }
@@ -310,7 +343,11 @@ const TodayNote = () => {
         }
       }
     } catch (error) {
-      if (error.response && (error.response.status === 409 || error.response.data?.code === 'RECORD_4091')) {
+      if (
+        error.response &&
+        (error.response.status === 409 ||
+          error.response.data?.code === 'RECORD_4091')
+      ) {
         setIsAlreadyRecordedModalOpen(true);
       } else {
         alert(error.message || '기록 처리에 실패했습니다.');
@@ -341,15 +378,22 @@ const TodayNote = () => {
               item.type === 'product' ? (
                 <SelectedTagChip key={itemIndex} $isSet={item.isSet}>
                   <span>{item.isSet ? `SET | ${item.name}` : item.name}</span>
-                  <button type="button" onClick={() => handleRemoveProduct(type, item.name)}>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveProduct(type, item.name)}
+                  >
                     ✕
                   </button>
                 </SelectedTagChip>
               ) : (
-                <AddMoreTagChip key={itemIndex} type="button" onClick={() => handleOpenModal(type)}>
+                <AddMoreTagChip
+                  key={itemIndex}
+                  type="button"
+                  onClick={() => handleOpenModal(type)}
+                >
                   추가하기 <span>+</span>
                 </AddMoreTagChip>
-              )
+              ),
             )}
           </TagRow>
         ))}
@@ -359,7 +403,7 @@ const TodayNote = () => {
 
   return (
     <S.Container>
-      <Header title={"기록"} variant="back" />
+      <Header title={'기록'} variant="back" />
 
       <S.Content>
         <S.DateSection>
@@ -404,9 +448,7 @@ const TodayNote = () => {
                 onChange={(e) => setSkinCondition(Number(e.target.value))}
               />
 
-              <SliderThumbHandle
-                $left={`${((skinCondition ?? 3) - 1) * 25}%`}
-              >
+              <SliderThumbHandle $left={`${((skinCondition ?? 3) - 1) * 25}%`}>
                 <DrAcneImage src={DrImg} alt="피부 상태 조절 핸들" />
               </SliderThumbHandle>
             </SliderTrackWrapper>
@@ -423,7 +465,7 @@ const TodayNote = () => {
                     $isSelected={isSelected}
                     $isEdge={isEdge}
                   >
-                    {isSelected ? opt.label : (isEdge ? opt.label : '')}
+                    {isSelected ? opt.label : isEdge ? opt.label : ''}
                   </SliderPointLabel>
                 );
               })}
@@ -435,10 +477,14 @@ const TodayNote = () => {
 
         <S.Section>
           <S.Label>
-            오늘 아침에 무슨 화장품을 사용했나요?<span className="required">*</span>
+            오늘 아침에 무슨 화장품을 사용했나요?
+            <span className="required">*</span>
           </S.Label>
           {morningProducts.length === 0 ? (
-            <S.AddButton type="button" onClick={() => handleOpenModal('morning')}>
+            <S.AddButton
+              type="button"
+              onClick={() => handleOpenModal('morning')}
+            >
               추가
             </S.AddButton>
           ) : (
@@ -448,7 +494,8 @@ const TodayNote = () => {
 
         <S.Section>
           <S.Label>
-            오늘 밤에 무슨 화장품을 사용했나요?<span className="required">*</span>
+            오늘 밤에 무슨 화장품을 사용했나요?
+            <span className="required">*</span>
           </S.Label>
           {nightProducts.length === 0 ? (
             <S.AddButton type="button" onClick={() => handleOpenModal('night')}>
@@ -650,10 +697,10 @@ const AddMoreTagChip = styled.button`
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  border: 1px solid #B3B3B3;
+  border: 1px solid #b3b3b3;
   border-radius: 20px;
   padding: 6px 12px;
-  background-color: #D9D9D9;
+  background-color: #d9d9d9;
   font-size: 12px;
   font-weight: 600;
   color: #363636;
@@ -668,7 +715,7 @@ const AddMoreTagChip = styled.button`
 
 const SkinSliderContainer = styled.div`
   width: 100%;
-  padding: 24px 10px 10px 10px;
+  padding: 24px 10px 0 10px;
   box-sizing: border-box;
 `;
 
@@ -712,7 +759,9 @@ const SliderTrackFill = styled.div`
   height: 3px;
   background-color: ${(props) => getConditionColor(props.$condition)};
   border-radius: 2px;
-  transition: width 0.15s ease, background-color 0.15s ease;
+  transition:
+    width 0.15s ease,
+    background-color 0.15s ease;
 `;
 
 const SliderDot = styled.div`
@@ -753,8 +802,8 @@ const SliderThumbHandle = styled.div`
 `;
 
 const DrAcneImage = styled.img`
-  width: 36px;
-  height: 36px;
+  width: 50px;
+  height: 50px;
   object-fit: contain;
   user-select: none;
   filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15));
@@ -764,7 +813,7 @@ const SliderLabelWrapper = styled.div`
   position: relative;
   width: 100%;
   height: 24px;
-  margin-top: 26px;
+  margin-top: 30px;
 `;
 
 const SliderPointLabel = styled.span`
@@ -775,7 +824,7 @@ const SliderPointLabel = styled.span`
   transition: all 0.15s ease;
 
   font-size: ${(props) => (props.$isSelected ? '14px' : '11px')};
-  font-weight: ${(props) => (props.$isSelected ? '700' : '400')};
+  font-weight: ${(props) => (props.$isSelected ? '600' : '400')};
   color: ${(props) => (props.$isSelected ? '#000000' : '#a0a0a0')};
   display: ${(props) => (props.$isSelected || props.$isEdge ? 'block' : 'none')};
 `;
