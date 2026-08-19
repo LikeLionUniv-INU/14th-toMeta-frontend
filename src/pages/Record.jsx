@@ -138,7 +138,9 @@ export default function Record() {
   };
 
   const hasFood = !!(recordData.food && recordData.food.trim());
-  const hasPhotos = !!(recordData.skinPhotos && recordData.skinPhotos.length > 0);
+  const hasPhotos = !!(
+    recordData.skinPhotos && recordData.skinPhotos.length > 0
+  );
 
   return (
     <Container>
@@ -277,6 +279,7 @@ const HeaderRow = styled.div`
 `;
 
 const DateTitle = styled.h1`
+  font-family: 'Eommakkaturi', sans-serif;
   font-size: 24px;
   font-weight: 400;
   margin: 0;
@@ -347,9 +350,9 @@ const TabButton = styled.button`
     transition: filter 0.2s ease;
 
     filter: ${(props) =>
-    props.$active
-      ? 'brightness(0) saturate(100%) invert(29%) sepia(85%) saturate(750%) hue-rotate(72deg) brightness(88%) contrast(96%)'
-      : 'brightness(0) saturate(100%) invert(50%) opacity(0.7)'};
+      props.$active
+        ? 'brightness(0) saturate(100%) invert(29%) sepia(85%) saturate(750%) hue-rotate(72deg) brightness(88%) contrast(96%)'
+        : 'brightness(0) saturate(100%) invert(50%) opacity(0.7)'};
   }
 `;
 

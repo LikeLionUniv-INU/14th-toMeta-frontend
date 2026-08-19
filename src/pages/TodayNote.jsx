@@ -422,9 +422,9 @@ const TodayNote = () => {
         <S.Divider />
 
         <S.Section>
-          <S.Label>
+          <S.TodayLabel>
             오늘 내 피부 상태는?<span className="required">*</span>
-          </S.Label>
+          </S.TodayLabel>
           <SkinSliderContainer>
             <SliderTrackWrapper>
               <SliderTrackBase />

@@ -8,7 +8,19 @@ export const media = {
 
 // 2. 프로젝트 전체 리셋 및 웹앱 기본 스타일
 export const GlobalStyle = createGlobalStyle`
-/* 스플래쉬 화면 둥근모꼴 폰트 등록 */
+  /* 1. 전체 기본 폰트 Wanted Sans 가변 폰트는 index.html의 <link>로 로드한다.
+     (styled-components가 주입하는 <style> 안에서 @import를 쓰면 브라우저 프리로더가
+     늦게 발견해서 렌더링이 지연되므로, 실무에서는 head의 link 태그로 로드하는 쪽을 쓴다.) */
+
+  /* 2. 엄마까투리체 등록 */
+  @font-face {
+    font-family: 'Eommakkaturi';
+    src: url('https://gcore.jsdelivr.net/gh/projectnoonnu/noonfonts_13@1.0/Katuri.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+/* 3. 스플래쉬 화면 둥근모꼴 폰트 등록 */
   @font-face {
     font-family: 'NeoDunggeunmo';
     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.3/NeoDunggeunmo.woff') format('woff');
@@ -26,7 +38,7 @@ export const GlobalStyle = createGlobalStyle`
     width: 100%;
     height: 100%;
     
-    font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', sans-serif;
+    font-family: 'Wanted Sans Variable', 'Wanted Sans', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', sans-serif;
     //background-color: #f5f5f5; 
     //color: #333333;
     user-select: none;
