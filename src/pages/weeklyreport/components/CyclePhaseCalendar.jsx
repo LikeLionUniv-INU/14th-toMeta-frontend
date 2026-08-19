@@ -2,7 +2,6 @@ import React from 'react';
 import * as S from './CyclePhaseCalendar.styles';
 import { DAY_LABELS } from './chartUtils';
 
-// DailyReport.jsx의 getCyclePhaseInfo와 동일한 구간 기준 (28일 주기 기준)
 const PHASE_CONFIG = {
   menstrual: { label: '생리기', color: '#a95eff' },
   follicular: { label: '난포기', color: '#ffe9e9' },
@@ -40,10 +39,6 @@ const formatCycleData = (rawData = []) =>
     };
   });
 
-/**
- * 주간 리포트용 생리주기 달력. 같은 구간에 속한 연속된 날짜는 하나의 알약(pill)
- * 모양으로 이어붙이고, 구간 이름은 그 날짜 범위 아래 가운데 정렬로 표시한다.
- */
 const CyclePhaseCalendar = ({ data }) => {
   const days = formatCycleData(data);
 

@@ -1,5 +1,6 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
+import { media } from '../styles/GlobalStyle';
 
 export default function CosmeticCard({ name, tags = [] }) {
   return (
@@ -8,7 +9,7 @@ export default function CosmeticCard({ name, tags = [] }) {
       {tags.length > 0 && (
         <TagGroup>
           {tags.map((tag, idx) => (
-            <Tag key={idx}>{tag}</Tag>
+            <Tag key={idx}>#{tag}</Tag>
           ))}
         </TagGroup>
       )}
@@ -19,7 +20,7 @@ export default function CosmeticCard({ name, tags = [] }) {
 const CardContainer = styled.div`
   padding: 14px;
   border: 1px solid #96be9c;
-  border-radius: 12px;
+  border-radius: 20px;
   background-color: #fff;
 `;
 
@@ -27,7 +28,12 @@ const CardTitle = styled.p`
   font-size: 12px;
   font-weight: 500;
   color: #141212;
-  margin: 0 0 8px 0;
+  margin: 0 0 6px 0;
+
+  @media ${media.mobileM} {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
 `;
 
 const TagGroup = styled.div`
@@ -37,10 +43,14 @@ const TagGroup = styled.div`
 `;
 
 const Tag = styled.span`
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 400;
   background-color: #96be9c;
-  color: #FFF1E5;
-  padding: 3px 8px;
+  color: #fff8f2;
+  padding: 4px 6px;
   border-radius: 12px;
+
+  @media ${media.mobileM} {
+    font-size: 10px;
+  }
 `;

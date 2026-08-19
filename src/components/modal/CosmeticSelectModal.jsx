@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Button from '../Button';
 import CosmeticCard from '../CosmeticCard';
+import { media } from '../../styles/GlobalStyle';
 
 const CosmeticSelectModal = ({
   isOpen,
@@ -22,7 +23,9 @@ const CosmeticSelectModal = ({
       <ModalContainer onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
           <ModalTitle>내 화장품</ModalTitle>
-          <CloseButton type="button" onClick={onClose}>✕</CloseButton>
+          <CloseButton type="button" onClick={onClose}>
+            ✕
+          </CloseButton>
         </ModalHeader>
 
         <ModalContent>
@@ -39,7 +42,9 @@ const CosmeticSelectModal = ({
                     <SetTitle>{setItem.name}</SetTitle>
                     <TagList>
                       {setItem.tags.map((tag, i) => (
-                        <SetTag key={i}>{tag}</SetTag>
+                        <SetTag key={i} $parentIsSelected={isSelected}>
+                          #{tag}
+                        </SetTag>
                       ))}
                     </TagList>
                   </SetCardLeft>
@@ -160,14 +165,16 @@ const SetSection = styled.div`
 `;
 
 const SetCard = styled.div`
-  background-color: ${(props) => (props.$isSelected ? '#96BE9C' : '#FFF8F2')};
+  height: 65px;
+  box-sizing: border-box;
+  background-color: ${(props) => (props.$isSelected ? '#82bf8b' : '#fff8f2')};
   border: 1px solid #96be9c;
-  border-radius: 12px;
+  border-radius: 20px;
   padding: 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: ${(props) => (props.$isSelected ? '#ffffff' : '#141212')};
+  color: #141212;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -175,17 +182,9 @@ const SetCard = styled.div`
     transform: scale(0.98);
   }
 
-  ${(props) =>
-    props.$isSelected &&
-    `
-    outline: 2.5px solid #96BE9C;
-    outline-offset: -1px;
-    box-shadow: #96BE9C;
-    
-    span {
-      color: #ffffff;
-    }
-  `}
+  @media ${media.mobileM} {
+    height: 74px;
+  }
 `;
 
 const SetCardLeft = styled.div`
@@ -193,15 +192,20 @@ const SetCardLeft = styled.div`
 `;
 
 const SetTitle = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   display: flex;
   align-items: center;
   gap: 4px;
 
   span {
     font-size: 10px;
+  }
+
+  @media ${media.mobileM} {
+    font-size: 15px;
+    margin-bottom: 8px;
   }
 `;
 
@@ -212,13 +216,21 @@ const TagList = styled.div`
 `;
 
 const SetTag = styled.span`
-  font-size: 10px;
-  padding: 3px 8px;
-  border-radius: 10px;
+  height: 20px;
+  box-sizing: border-box;
+  padding: 4px 6px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 9px;
+  border-radius: 12px;
   transition: all 0.2s ease;
   background-color: ${(props) =>
-    props.parentIsSelected ? '#FFF8F2' : '#96BE9C'};
-  color: ${(props) => (props.parentIsSelected ? '#003B00' : '#FFF8F2')};
+    props.$parentIsSelected ? '#FFF8F2' : '#96BE9C'};
+  color: ${(props) => (props.$parentIsSelected ? '#003B00' : '#FFF8F2')};
+
+  @media ${media.mobileM} {
+    font-size: 10px;
+  }
 `;
 
 const ArrowButton = styled.button`
@@ -246,42 +258,49 @@ const IndividualSection = styled.div`
 `;
 
 const CardWrapper = styled.div`
+  height: 65px;
+  box-sizing: border-box;
   cursor: pointer;
   border-radius: 12px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  @media ${media.mobileM} {
+    height: 74px;
+  }
 
   &:active {
     transform: scale(0.98);
   }
 
   & > div {
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     background-color: #ffffff;
-    color: #000000;
+    color: #141212;
 
     span {
-      background-color: #96BE9C;
-      color: #FFF1E5;
+      height: 20px;
+      box-sizing: border-box;
+      padding: 4px 6px;
+      display: inline-flex;
+      align-items: center;
+      background-color: #96be9c;
+      color: #fff1e5;
     }
   }
 
   ${(props) =>
     props.$isSelected &&
     `
-    outline: 2.5px solid #96BE9C;
-    outline-offset: -1px;
-    box-shadow: #96BE9C;
-
     & > div {
-      background-color: #96BE9C;
-      border-color: #96BE9C;
-
-      p, h1, h2, h3, h4, div {
-        color: #ffffff;
-      }
+      background-color: #82bf8b;
 
       span {
-        background-color: #FFF8F2;
-        color: #003B00;
+        background-color: #fff8f2;
+        color: #003b00;
       }
     }
   `}

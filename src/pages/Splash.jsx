@@ -88,7 +88,7 @@ const Splash = () => {
     advanceMessage();
   };
 
-  // 메시지를 다 읽고도 일정 시간 버튼을 안 누르면 자동으로 다음으로 넘어간다.
+  // 일정 시간 후 자동 스킵
   useEffect(() => {
     if (step !== 'lab' || !messageTyped) return undefined;
     const timer = setTimeout(advanceMessage, 2500);

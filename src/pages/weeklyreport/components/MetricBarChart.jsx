@@ -10,7 +10,6 @@ import {
 import * as S from './MetricLineChart.styles';
 import { formatChartData, formatValue, PLOT_TOP } from './chartUtils';
 
-// 막대 상단(PLOT_TOP)과 가까운 값은 라벨이 잘리므로 막대 안쪽으로 내려서 표시
 const renderBarLabel = (unit) => (props) => {
   const { x, y, width, value } = props;
   if (value === null || value === undefined) return null;
@@ -31,10 +30,6 @@ const renderBarLabel = (unit) => (props) => {
   );
 };
 
-/**
- * 주간 리포트용 단일 지표 막대그래프.
- * unit은 세로축 칸마다 표시하지 않고 좌상단에 한 번만 표시한다.
- */
 const MetricBarChart = ({
   data,
   unit,

@@ -1,6 +1,6 @@
 import React from 'react';
 
-// 1. 수면 (초승달)
+// 1. 수면
 export const SleepIcon = ({ size = 20, color = '#1c1b1f' }) => (
   <svg
     width={size}
@@ -16,7 +16,7 @@ export const SleepIcon = ({ size = 20, color = '#1c1b1f' }) => (
   </svg>
 );
 
-// 2. 평균 피부온도 (온도계)
+// 2. 평균 피부온도
 export const TempIcon = ({ size = 24, color = '#1c1b1f' }) => (
   <svg
     width={size}
@@ -32,7 +32,7 @@ export const TempIcon = ({ size = 24, color = '#1c1b1f' }) => (
   </svg>
 );
 
-// 3. 운동 (시안 속 기울어진 러닝화/스니커즈 모양 👟)
+// 3. 운동
 export const ExerciseIcon = ({ size = 20, color = '#1c1b1f' }) => (
   <svg
     width={size}
@@ -44,17 +44,14 @@ export const ExerciseIcon = ({ size = 20, color = '#1c1b1f' }) => (
     strokeLinecap="round"
     strokeLinejoin="round"
   >
-    {/* 신발 발목 및 바디 라인 */}
     <path d="M4 16.5L9.5 6.5C10.2 5.2 11.8 4.8 13 5.5L15 6.7C15.8 7.2 16.2 8.2 15.8 9.1L14.5 12L20.5 14.5C21.6 15 22 16.3 21.5 17.3L20.5 19H3.5L4 16.5Z" />
-    {/* 밑창 분리선 */}
     <path d="M3.5 18.5H20.5" />
-    {/* 신발 끈 디테일 */}
     <path d="M10 10.5L13.5 12" />
     <path d="M11.5 8L15 9.5" />
   </svg>
 );
 
-// 4. 칼로리 소모 (불꽃 🔥)
+// 4. 칼로리 소모
 export const CalorieIcon = ({ size = 20, color = '#1c1b1f' }) => (
   <svg
     width={size}

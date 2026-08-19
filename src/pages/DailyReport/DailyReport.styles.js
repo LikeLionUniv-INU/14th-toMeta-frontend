@@ -218,7 +218,7 @@ export const TempBar = styled.div`
 `;
 
 export const ExerciseCard = styled.div`
-  background-color: #eaf4fe;
+  background-color: #d8e3f4;
   border-radius: 24px;
   padding: 14px 8px;
   height: 88px;
@@ -252,7 +252,7 @@ export const CalorieCard = styled.div`
 `;
 
 export const CycleCard = styled.div`
-  background-color: #fff9e6;
+  background-color: #faf2da;
   border-radius: 24px;
   padding: 14px 8px;
   height: 236px;
@@ -370,7 +370,7 @@ export const CycleDescription = styled.div`
 `;
 
 export const OxygenCard = styled.div`
-  background-color: #e8f7f7;
+  background-color: #c9eded;
   border-radius: 24px;
   padding: 14px 8px;
   height: 236px;

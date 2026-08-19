@@ -43,7 +43,6 @@ const Home = () => {
 
   const today = formatLocalDate(new Date());
 
-  // 오늘 이전 = 기록된 표정, 오늘 = "+" 기록 버튼, 오늘 이후 = 연한 회색 빈 칸
   const weekDays = (homeData.week?.days || []).map((item) => {
     const day = DAY_NAMES[new Date(item.date).getDay()];
 
