@@ -14,43 +14,9 @@ import SleepBarChart from './components/SleepBarChart';
 import CyclePhaseCalendar from './components/CyclePhaseCalendar';
 import { LINE_CHART_CONFIG } from './components/lineChartConfig';
 import { BAR_CHART_CONFIG } from './components/barChartConfig';
+import { SKIN_STATUS_COLORS, DAY_NAMES } from '../../constants/skinStatus';
+import { formatEnglishMonthYear } from '../../utils/dateFormat';
 import * as S from './WeeklyReport.styles';
-
-// 피부 상태 5단계 컬러칩
-const SKIN_STATUS_COLORS = {
-  very_bad: '#ff5900',
-  bad: '#ff8237',
-  normal: '#ffaa6e',
-  good: '#ffd3ad',
-  very_good: '#fffbdc',
-};
-
-const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
-
-const MONTH_NAMES_EN = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-
-// title 첫 단어("8월 첫째 주" -> "8월")에서 월, endDate("2026-08-02")에서 연도를 꺼내
-// "August 2026" 형태로 조합한다. 파싱에 실패하면 원래 title을 그대로 사용한다.
-const getEnglishMonthYearTitle = (title, endDate) => {
-  const monthMatch = title?.match(/^(\d+)월/);
-  const year = endDate?.split('-')[0];
-  if (!monthMatch || !year) return title;
-  const monthName = MONTH_NAMES_EN[Number(monthMatch[1]) - 1];
-  return monthName ? `${monthName} ${year}` : title;
-};
 
 const WeeklyReport = () => {
   const { reportId } = useParams();
@@ -177,7 +143,7 @@ const WeeklyReport = () => {
         {/* 2. 그래프 영역 */}
         {selectedTab === '상태' ? (
           <WeeklyStatusCard
-            title={getEnglishMonthYearTitle(reportData.title, reportData.endDate)}
+            title={formatEnglishMonthYear(reportData.endDate)}
             subtitle="이번 주 피부 상태를 확인해 보세요."
             days={skinStatusDays}
           />

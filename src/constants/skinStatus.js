@@ -1,0 +1,10 @@
+// 피부 상태 5단계 컬러칩 (주간 리포트 / 홈 화면 공용)
+export const SKIN_STATUS_COLORS = {
+  very_bad: '#ff5900',
+  bad: '#ff8237',
+  normal: '#ffaa6e',
+  good: '#ffd3ad',
+  very_good: '#fffbdc',
+};
+
+export const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];

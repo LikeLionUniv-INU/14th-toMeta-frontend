@@ -95,6 +95,7 @@ const Pill = styled.div`
 const Row = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
 
   & + & {
     margin-top: 10px;
@@ -114,8 +115,9 @@ const CircleWrapper = styled.div`
 `;
 
 const Circle = styled.div`
-  width: 40px;
-  height: 40px;
+  width: 100%;
+  max-width: 40px;
+  aspect-ratio: 1 / 1;
   border: 1px solid #bcbcbc;
   border-radius: 50%;
   background: ${(props) => props.$bg};

@@ -26,6 +26,7 @@ import MyPage from './pages/Mypage';
 import EditProfile from './pages/EditProfile';
 import DailyReport from './pages/dailyreport/DailyReport';
 import WeeklyReport from './pages/weeklyreport/WeeklyReport';
+import Home from './pages/Home';
 
 function App() {
   return (
@@ -70,6 +71,7 @@ function App() {
 
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/edit-profile" element={<EditProfile />} />
+          <Route path="/home" element={<Home />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
