@@ -146,7 +146,7 @@ export default function Set() {
           productName: c.productName,
           customName: null,
           productType: c.productType,
-          mainIngredients: c.mainIngredients,
+          mainIngredients: c.tags,
         })),
       ]);
       setIsAddModalOpen(false);
@@ -267,7 +267,7 @@ export default function Set() {
                     >
                       <CosmeticCard
                         name={cosmetic.productName}
-                        tags={(cosmetic.mainIngredients || [])
+                        tags={(cosmetic.tags || [])
                           .slice(0, 5)
                           .map((tag) => `#${tag}`)}
                       />

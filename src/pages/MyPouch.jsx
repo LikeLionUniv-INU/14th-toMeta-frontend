@@ -94,6 +94,7 @@ export default function MyPouch() {
   };
 
   const handleFirstModalNext = () => {
+    if (!setName.trim()) return;
     setIsModalOpen(false);
     setSelectedRoutines({ day: false, night: false });
     setIsRoutineModalOpen(true);
@@ -132,9 +133,9 @@ export default function MyPouch() {
         setId: response.data.result.setId,
         name,
         usageTime,
-        mainIngredients: [
-          ...new Set(selectedCosmetics.flatMap((c) => c.mainIngredients || [])),
-        ],
+        tags: [
+          ...new Set(selectedCosmetics.flatMap((c) => c.tags || [])),
+        ].slice(0, 3),
       };
 
       setSets((prev) => [...prev, newSet]);
@@ -183,7 +184,7 @@ export default function MyPouch() {
                           <SetTitle>{set.name}</SetTitle>
                         </SetHeaderRow>
                         <SetTagGroup>
-                          {(set.mainIngredients || []).slice(0, 5).map((tag, idx) => (
+                          {(set.tags || []).slice(0, 3).map((tag, idx) => (
                             <SetTag key={idx}>#{tag}</SetTag>
                           ))}
                         </SetTagGroup>
@@ -210,7 +211,7 @@ export default function MyPouch() {
                     >
                       <CosmeticCard
                         name={item.customName || item.productName}
-                        tags={(item.mainIngredients || [])
+                        tags={(item.tags || [])
                           .slice(0, 5)
                           .map((tag) => `#${tag}`)}
                       />
@@ -264,7 +265,11 @@ export default function MyPouch() {
               <ModalCancelBtn onClick={() => setIsModalOpen(false)}>
                 취소
               </ModalCancelBtn>
-              <ModalSubmitBtn onClick={handleFirstModalNext}>
+              <ModalSubmitBtn
+                onClick={handleFirstModalNext}
+                disabled={!setName.trim()}
+                $isActive={!!setName.trim()}
+              >
                 다음
               </ModalSubmitBtn>
             </ModalButtonGroup>
@@ -622,11 +627,11 @@ const ModalSubmitBtn = styled.button`
   padding: 10px 0;
   border-radius: 20px;
   border: none;
-  background: #8cb896;
+  background: ${(props) => (props.$isActive ? "#8cb896" : "#D9D9D9")};
   color: #ffffff;
   font-size: 13px;
   font-weight: 600;
-  cursor: pointer;
+  cursor: ${(props) => (props.$isActive ? "pointer" : "default")};
 `;
 
 /* 2차 모달 스타일 */
