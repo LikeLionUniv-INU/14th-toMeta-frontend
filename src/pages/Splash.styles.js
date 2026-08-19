@@ -1,4 +1,5 @@
 import styled, { keyframes, css } from 'styled-components';
+import { media } from '../styles/GlobalStyle';
 
 export const Screen = styled.div`
   position: relative;
@@ -18,17 +19,11 @@ export const BgLayer = styled.div`
   opacity: ${(p) => (p.$hidden ? 0 : 1)};
   transition: opacity 0.5s ease;
 
-  /* 이미지 가장자리(특히 drs-lab.png의 위/아래 페이드 처리)가 세로가 긴
-     화면에서 background-size: cover만으로는 안 잘리고 남아 흰 여백처럼
-     보이는 걸 막기 위해 살짝 확대해서 가장자리를 화면 밖으로 밀어낸다. */
   transform: scale(1.15);
   transform-origin: center;
 `;
 
-// 여드름 위치(핫스팟)와 여박사님이 최종적으로 자리잡는 중앙 위치.
-// 핫스팟에서 뿅 튀어나와 중앙으로 이동하는 애니메이션의 시작/끝 좌표로 공유해서 쓴다.
-// (BgLayer가 1.15배 확대되는 만큼, 실제 화면에 보이는 여드름 위치(약 73%, 42%)와
-// 맞도록 역산한 좌표를 사용한다.)
+// 핫스팟, 여박사 위치
 const HOTSPOT_LEFT = '76%';
 const HOTSPOT_TOP = '43%';
 const DR_CENTER_LEFT = '50%';
@@ -81,7 +76,7 @@ export const PopRing = styled.div`
   animation: ${popRing} 0.5s ease-out forwards;
 `;
 
-// 핫스팟(여드름 위치)에서 작게 튀어나와 화면 중앙까지 이동하며 커지는 등장 애니메이션
+// 여 박사 등장 애니메이션
 const popInFromHotspot = keyframes`
   0% {
     left: ${HOTSPOT_LEFT};
@@ -185,7 +180,7 @@ export const MessageWrap = styled.button`
   position: absolute;
   left: 20px;
   right: 20px;
-  bottom: 90px;
+  bottom: 50px;
   z-index: 20;
   border: none;
   background: transparent;
@@ -193,40 +188,72 @@ export const MessageWrap = styled.button`
   text-align: left;
   font: inherit;
   cursor: ${(p) => (p.$active ? 'pointer' : 'default')};
+
+  font-family: 'NeoDunggeunmo', sans-serif;
+
+  @media ${media.mobileM} {
+    bottom: 90px;
+  }
 `;
 
 export const NameTag = styled.div`
   position: relative;
-  left: 20px;
+  left: 14px;
   z-index: 1;
   display: inline-block;
   background-color: #adeed1;
   color: #04895c;
-  font-size: 30px;
+  font-size: 20px;
   font-weight: 700;
-  padding: 10px 18px;
+  padding: 6px 14px;
   border: 1px solid #609668;
-  border-radius: 20px;
-  margin-bottom: -10px;
+  border-radius: 14px;
+  margin-bottom: -8px;
+
+  font-family: 'NeoDunggeunmo', sans-serif;
+
+  @media ${media.mobileM} {
+    left: 20px;
+    font-size: 30px;
+    padding: 10px 18px;
+    border-radius: 20px;
+    margin-bottom: -10px;
+  }
 `;
 
 export const MessageBox = styled.div`
   position: relative;
   box-sizing: border-box;
-  height: 148px;
+  height: 110px;
   background-color: #ffffff;
-  border-radius: 20px;
-  padding: 20px 22px 26px 30px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  border: 1px solid #141212;
+  border-radius: 16px;
+  padding: 14px 16px 18px 22px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
+
+  font-family: 'NeoDunggeunmo', sans-serif;
+  white-space: pre-line;
+  letter-spacing: -0.5px;
+
+  @media ${media.mobileM} {
+    height: 148px;
+    border-radius: 20px;
+    padding: 20px 22px 26px 30px;
+  }
 `;
 
 export const MessageText = styled.p`
   margin: 0;
   white-space: pre-line;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
-  line-height: 1.4;
+  line-height: 1.3;
   color: #1a1a1a;
+
+  @media ${media.mobileM} {
+    font-size: 20px;
+    line-height: 1.4;
+  }
 `;
 
 const bounce = keyframes`
@@ -236,14 +263,22 @@ const bounce = keyframes`
 
 export const ContinueArrow = styled.div`
   position: absolute;
-  right: 18px;
-  bottom: 12px;
+  right: 14px;
+  bottom: 10px;
   width: 0;
   height: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-top: 10px solid #63bf8e;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid #63bf8e;
   animation: ${bounce} 1s ease-in-out infinite;
+
+  @media ${media.mobileM} {
+    right: 18px;
+    bottom: 12px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 10px solid #63bf8e;
+  }
 `;
 
 const blackoutFade = keyframes`

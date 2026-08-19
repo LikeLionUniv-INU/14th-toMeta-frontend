@@ -70,6 +70,17 @@ export const searchCosmetics = async (params) => {
             imageUrl:
               'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/thumbnails/10/0000/0022/A00000022655318ko.jpg?l=ko&QT=85&SF=webp&sharpen=1x0.5',
           },
+          {
+            id: 2,
+            name: `${keyword} 저분자 히알루론산 세럼`,
+            imageUrl: null,
+          },
+          {
+            id: 3,
+            name: `${keyword} 판테놀 진정 크림`,
+            imageUrl:
+              'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/thumbnails/10/0000/0022/A00000022655318ko.jpg?l=ko&QT=85&SF=webp&sharpen=1x0.5',
+          },
         ],
       },
     };

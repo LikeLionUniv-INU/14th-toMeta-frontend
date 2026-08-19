@@ -8,6 +8,14 @@ export const media = {
 
 // 2. 프로젝트 전체 리셋 및 웹앱 기본 스타일
 export const GlobalStyle = createGlobalStyle`
+/* 스플래쉬 화면 둥근모꼴 폰트 등록 */
+  @font-face {
+    font-family: 'NeoDunggeunmo';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.3/NeoDunggeunmo.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
   * {
     box-sizing: border-box;
   }

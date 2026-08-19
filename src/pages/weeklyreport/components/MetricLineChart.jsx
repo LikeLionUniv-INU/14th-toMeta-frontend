@@ -12,8 +12,6 @@ import {
 import * as S from './MetricLineChart.styles';
 import { formatChartData, formatValue, PLOT_TOP } from './chartUtils';
 
-// 맨 왼쪽(월요일) 점은 라벨을 오른쪽으로, 맨 오른쪽(일요일) 점은 왼쪽으로 붙여
-// 세로축/차트 경계와 겹치거나 잘리지 않도록 한다
 const CustomDot = ({ cx, cy, payload, color, unit, isFirst, isLast }) => {
   if (payload.value === null || payload.value === undefined) return null;
   const hasRoomAbove = cy - PLOT_TOP > 20;
@@ -78,10 +76,6 @@ const CustomTooltip = ({ active, payload, unit }) => {
   );
 };
 
-/**
- * 주간 리포트용 단일 지표 꺾은선그래프.
- * unit은 세로축 칸마다 표시하지 않고 좌상단에 한 번만 표시한다.
- */
 const MetricLineChart = ({
   data,
   unit,
