@@ -54,6 +54,32 @@ export const getMonthlyReports = async (params) => {
   if (USE_MOCK) {
     const year = params?.year || 2026;
     const month = params?.month || 8;
+
+    const lastDate = new Date(year, month, 0).getDate();
+    const recordedDays = [2, 3, 4, 5, 7, 10, 11, 12, 13, 14];
+    const skinConditionCycle = [
+      'VERY_BAD',
+      'BAD',
+      'NORMAL',
+      'GOOD',
+      'VERY_GOOD',
+    ];
+
+    const dailyReports = Array.from({ length: lastDate }, (_, i) => {
+      const day = i + 1;
+      const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(
+        day,
+      ).padStart(2, '0')}`;
+      const hasDailyReport = recordedDays.includes(day);
+      return {
+        date: dateStr,
+        hasDailyReport,
+        skinCondition: hasDailyReport
+          ? skinConditionCycle[day % skinConditionCycle.length]
+          : null,
+      };
+    });
+
     return {
       data: {
         isSuccess: true,
@@ -62,37 +88,19 @@ export const getMonthlyReports = async (params) => {
         result: {
           year,
           month,
-          recordedDates: [
-            '2026-08-03',
-            '2026-08-05',
-            '2026-08-07',
-            '2026-08-10',
-            '2026-08-11',
-            '2026-08-12',
-            '2026-08-13',
-            '2026-08-14',
-          ],
+          dailyReports,
           weeklyReports: [
             {
               reportId: 13,
-              week: 1,
+              weekNumber: 1,
               startDate: '2026-07-27',
               endDate: '2026-08-02',
-              available: true,
             },
             {
               reportId: 16,
-              week: 2,
+              weekNumber: 2,
               startDate: '2026-08-03',
               endDate: '2026-08-09',
-              available: true,
-            },
-            {
-              reportId: 19,
-              week: 3,
-              startDate: '2026-08-10',
-              endDate: '2026-08-16',
-              available: false,
             },
           ],
         },

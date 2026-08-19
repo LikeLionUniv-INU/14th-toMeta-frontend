@@ -9,7 +9,7 @@ export default function CosmeticCard({ name, tags = [] }) {
       {tags.length > 0 && (
         <TagGroup>
           {tags.map((tag, idx) => (
-            <Tag key={idx}>#{tag}</Tag>
+            <Tag key={idx}>{tag}</Tag>
           ))}
         </TagGroup>
       )}

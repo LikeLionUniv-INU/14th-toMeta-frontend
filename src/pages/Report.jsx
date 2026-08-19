@@ -14,7 +14,7 @@ const Report = () => {
   const [currentDate, setCurrentDate] = useState(
     new Date(today.getFullYear(), today.getMonth(), 1),
   );
-  const [selectedDate, setSelectedDate] = useState(11);
+  const [selectedDate, setSelectedDate] = useState(today.getDate());
 
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
@@ -60,16 +60,7 @@ const Report = () => {
     very_good: '#FFFBDC',
   };
 
-  const dailyReportData = {
-    '2026-8': {
-      10: 'very_good',
-      11: 'good',
-      12: 'normal',
-      13: 'bad',
-      14: 'bad',
-    },
-  };
-
+  const [dailyStatusMap, setDailyStatusMap] = useState({});
   const [weeklyReports, setWeeklyReports] = useState([]);
 
   useEffect(() => {
@@ -79,10 +70,19 @@ const Report = () => {
           year: currentYear,
           month: currentMonth + 1,
         });
+
+        const fetchedDailyReports = response.data.result.dailyReports || [];
+        const statusMap = {};
+        fetchedDailyReports.forEach((item) => {
+          if (item.hasDailyReport && item.skinCondition) {
+            const day = Number(item.date.split('-')[2]);
+            statusMap[day] = item.skinCondition.toLowerCase();
+          }
+        });
+        setDailyStatusMap(statusMap);
+
         const fetchedWeeklyReports = response.data.result.weeklyReports || [];
-        setWeeklyReports(
-          fetchedWeeklyReports.filter((report) => report.available),
-        );
+        setWeeklyReports(fetchedWeeklyReports);
       } catch (error) {
         console.error('[Report] 월별 리포트 목록 조회 실패:', error);
       }
@@ -91,8 +91,7 @@ const Report = () => {
     fetchMonthlyReports();
   }, [currentYear, currentMonth]);
 
-  const currentKey = `${currentYear}-${currentMonth + 1}`;
-  const currentDailyStatus = dailyReportData[currentKey] || {};
+  const currentDailyStatus = dailyStatusMap;
   const reportsToDisplay = weeklyReports;
 
   const handleDateClick = (day) => {
@@ -174,11 +173,12 @@ const Report = () => {
         <ReportList>
           {reportsToDisplay.map((report) => (
             <ReportButton
-              key={report.week}
+              key={report.weekNumber}
               type="button"
               onClick={() => navigate(`/report/${report.reportId}`)}
             >
-              {weekNames[report.week] || `${report.week}주차`} 주간 리포트
+              {weekNames[report.weekNumber] || `${report.weekNumber}주차`} 주간
+              리포트
             </ReportButton>
           ))}
         </ReportList>
