@@ -113,7 +113,7 @@ const WeeklyReport = () => {
   const tabs = getTabsByGender(userData?.gender);
   const nickname = userData?.nickname || '회원';
 
-  // 상태 탭용: 요일별 컬러칩 데이터 (null이면 흰색으로 비워둠)
+  // 상태 탭: 요일별 컬러칩 데이터
   const skinStatusDays = (reportData.skinStatus || []).map((item) => ({
     date: item.date,
     day: DAY_NAMES[new Date(item.date).getDay()],

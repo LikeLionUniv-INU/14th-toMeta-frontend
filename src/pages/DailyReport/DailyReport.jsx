@@ -357,7 +357,6 @@ export default function DailyReport({ date }) {
 
           {/* [우측 열] 평균 피부온도 -> 생리주기 / 산소포화도 */}
           <S.Column>
-            {/* 1. 평균 피부온도 카드 */}
             <S.TempCard>
               <S.CardTitle>
                 <TempIcon />
@@ -381,7 +380,6 @@ export default function DailyReport({ date }) {
               </S.ValueWrapper>
             </S.TempCard>
 
-            {/* 2. 생리주기 카드 부분 */}
             {isFemale ? (
               <S.CycleCard>
                 <S.CardTitle $center>
@@ -389,7 +387,6 @@ export default function DailyReport({ date }) {
                   <span>생리주기</span>
                 </S.CardTitle>
 
-                {/* 원형 차트 + 돌아가는 시계 바늘 */}
                 <S.CycleChartWrapper>
                   <S.CycleChartImage src={menstrualImg} alt="생리주기 차트" />
                   <S.NeedlePivot $deg={cycleInfo.deg}>
@@ -397,14 +394,12 @@ export default function DailyReport({ date }) {
                   </S.NeedlePivot>
                 </S.CycleChartWrapper>
 
-                {/* 주기별 맞춤 문구 */}
                 <S.CycleDescription>
                   <p className="bold">{cycleInfo.title}</p>
                   <p>{cycleInfo.desc}</p>
                 </S.CycleDescription>
               </S.CycleCard>
             ) : (
-              /* 2. 산소포화도 카드 */
               <S.OxygenCard>
                 <S.CardTitle>
                   <OxygenIcon />

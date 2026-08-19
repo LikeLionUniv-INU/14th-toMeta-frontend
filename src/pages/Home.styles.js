@@ -49,7 +49,6 @@ export const Divider = styled.div`
   background-color: #787878;
 `;
 
-/* 오늘 칸에 들어가는 "+" 기록 버튼 */
 export const PlusButton = styled.button`
   width: 100%;
   height: 100%;
@@ -190,7 +189,6 @@ export const ReportCardOverlay = styled.div`
   color: #ffffff;
 `;
 
-/* 하단 피부 관리 팁 말풍선 */
 export const TipContainer = styled.div`
   display: flex;
   align-items: center;
