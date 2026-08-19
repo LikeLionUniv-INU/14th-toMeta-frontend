@@ -10,6 +10,19 @@ import MoonIcon from '../assets/images/record/Moon.svg';
 import AfterIcon from '../assets/images/after.png';
 import { getDailyRecord } from '../api/records';
 import { getCosmeticSetDetail } from '../api/cosmetics';
+import drVeryBad from '../assets/images/dr-acne/dr.verybad.svg';
+import drBad from '../assets/images/dr-acne/dr.bad.svg';
+import drNormal from '../assets/images/dr-acne/dr.normal.svg';
+import drGood from '../assets/images/dr-acne/dr.good.svg';
+import drVeryGood from '../assets/images/dr-acne/dr.verygood.svg';
+
+const SKIN_STATUS_IMAGES = {
+  very_bad: drVeryBad,
+  bad: drBad,
+  normal: drNormal,
+  good: drGood,
+  very_good: drVeryGood,
+};
 
 export default function Record() {
   const { date: paramDate } = useParams();
@@ -41,9 +54,11 @@ export default function Record() {
   // 피부 상태 텍스트 매핑
   const mapSkinStatus = (status) => {
     const statusMap = {
-      good: '좋음',
-      normal: '보통',
+      very_bad: '매우 나쁨',
       bad: '나쁨',
+      normal: '보통',
+      good: '좋음',
+      very_good: '매우 좋음',
     };
     return statusMap[status] || status || '보통';
   };
@@ -69,7 +84,7 @@ export default function Record() {
           const result = response.data.result;
           setRecordData({
             dateText: formatDateText(result.date || targetDate),
-            skinStatus: mapSkinStatus(result.skinStatus),
+            skinStatus: result.skinStatus || '',
             food: result.foodMemo || '',
             skinPhotos: (result.images || []).map((img) => img.imageUrl),
             morningSelections: result.morningSelections || [],
@@ -134,10 +149,13 @@ export default function Record() {
         </HeaderRow>
 
         <StatusSection>
-          <ProfileCircle />
+          <ProfileCircle
+            src={SKIN_STATUS_IMAGES[recordData.skinStatus] || drNormal}
+            alt={mapSkinStatus(recordData.skinStatus)}
+          />
           <StatusTextWrapper>
             <StatusLabel>오늘 내 피부 상태는...</StatusLabel>
-            <StatusValue>{recordData.skinStatus}</StatusValue>
+            <StatusValue>{mapSkinStatus(recordData.skinStatus)}</StatusValue>
           </StatusTextWrapper>
         </StatusSection>
 
@@ -272,11 +290,9 @@ const StatusSection = styled.div`
   margin: 20px;
 `;
 
-const ProfileCircle = styled.div`
+const ProfileCircle = styled.img`
   width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background-color: #e0e0e0;
+  height: auto;
   flex-shrink: 0;
 `;
 

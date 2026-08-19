@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import NavigationBar from '../components/NavigationBar';
+import Img from '../assets/images/dr-acne/surprised-dr.svg';
+import { useNavigate } from 'react-router-dom';
 
 export default function EmptyPouch() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function EmptyPouch() {
       <Header>화장품</Header>
 
       <ContentArea>
-        <ImagePlaceholder />
+        <ImagePlaceholder src={Img} alt="놀란 여박사" />
 
         <RegisterButton onClick={handleRegister}>
           <PlusIcon>+</PlusIcon>
@@ -55,11 +56,10 @@ const ContentArea = styled.main`
   margin-top: -30px;
 `;
 
-const ImagePlaceholder = styled.div`
+const ImagePlaceholder = styled.img`
   width: 300px;
-  height: 300px;
-  background-color: #D9D9D9;
-  border-radius: 4px;
+  height: auto;
+  object-fit: contain;
   margin-bottom: 40px;
 `;
 
@@ -67,7 +67,7 @@ const RegisterButton = styled.button`
   width: 220px;
   height: 54px;
   background-color: transparent;
-  border: 1.5px dashed #B3B3B3;
+  border: 1.5px dashed #b3b3b3;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -76,18 +76,18 @@ const RegisterButton = styled.button`
   cursor: pointer;
 
   &:active {
-    background-color: #F8F8F8;
+    background-color: #f8f8f8;
   }
 `;
 
 const PlusIcon = styled.span`
   font-size: 20px;
   font-weight: 500;
-  color: #003B00;
+  color: #003b00;
 `;
 
 const ButtonText = styled.span`
   font-size: 20px;
   font-weight: 700;
-  color: #003B00;
+  color: #003b00;
 `;

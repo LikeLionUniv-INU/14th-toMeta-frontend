@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getHomeData } from '../api/home';
+import worriedDrImg from '../assets/images/dr-acne/worried-dr.svg';
 import NavigationBar from '../components/NavigationBar';
 import WeeklyStatusCard from '../components/WeeklyStatusCard';
 import StatusFace from '../components/StatusFace';
@@ -154,7 +155,7 @@ const Home = () => {
         </S.ReportCard>
 
         <S.TipContainer>
-          <S.AvatarCircle />
+          <S.AvatarImage src={worriedDrImg} alt="여 박사" />
           <S.TipBubble>{skinCareTip}</S.TipBubble>
         </S.TipContainer>
       </S.Content>
