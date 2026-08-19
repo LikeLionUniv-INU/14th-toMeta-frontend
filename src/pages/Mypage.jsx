@@ -5,6 +5,7 @@ import Picker from 'react-mobile-picker';
 
 import NavigationBar from '../components/NavigationBar';
 import Button from '../components/Button';
+import { getMyPageData, updateNotificationSettings } from '../api/user';
 
 const PICKER_OPTIONS = {
   hour: Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0')),
@@ -14,6 +15,7 @@ const PICKER_OPTIONS = {
 export default function MyPage() {
   const navigate = useNavigate();
 
+  const [nickname, setNickname] = useState('');
   const [isHealthConnected, setIsHealthConnected] = useState(true);
 
   const [toggle, setToggle] = useState({
@@ -35,6 +37,32 @@ export default function MyPage() {
   });
 
   useEffect(() => {
+    const fetchMyPageData = async () => {
+      try {
+        const response = await getMyPageData();
+        const { nickname: fetchedNickname, healthConnectLinked, notificationSettings } =
+          response.data.result;
+
+        setNickname(fetchedNickname);
+        setIsHealthConnected(healthConnectLinked);
+        setToggle({
+          daily: notificationSettings.dailyReportEnabled,
+          record: notificationSettings.recordReminderEnabled,
+          weekly: notificationSettings.weeklyReportEnabled,
+        });
+        setTimes({
+          record: notificationSettings.recordReminderTime,
+          weekly: notificationSettings.weeklyReportTime,
+        });
+      } catch (error) {
+        console.error('[MyPage] 마이페이지 조회 실패:', error);
+      }
+    };
+
+    fetchMyPageData();
+  }, []);
+
+  useEffect(() => {
     if (isModalOpen && targetReport) {
       const [h, m] = times[targetReport].split(':');
       setPickerValue({
@@ -44,8 +72,25 @@ export default function MyPage() {
     }
   }, [isModalOpen, targetReport, times]);
 
-  const handleToggle = (key) => {
-    setToggle((prev) => ({ ...prev, [key]: !prev[key] }));
+  const handleToggle = async (key) => {
+    const updatedToggle = { ...toggle, [key]: !toggle[key] };
+    setToggle(updatedToggle);
+
+    const payload = {
+      dailyReportEnabled: updatedToggle.daily,
+      recordReminderEnabled: updatedToggle.record,
+      recordReminderTime: times.record,
+      weeklyReportEnabled: updatedToggle.weekly,
+      weeklyReportTime: times.weekly,
+    };
+
+    try {
+      await updateNotificationSettings(payload);
+    } catch (error) {
+      console.error('[MyPage] 알림 설정 변경 실패:', error);
+      alert(error.message || '알림 설정 변경에 실패했습니다.');
+      setToggle(toggle);
+    }
   };
 
   const handleEditProfile = () => {
@@ -65,15 +110,22 @@ export default function MyPage() {
       [targetReport]: formatted24,
     };
 
-    setTimes(updatedTimes);
-    setIsModalOpen(false);
-
     const payload = {
-      reportType: targetReport,
-      notificationTime: formatted24,
+      dailyReportEnabled: toggle.daily,
+      recordReminderEnabled: toggle.record,
+      recordReminderTime: targetReport === 'record' ? formatted24 : times.record,
+      weeklyReportEnabled: toggle.weekly,
+      weeklyReportTime: targetReport === 'weekly' ? formatted24 : times.weekly,
     };
 
-    console.log('백엔드로 전송할 리포트 시간 데이터:', payload);
+    try {
+      await updateNotificationSettings(payload);
+      setTimes(updatedTimes);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('[MyPage] 알림 시간 변경 실패:', error);
+      alert(error.message || '알림 시간 변경에 실패했습니다.');
+    }
   };
 
   const formatDisplayTime = (timeStr) => {
@@ -96,7 +148,7 @@ export default function MyPage() {
             <circle cx="12" cy="7" r="4" />
           </svg>
         </ProfileAvatar>
-        <ProfileName>김도영 님</ProfileName>
+        <ProfileName>{nickname ? `${nickname} 님` : ''}</ProfileName>
         <EditButton onClick={handleEditProfile}>내 정보 수정</EditButton>
       </ProfileSection>
 

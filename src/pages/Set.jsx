@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import NavigationBar from "../components/NavigationBar";
@@ -7,25 +7,7 @@ import SunIcon from "../assets/images/record/sun.svg";
 import MoonIcon from "../assets/images/record/Moon.svg";
 import Trash from "../assets/images/trash.png";
 import { media } from '../styles/GlobalStyle';
-
-const dummySetData = {
-  1: {
-    title: "진정템",
-    items: [
-      { id: 101, name: "아누아 어성초 77% 진정 토너", tags: ["#토너", "#어성초", "#진정", "#피지조절"] },
-      { id: 102, name: "브링그린 티트리 시카 크림", tags: ["#크림", "#속건조", "#수분", "#시카"] },
-    ],
-  },
-  2: {
-    title: "사용자 지정 이름",
-    items: [
-      { id: 101, name: "아누아 어성초 77% 진정 토너", tags: ["#토너", "#어성초", "#진정", "#피지조절"] },
-      { id: 102, name: "브링그린 티트리 시카 크림", tags: ["#크림", "#속건조", "#수분", "#시카"] },
-      { id: 103, name: "에스트라 아토베리어 365크림", tags: ["#크림", "#속건조", "#수분", "#진정"] },
-      { id: 104, name: "듀이트리 핏 앤 퀵 더블패드", tags: ["#패드", "#유수분", "#수분", "#진정"] },
-    ],
-  },
-};
+import { getCosmeticOptions, getCosmeticSetDetail, updateCosmeticSet, deleteCosmeticSet } from "../api/cosmetics";
 
 export default function Set() {
   const { setId } = useParams();
@@ -34,27 +16,145 @@ export default function Set() {
 
   const activeTab = location.state?.activeTab || "morning";
 
-  const currentSet = dummySetData[setId] || {
-    title: "사용자 지정 이름",
-    items: [],
-  };
-
-  const [title, setTitle] = useState(currentSet.title);
+  const [title, setTitle] = useState("");
+  const [originalTitle, setOriginalTitle] = useState("");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const [items, setItems] = useState(currentSet.items);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const handleDeleteItem = (id) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+  const [allCosmetics, setAllCosmetics] = useState([]);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [selectedToAdd, setSelectedToAdd] = useState([]);
+
+  useEffect(() => {
+    const fetchSetDetail = async () => {
+      try {
+        setLoading(true);
+        const response = await getCosmeticSetDetail(setId);
+        const { name, cosmetics } = response.data.result;
+        setTitle(name);
+        setOriginalTitle(name);
+        setItems(cosmetics || []);
+      } catch (error) {
+        console.error("[Set] 세트 상세 조회 실패:", error);
+        alert(error.message || "세트 정보를 불러오지 못했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSetDetail();
+  }, [setId]);
+
+  useEffect(() => {
+    const fetchAllCosmetics = async () => {
+      try {
+        const response = await getCosmeticOptions();
+        setAllCosmetics(response.data.result.cosmetics || []);
+      } catch (error) {
+        console.error("[Set] 전체 화장품 목록 조회 실패:", error);
+      }
+    };
+
+    fetchAllCosmetics();
+  }, []);
+
+  const handleTitleSave = async () => {
+    setIsEditingTitle(false);
+
+    const trimmedTitle = title.trim();
+
+    if (!trimmedTitle || trimmedTitle === originalTitle) {
+      setTitle(originalTitle);
+      return;
+    }
+
+    try {
+      await updateCosmeticSet(setId, { name: trimmedTitle });
+      setTitle(trimmedTitle);
+      setOriginalTitle(trimmedTitle);
+    } catch (error) {
+      console.error("[Set] 세트 이름 변경 실패:", error);
+      alert(error.message || "세트 이름 변경에 실패했습니다.");
+      setTitle(originalTitle);
+    }
   };
 
-  const handleDeleteSet = () => {
-    navigate("/my-pouch", {
-      state: {
-        activeTab,
-        deletedSetId: Number(setId),
-      },
-    });
+  const handleDeleteItem = async (userCosmeticId) => {
+    const remainingIds = items
+      .filter((item) => item.userCosmeticId !== userCosmeticId)
+      .map((item) => item.userCosmeticId);
+
+    try {
+      await updateCosmeticSet(setId, { userCosmeticIds: remainingIds });
+      setItems((prev) => prev.filter((item) => item.userCosmeticId !== userCosmeticId));
+    } catch (error) {
+      console.error("[Set] 세트 구성품 삭제 실패:", error);
+      alert(error.message || "세트 구성품 삭제에 실패했습니다.");
+    }
+  };
+
+  const handleDeleteSet = async () => {
+    try {
+      await deleteCosmeticSet(setId);
+      navigate("/my-pouch", {
+        state: {
+          activeTab,
+          deletedSetId: Number(setId),
+        },
+      });
+    } catch (error) {
+      console.error("[Set] 세트 삭제 실패:", error);
+      alert(error.message || "세트 삭제에 실패했습니다.");
+      setIsDeleteModalOpen(false);
+    }
+  };
+
+  const availableCosmetics = allCosmetics.filter(
+    (cosmetic) =>
+      !items.some((item) => item.userCosmeticId === cosmetic.userCosmeticId)
+  );
+
+  const handleOpenAddModal = () => {
+    setSelectedToAdd([]);
+    setIsAddModalOpen(true);
+  };
+
+  const toggleSelectToAdd = (cosmetic) => {
+    setSelectedToAdd((prev) =>
+      prev.some((c) => c.userCosmeticId === cosmetic.userCosmeticId)
+        ? prev.filter((c) => c.userCosmeticId !== cosmetic.userCosmeticId)
+        : [...prev, cosmetic]
+    );
+  };
+
+  const handleAddToSet = async () => {
+    if (selectedToAdd.length === 0) return;
+
+    const updatedIds = [
+      ...items.map((item) => item.userCosmeticId),
+      ...selectedToAdd.map((c) => c.userCosmeticId),
+    ];
+
+    try {
+      await updateCosmeticSet(setId, { userCosmeticIds: updatedIds });
+      setItems((prev) => [
+        ...prev,
+        ...selectedToAdd.map((c) => ({
+          userCosmeticId: c.userCosmeticId,
+          productName: c.productName,
+          customName: null,
+          productType: c.productType,
+          mainIngredients: c.mainIngredients,
+        })),
+      ]);
+      setIsAddModalOpen(false);
+      setSelectedToAdd([]);
+    } catch (error) {
+      console.error("[Set] 세트에 화장품 추가 실패:", error);
+      alert(error.message || "세트에 화장품 추가에 실패했습니다.");
+    }
   };
 
   return (
@@ -77,9 +177,9 @@ export default function Set() {
             value={title}
             autoFocus
             onChange={(e) => setTitle(e.target.value)}
-            onBlur={() => setIsEditingTitle(false)}
+            onBlur={handleTitleSave}
             onKeyDown={(e) => {
-              if (e.key === "Enter") setIsEditingTitle(false);
+              if (e.key === "Enter") e.target.blur();
             }}
           />
         ) : (
@@ -94,18 +194,27 @@ export default function Set() {
       <ContentWrapper>
         <MainContent>
           <CardListSection>
-            {items.map((item) => (
-              <CardWrapper key={item.id}>
-                <CosmeticCard name={item.name} tags={item.tags} />
-                <DeleteButton onClick={() => handleDeleteItem(item.id)}>
-                  <TrashIcon src={Trash} alt="delete" />
-                </DeleteButton>
-              </CardWrapper>
-            ))}
+            {loading ? (
+              <div>로딩 중...</div>
+            ) : (
+              items.map((item) => (
+                <CardWrapper key={item.userCosmeticId}>
+                  <CosmeticCard
+                    name={item.customName || item.productName}
+                    tags={(item.mainIngredients || [])
+                      .slice(0, 5)
+                      .map((tag) => `#${tag}`)}
+                  />
+                  <DeleteButton onClick={() => handleDeleteItem(item.userCosmeticId)}>
+                    <TrashIcon src={Trash} alt="delete" />
+                  </DeleteButton>
+                </CardWrapper>
+              ))
+            )}
           </CardListSection>
 
           <ButtonGroup>
-            <AddSetButton onClick={() => { }}>세트에 추가</AddSetButton>
+            <AddSetButton onClick={handleOpenAddModal}>세트에 추가</AddSetButton>
             <DeleteSetButton onClick={() => setIsDeleteModalOpen(true)}>세트 삭제</DeleteSetButton>
           </ButtonGroup>
         </MainContent>
@@ -127,6 +236,55 @@ export default function Set() {
               </ModalConfirmButton>
             </ModalButtonGroup>
           </ModalContainer>
+        </ModalOverlay>
+      )}
+
+      {isAddModalOpen && (
+        <ModalOverlay onClick={() => setIsAddModalOpen(false)}>
+          <AddModalContainer onClick={(e) => e.stopPropagation()}>
+            <AddModalHeader>
+              <AddModalTitle>{title}</AddModalTitle>
+              <AddModalCloseButton onClick={() => setIsAddModalOpen(false)}>
+                ×
+              </AddModalCloseButton>
+            </AddModalHeader>
+
+            <AddModalList>
+              {availableCosmetics.length === 0 ? (
+                <AddModalEmptyText>
+                  추가할 수 있는 화장품이 없어요.
+                </AddModalEmptyText>
+              ) : (
+                availableCosmetics.map((cosmetic) => {
+                  const isSelected = selectedToAdd.some(
+                    (c) => c.userCosmeticId === cosmetic.userCosmeticId
+                  );
+                  return (
+                    <AddModalItemWrapper
+                      key={cosmetic.userCosmeticId}
+                      $isSelected={isSelected}
+                      onClick={() => toggleSelectToAdd(cosmetic)}
+                    >
+                      <CosmeticCard
+                        name={cosmetic.productName}
+                        tags={(cosmetic.mainIngredients || [])
+                          .slice(0, 5)
+                          .map((tag) => `#${tag}`)}
+                      />
+                    </AddModalItemWrapper>
+                  );
+                })
+              )}
+            </AddModalList>
+
+            <AddModalSubmitButton
+              $isActive={selectedToAdd.length > 0}
+              disabled={selectedToAdd.length === 0}
+              onClick={handleAddToSet}
+            >
+              추가
+            </AddModalSubmitButton>
+          </AddModalContainer>
         </ModalOverlay>
       )}
 
@@ -286,9 +444,9 @@ const AddSetButton = styled.button`
   flex: 1;
   height: 48px;
   background-color: #ffffff;
-  border: 1.5px solid #6b8e67;
+  border: 1px solid #609668;
   border-radius: 24px;
-  color: #43633f;
+  color: #609668;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -301,11 +459,11 @@ const AddSetButton = styled.button`
 const DeleteSetButton = styled.button`
   flex: 1;
   height: 48px;
-  background-color: #6b8e67;
-  border: none;
+  background-color: #63BF8E;
+  border: 1px solid #609668;
   border-radius: 24px;
   color: #ffffff;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 
@@ -390,3 +548,96 @@ const ModalConfirmButton = styled.button`
   font-weight: 500;
   cursor: pointer;
 `
+
+const AddModalContainer = styled.div`
+  width: 100%;
+  max-height: 80vh;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+`;
+
+const AddModalHeader = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+`;
+
+const AddModalTitle = styled.h2`
+  font-size: 18px;
+  font-weight: 700;
+  color: #111111;
+  margin: 0;
+  text-align: center;
+`;
+
+const AddModalCloseButton = styled.button`
+  position: absolute;
+  right: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 22px;
+  line-height: 1;
+  color: #828282;
+  cursor: pointer;
+`;
+
+const AddModalList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+`;
+
+const AddModalEmptyText = styled.p`
+  font-size: 12px;
+  color: #828282;
+  text-align: center;
+  padding: 20px 0;
+`;
+
+const AddModalItemWrapper = styled.div`
+  cursor: pointer;
+  border-radius: 12px;
+
+  ${(props) =>
+    props.$isSelected &&
+    `
+    && > div {
+      background-color: #82BF8B;
+      border: 1px solid #96BE9C;
+
+      * {
+        color: #003B00;
+      }
+
+      span, div > span {
+        background-color: #FFF8F2;
+        color: #003B00;
+      }
+    }
+  `}
+`;
+
+const AddModalSubmitButton = styled.button`
+  width: 100%;
+  height: 48px;
+  background-color: ${(props) => (props.$isActive ? "#63BF8E" : "#D9D9D9")};
+  border: none;
+  border-radius: 24px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: ${(props) => (props.$isActive ? "pointer" : "default")};
+
+  &:active {
+    background-color: ${(props) => (props.$isActive ? "#5d7e59" : "#D9D9D9")};
+  }
+`;
