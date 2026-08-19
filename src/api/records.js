@@ -2,23 +2,6 @@ import api from './axios';
 
 const USE_MOCK = true; // 실서버 연동 시 false로 변경
 
-export const getHomeData = async () => {
-  if (USE_MOCK) {
-    return {
-      data: {
-        isSuccess: true,
-        result: {
-          userName: '도영',
-          skinScore: 82,
-          weather: { temp: 24, uvIndex: '보통', humidity: 55 },
-          todayRecordExist: false,
-        },
-      },
-    };
-  }
-  return api.get('/api/home');
-};
-
 export const getPresignedUploadUrl = async (imageData) => {
   if (USE_MOCK) {
     return {
