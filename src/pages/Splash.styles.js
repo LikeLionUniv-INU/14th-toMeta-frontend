@@ -189,6 +189,8 @@ export const MessageWrap = styled.button`
   font: inherit;
   cursor: ${(p) => (p.$active ? 'pointer' : 'default')};
 
+  font-family: 'NeoDunggeunmo', sans-serif;
+
   @media ${media.mobileM} {
     bottom: 90px;
   }
@@ -208,6 +210,8 @@ export const NameTag = styled.div`
   border-radius: 14px;
   margin-bottom: -8px;
 
+  font-family: 'NeoDunggeunmo', sans-serif;
+
   @media ${media.mobileM} {
     left: 20px;
     font-size: 30px;
@@ -222,9 +226,14 @@ export const MessageBox = styled.div`
   box-sizing: border-box;
   height: 110px;
   background-color: #ffffff;
+  border: 1px solid #141212;
   border-radius: 16px;
   padding: 14px 16px 18px 22px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
+
+  font-family: 'NeoDunggeunmo', sans-serif;
+  white-space: pre-line;
+  letter-spacing: -0.5px;
 
   @media ${media.mobileM} {
     height: 148px;
