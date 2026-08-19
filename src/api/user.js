@@ -51,6 +51,7 @@ export const createNotificationSettings = async (settings) => {
 
 export const updateNotificationSettings = async (settings) => {
   if (USE_MOCK) {
+    console.log('[Mock API] 알림 설정 수정:', settings);
     return { data: { isSuccess: true, result: null } };
   }
   return api.patch('/api/users/me/notification-settings', settings);
@@ -61,11 +62,19 @@ export const getMyPageData = async () => {
     return {
       data: {
         isSuccess: true,
+        code: 'COMMON_200',
+        message: '요청에 성공했습니다.',
         result: {
-          nickname: '도영',
-          skinType: '복합 건성',
-          registeredCosmeticsCount: 5,
-          totalRecordDays: 14,
+          nickname: '김도영',
+          healthConnectLinked: true,
+          pushConnected: true,
+          notificationSettings: {
+            dailyReportEnabled: true,
+            recordReminderEnabled: true,
+            recordReminderTime: '22:00',
+            weeklyReportEnabled: true,
+            weeklyReportTime: '22:00',
+          },
         },
       },
     };
