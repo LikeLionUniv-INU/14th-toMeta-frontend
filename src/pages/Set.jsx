@@ -306,17 +306,22 @@ const Container = styled.div`
 const CustomHeader = styled.header`
   position: relative;
   width: 100%;
-  height: 52px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 16px;
+  padding: 0 14px;
   box-sizing: border-box;
+
+  @media ${media.mobileM} {
+    height: 52px;
+    padding: 0 16px;
+  }
 `;
 
 const BackButton = styled.button`
   position: absolute;
-  left: 16px;
+  left: 14px;
   background: none;
   border: none;
   padding: 0;
@@ -324,24 +329,37 @@ const BackButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media ${media.mobileM} {
+    left: 16px;
+  }
 `;
 
 const BackIcon = styled.svg`
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
+
+  @media ${media.mobileM} {
+    width: 24px;
+    height: 24px;
+  }
 `;
 
 const TitleText = styled.h1`
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 700;
   color: #111111;
   margin: 0;
   cursor: pointer;
   text-align: center;
+
+  @media ${media.mobileM} {
+    font-size: 18px;
+  }
 `;
 
 const TitleInput = styled.input`
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 700;
   color: #111111;
   text-align: center;
@@ -349,14 +367,24 @@ const TitleInput = styled.input`
   border-bottom: 1.5px solid #266210;
   outline: none;
   background: transparent;
-  padding: 2px 4px;
+  padding: 2px 3px;
+
+  @media ${media.mobileM} {
+    font-size: 18px;
+    padding: 2px 4px;
+  }
 `;
 
 const SubHeaderMessage = styled.p`
   text-align: center;
-  font-size: 8px;
+  font-size: 10px;
   color: #888888;
-  margin: 8px 0 8px 0;
+  margin: 7px 0 7px 0;
+
+  @media ${media.mobileM} {
+    font-size: 12px;
+    margin: 8px 0 8px 0;
+  }
 `;
 
 const ContentWrapper = styled.div`
@@ -399,14 +427,23 @@ const DisabledTabButton = styled.div`
 `;
 
 const MainContent = styled.div`
-  padding: 0 20px 20px 20px;
+  padding: 0 17px 17px 17px;
+
+  @media ${media.mobileM} {
+    padding: 0 20px 20px 20px;
+  }
 `;
 
 const CardListSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin-bottom: 17px;
+
+  @media ${media.mobileM} {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
 `;
 
 const CardWrapper = styled.div`
@@ -416,8 +453,8 @@ const CardWrapper = styled.div`
 
 const DeleteButton = styled.button`
   position: absolute;
-  right: 12px;
-  bottom: 12px;
+  right: 10px;
+  bottom: 10px;
   background: none;
   border: none;
   padding: 0;
@@ -425,50 +462,75 @@ const DeleteButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media ${media.mobileM} {
+    right: 12px;
+    bottom: 12px;
+  }
 `;
 
 const TrashIcon = styled.img`
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   display: block;
+
+  @media ${media.mobileM} {
+    width: 14px;
+    height: 14px;
+  }
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
-  margin-top: 8px;
+  margin-top: 30px;
+
+  @media ${media.mobileM} {
+    gap: 12px;
+    margin-top: 35px;
+  }
 `;
 
 const AddSetButton = styled.button`
   flex: 1;
-  height: 48px;
+  height: 35px;
   background-color: #ffffff;
   border: 1px solid #609668;
-  border-radius: 24px;
+  border-radius: 20px;
   color: #609668;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 
   &:active {
     background-color: #f2f7f1;
   }
+
+  @media ${media.mobileM} {
+    height: 40px;
+    font-size: 15px;
+  }
 `;
 
 const DeleteSetButton = styled.button`
   flex: 1;
-  height: 48px;
+  height: 35px;
   background-color: #63BF8E;
   border: 1px solid #609668;
-  border-radius: 24px;
+  border-radius: 20px;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 
   &:active {
     background-color: #5d7e59;
+  }
+
+  @media ${media.mobileM} {
+    height: 40px;
+    font-size: 15px;
   }
 `;
 
@@ -485,18 +547,26 @@ const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  padding: 0 24px;
+  padding: 0 20px;
+
+  @media ${media.mobileM} {
+    padding: 0 24px;
+  }
 `;
 
 const ModalContainer = styled.div`
   width: 100%;
   background-color: #e6f5e8;
   border-radius: 20px;
-  padding: 20px;
+  padding: 17px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+
+  @media ${media.mobileM} {
+    padding: 20px;
+  }
 `;
 
 const ModalTitle = styled.h2`
@@ -512,41 +582,60 @@ const ModalTitle = styled.h2`
 `;
 
 const ModalDescription = styled.p`
-  font-size: 12px;
+  font-size: 10px;
   line-height: 1.5;
   color: #828282;
-  margin: 0 0 40px 0;
+  margin: 0 0 34px 0;
   word-break: keep-all;
+
+  @media ${media.mobileM} {
+    font-size: 12px;
+    margin: 0 0 40px 0;
+  }
 `;
 
 const ModalButtonGroup = styled.div`
   display: flex;
-  gap: 16px;
+  gap: 14px;
   width: 100%;
+
+  @media ${media.mobileM} {
+    gap: 16px;
+  }
 `;
 
 const ModalCancelButton = styled.button`
   flex: 1;
-  height: 37px;
+  height: 31px;
   background-color: #fdfdfd;
   border: 1px solid #82bf8b;
   border-radius: 20px;
   color: #000000;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
+
+  @media ${media.mobileM} {
+    height: 37px;
+    font-size: 14px;
+  }
 `;
 
 const ModalConfirmButton = styled.button`
   flex: 1;
-  height: 37px;
+  height: 31px;
   background-color: #63bf8e;
   border: 1px solid #63bf8e;
   border-radius: 20px;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
+
+  @media ${media.mobileM} {
+    height: 37px;
+    font-size: 14px;
+  }
 `
 
 const AddModalContainer = styled.div`
@@ -554,10 +643,14 @@ const AddModalContainer = styled.div`
   max-height: 80vh;
   background-color: #ffffff;
   border-radius: 20px;
-  padding: 20px;
+  padding: 17px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+
+  @media ${media.mobileM} {
+    padding: 20px;
+  }
 `;
 
 const AddModalHeader = styled.div`
@@ -565,15 +658,23 @@ const AddModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
+
+  @media ${media.mobileM} {
+    margin-bottom: 16px;
+  }
 `;
 
 const AddModalTitle = styled.h2`
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 700;
   color: #111111;
   margin: 0;
   text-align: center;
+
+  @media ${media.mobileM} {
+    font-size: 18px;
+  }
 `;
 
 const AddModalCloseButton = styled.button`
@@ -582,25 +683,39 @@ const AddModalCloseButton = styled.button`
   background: none;
   border: none;
   padding: 0;
-  font-size: 22px;
+  font-size: 19px;
   line-height: 1;
   color: #828282;
   cursor: pointer;
+
+  @media ${media.mobileM} {
+    font-size: 22px;
+  }
 `;
 
 const AddModalList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   overflow-y: auto;
-  margin-bottom: 20px;
+  margin-bottom: 17px;
+
+  @media ${media.mobileM} {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
 `;
 
 const AddModalEmptyText = styled.p`
-  font-size: 12px;
+  font-size: 10px;
   color: #828282;
   text-align: center;
-  padding: 20px 0;
+  padding: 17px 0;
+
+  @media ${media.mobileM} {
+    font-size: 12px;
+    padding: 20px 0;
+  }
 `;
 
 const AddModalItemWrapper = styled.div`
@@ -628,16 +743,21 @@ const AddModalItemWrapper = styled.div`
 
 const AddModalSubmitButton = styled.button`
   width: 100%;
-  height: 48px;
+  height: 41px;
   background-color: ${(props) => (props.$isActive ? "#63BF8E" : "#D9D9D9")};
   border: none;
   border-radius: 24px;
   color: #ffffff;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
   cursor: ${(props) => (props.$isActive ? "pointer" : "default")};
 
   &:active {
     background-color: ${(props) => (props.$isActive ? "#5d7e59" : "#D9D9D9")};
+  }
+
+  @media ${media.mobileM} {
+    height: 48px;
+    font-size: 15px;
   }
 `;

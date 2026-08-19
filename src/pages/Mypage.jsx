@@ -250,7 +250,7 @@ export default function MyPage() {
 
 const PageContainer = styled.div`
   margin: 0 auto;
-  min-height: 100dvh;
+  height: 100dvh;
   background-color: #ffffff;
   padding-bottom: 73px;
   box-sizing: border-box;

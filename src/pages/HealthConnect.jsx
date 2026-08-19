@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Button from '../components/Button';
+import { media } from '../styles/GlobalStyle';
 
 const HealthConnect = () => {
   const onConnect = () => {
@@ -35,32 +36,49 @@ export const Container = styled.div`
   height: 100dvh;
   background-color: #ffffff;
   box-sizing: border-box;
-  padding: 30px 20px;
+  padding: 26px 17px;
+
+  @media ${media.mobileM} {
+    padding: 30px 20px;
+  }
 `;
 
 export const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-top: 80px;
+  gap: 14px;
+  margin-top: 68px;
+
+  @media ${media.mobileM} {
+    gap: 16px;
+    margin-top: 80px;
+  }
 `;
 
 export const Title = styled.h1`
-  font-size: 32px;
+  font-size: 27px;
   font-weight: 700;
   line-height: 1.35;
   color: #000000;
   margin: 0;
   word-break: keep-all;
+
+  @media ${media.mobileM} {
+    font-size: 32px;
+  }
 `;
 
 export const Text = styled.p`
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
   line-height: 1.5;
   color: #918d8d;
   margin: 0;
   word-break: keep-all;
+
+  @media ${media.mobileM} {
+    font-size: 14px;
+  }
 `;
 
 

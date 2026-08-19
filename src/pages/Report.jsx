@@ -187,8 +187,8 @@ export default Report;
 
 const Container = styled.div`
   max-width: 430px;
-  min-height: 100vh;
-  margin: 0 auto;
+  height: 100dvh;
+  margin: 0 0 73px 0;
   background-color: #FFFFFF;
   display: flex;
   flex-direction: column;
