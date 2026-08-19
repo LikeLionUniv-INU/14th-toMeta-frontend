@@ -15,9 +15,7 @@ export default function MyPouch() {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.state?.activeTab || "morning");
 
-  // 세트: usageTime(morning/night/both)에 따라 탭별로 필터링해서 보여줌
   const [sets, setSets] = useState([]);
-  // 단품 화장품: 탭과 무관하게 항상 전체 목록을 보여줌
   const [cosmetics, setCosmetics] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -63,7 +61,6 @@ export default function MyPouch() {
     }
   }, [location.state]);
 
-  // 세트는 현재 탭(모닝/나이트)에 맞는 usageTime만, 화장품은 전체 그대로
   const currentTabSets = sets.filter(
     (set) => set.usageTime === activeTab || set.usageTime === "both"
   );
@@ -319,7 +316,6 @@ export default function MyPouch() {
   );
 }
 
-// 2차 모달 
 const ModalSunSvg = () => (
   <svg
     width="50"

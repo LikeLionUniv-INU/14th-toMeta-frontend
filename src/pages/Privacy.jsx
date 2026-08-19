@@ -80,7 +80,7 @@ const CustomCheckIcon = styled.div`
   height: 20px;
   border-radius: 6px;
   background-color: ${({ $checked }) => ($checked ? "#609668" : "#FFFFFF")};
-  border: ${({ $checked }) => ($checked ? "none" : "1px solid #E9E9E9")};
+  border: ${({ $checked }) => ($checked ? "none" : "1px solid #828282")};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -111,10 +111,10 @@ const CustomCheckIcon = styled.div`
 
 const TermsBox = styled.div`
   background-color: #FFFFFF;
-  border: 1px solid #DEE2E6;
+  border: 1px solid #e6e6e6;
   border-radius: 12px;
   padding: 14px;
-  line-height: 1.5;
+  line-height: 1.5; 
   box-sizing: border-box;
   word-break: keep-all;
 

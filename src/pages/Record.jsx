@@ -29,10 +29,8 @@ export default function Record() {
   const { date: paramDate } = useParams();
   const navigate = useNavigate();
 
-  // 기준 날짜 (URL 파라미터가 없을 경우 기본값 세팅)
   const targetDate = paramDate || '2026-08-12';
 
-  // 날짜 문자열 변환 함수 (예: '2026-08-12' -> '8월 12일 수요일')
   const formatDateText = (dateStr) => {
     if (!dateStr) return '오늘의 기록';
     if (dateStr.includes('-')) {
@@ -52,7 +50,6 @@ export default function Record() {
     return dateStr;
   };
 
-  // 피부 상태 텍스트 매핑
   const mapSkinStatus = (status) => {
     const statusMap = {
       very_bad: '매우 나쁨',
@@ -67,7 +64,6 @@ export default function Record() {
   const [activeTab, setActiveTab] = useState('morning');
   const [selectedSetDetail, setSelectedSetDetail] = useState(null);
 
-  // 일일 기록 상태
   const [recordData, setRecordData] = useState({
     dateText: '',
     skinStatus: '',
@@ -109,15 +105,13 @@ export default function Record() {
       ? recordData.morningSelections
       : recordData.nightSelections;
 
-  // 세트 클릭 시 상세 조회 API(/api/cosmetic-sets/{setId}) 호출 후 모달 오픈
-  // 세트 클릭 시 상세 조회 API 호출 후 모달 오픈
   const handleOpenSetDetail = async (setItem) => {
     try {
       const response = await getCosmeticSetDetail(setItem.cosmeticSetId);
       if (response.data && response.data.isSuccess) {
         const result = response.data.result;
         const formattedModalData = {
-          name: setItem.name || result.name, // 일일 기록에 명시된 세트 이름을 최우선으로 사용
+          name: setItem.name || result.name,
           items: (result.cosmetics || []).map((item) => ({
             id: item.userCosmeticId,
             name: item.productName || item.customName,
@@ -133,7 +127,6 @@ export default function Record() {
     }
   };
 
-  // 수정하기 클릭 시 기록 작성/수정 페이지(/todaynote/{date})로 이동
   const handleNavigateToEdit = () => {
     navigate(`/todaynote/${targetDate}`);
   };
