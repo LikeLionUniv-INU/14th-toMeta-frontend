@@ -6,7 +6,7 @@ import Header from "../components/Header";
 import NavigationBar from "../components/NavigationBar";
 import CosmeticCard from "../components/CosmeticCard";
 import SunIcon from "../assets/images/record/sun.svg";
-import MoonIcon from "../assets/images/record/Moon.svg";
+import MoonIcon from "../assets/images/record/moon.svg";
 import Trash from "../assets/images/trash.png";
 import { media } from "../styles/GlobalStyle";
 
