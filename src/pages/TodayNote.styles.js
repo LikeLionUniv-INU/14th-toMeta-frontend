@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Container = styled.div`
   margin: 0 auto;
@@ -39,8 +39,9 @@ export const DateSection = styled.div`
   position: relative;
 
   h2 {
+    font-family: 'Eommakkaturi', sans-serif;
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 400;
     margin: 0;
   }
 `;
@@ -57,8 +58,19 @@ export const Divider = styled.hr`
   margin: 1px;
 `;
 
-export const Section = styled.section`
+export const Section = styled.section``;
 
+export const TodayLabel = styled.div`
+  font-family: 'Eommakkaturi', sans-serif;
+  display: block;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  font-size: 18px;
+
+  .required {
+    color: red;
+    margin-left: 2px;
+  }
 `;
 
 export const Label = styled.div`
@@ -73,7 +85,7 @@ export const Label = styled.div`
   }
 
   .optional {
-    color: #0C10FF;
+    color: #0c10ff;
     font-size: 12px;
     font-weight: 400;
     margin-left: 4px;

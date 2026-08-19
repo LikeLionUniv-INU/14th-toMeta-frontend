@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Header from "../components/Header.jsx";
+import Header from '../components/Header.jsx';
 import Button from '../components/Button.jsx';
 import Edit from '../assets/images/edit.png';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +8,7 @@ import { getMyProfile, updateMyProfile } from '../api/user';
 
 // 화면 표시(한글 라벨) <-> API 코드 매핑
 // ※ 백엔드 enum 전체 목록이 명세서에 없어 임의로 매핑함. 실제 값 다르면 이 표만 수정하면 됨.
-const GENDER_CODE_MAP = { '남자': 'male', '여자': 'female' };
+const GENDER_CODE_MAP = { 남자: 'male', 여자: 'female' };
 const GENDER_LABEL_MAP = { male: '남자', female: '여자' };
 
 const AGE_CODE_MAP = {
@@ -27,12 +27,12 @@ const AGE_LABEL_MAP = {
 };
 
 const SKIN_TYPE_CODE_MAP = {
-  '건성': 'dry',
-  '지성': 'oily',
-  '복합성': 'combination',
-  '수부지': 'combination_dry',
-  '민감성': 'sensitive',
-  '모름': 'unknown',
+  건성: 'dry',
+  지성: 'oily',
+  복합성: 'combination',
+  수부지: 'combination_dry',
+  민감성: 'sensitive',
+  모름: 'unknown',
 };
 const SKIN_TYPE_LABEL_MAP = {
   dry: '건성',
@@ -62,7 +62,14 @@ export default function EditProfile() {
 
   const genderOptions = ['남자', '여자'];
   const ageOptions = ['10대', '20대', '30대', '40대', '50대 이상'];
-  const skinTypeOptions = ['건성', '지성', '복합성', '수부지', '민감성', '모름'];
+  const skinTypeOptions = [
+    '건성',
+    '지성',
+    '복합성',
+    '수부지',
+    '민감성',
+    '모름',
+  ];
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -130,17 +137,28 @@ export default function EditProfile() {
 
   return (
     <PageContainer>
-      <Header title={"프로필 수정"} variant="back" />
+      <Header title={'프로필 수정'} variant="back" />
 
       <ProfileSection>
         <ProfileAvatar>
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#006014" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="40"
+            height="40"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#006014"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             <circle cx="12" cy="7" r="4" />
           </svg>
         </ProfileAvatar>
         {/* 상단 이름은 조회된 닉네임으로 고정 */}
-        <ProfileName>{currentNickname ? `${currentNickname} 님` : ''}</ProfileName>
+        <ProfileName>
+          {currentNickname ? `${currentNickname} 님` : ''}
+        </ProfileName>
       </ProfileSection>
 
       <FormContainer>
@@ -182,7 +200,9 @@ export default function EditProfile() {
           label="피부타입"
           value={skinType}
           options={skinTypeOptions}
-          isModified={initialProfile ? skinType !== initialProfile.skinType : false}
+          isModified={
+            initialProfile ? skinType !== initialProfile.skinType : false
+          }
           isOpen={openDropdown === 'skinType'}
           onToggle={() => toggleDropdown('skinType')}
           onSelect={(val) => handleSelect('skinType', val)}
@@ -196,7 +216,15 @@ export default function EditProfile() {
   );
 }
 
-function CustomSelect({ label, value, options, isOpen, onToggle, onSelect, isModified }) {
+function CustomSelect({
+  label,
+  value,
+  options,
+  isOpen,
+  onToggle,
+  onSelect,
+  isModified,
+}) {
   return (
     <FieldGroup>
       <Label>{label}</Label>
@@ -225,7 +253,6 @@ const PageContainer = styled.div`
   background-color: #ffffff;
   padding-bottom: 30px;
   box-sizing: border-box;
-  font-family: sans-serif;
   display: flex;
   flex-direction: column;
 `;
@@ -286,7 +313,7 @@ const Input = styled.input`
   padding: 10px 12px;
   font-size: 12px;
   font-weight: 400;
-  border: 1px solid #DEE2E6;
+  border: 1px solid #dee2e6;
   border-radius: 6px;
   outline: none;
   box-sizing: border-box;
@@ -297,7 +324,7 @@ const Input = styled.input`
   }
 
   &:focus {
-    border-color: #CCCCCC;
+    border-color: #cccccc;
   }
 `;
 
@@ -320,7 +347,7 @@ const SelectHeader = styled.div`
   padding: 10px 12px;
   font-size: 12px;
   font-weight: 400;
-  border: 1px solid #EEE2E6;
+  border: 1px solid #eee2e6;
   border-radius: 6px;
   cursor: pointer;
   background-color: #ffffff;
@@ -339,7 +366,7 @@ const OptionList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 4px 0 0 0;
-  border: 1px solid #EEE2E6;
+  border: 1px solid #eee2e6;
   border-radius: 6px;
   overflow: hidden;
   background-color: #ffffff;
@@ -350,7 +377,7 @@ const OptionItem = styled.li`
   font-size: 12px;
   font-weight: 400;
   text-align: center;
-  border-bottom: 1px solid #EEE2E6;
+  border-bottom: 1px solid #eee2e6;
   cursor: pointer;
   color: #333333;
 
