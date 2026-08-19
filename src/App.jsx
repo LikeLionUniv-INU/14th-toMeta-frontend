@@ -27,6 +27,7 @@ import EditProfile from './pages/EditProfile';
 import DailyReport from './pages/dailyreport/DailyReport';
 import WeeklyReport from './pages/weeklyreport/WeeklyReport';
 import Home from './pages/Home';
+import Splash from './pages/Splash';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
       <GlobalStyle />
       <AppLayout>
         <Routes>
+          <Route path="/" element={<Splash />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/health-connect" element={<HealthConnect />} />
           <Route path="/onboarding/profile" element={<ProfileInput />} />
