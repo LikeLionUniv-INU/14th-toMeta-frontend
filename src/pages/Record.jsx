@@ -6,7 +6,7 @@ import Button from '../components/Button';
 import CosmeticCard from '../components/CosmeticCard';
 import SetDetailModal from '../components/modal/SetDetailModal';
 import SunIcon from '../assets/images/record/sun.svg';
-import MoonIcon from '../assets/images/record/Moon.svg';
+import MoonIcon from '../assets/images/record/moon.svg';
 import AfterIcon from '../assets/images/after.png';
 import { getDailyRecord } from '../api/records';
 import { getCosmeticSetDetail } from '../api/cosmetics';
