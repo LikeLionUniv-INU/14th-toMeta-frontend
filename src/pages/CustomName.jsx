@@ -46,13 +46,7 @@ export default function CustomName() {
             type="text"
             placeholder="제품명을 입력해 주세요"
             value={productName}
-            onChange={(e) => {
-              const sanitizedValue = e.target.value.replace(
-                /[^ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z0-9\s]/g,
-                '',
-              );
-              setProductName(sanitizedValue);
-            }}
+            onChange={(e) => setProductName(e.target.value)}
             autoFocus
           />
         </InputWrapper>
