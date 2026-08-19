@@ -253,6 +253,10 @@ const ListItem = styled.div`
   cursor: pointer;
   border: ${(props) => (props.$isSelected ? '1px solid #02ca70' : '1px solid #dee2e6')};
 
+  &:active {
+    transform: scale(0.98);
+  }
+
   @media ${media.mobileM} {
     height: 69px;
   }

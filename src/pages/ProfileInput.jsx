@@ -278,6 +278,7 @@ const GenderChip = styled.button`
 
   &:active {
     opacity: 0.8;
+    transform: scale(0.9);
   }
 `;
 
