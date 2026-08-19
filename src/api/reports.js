@@ -52,15 +52,48 @@ export const updateDailyReportNote = async (date, noteData) => {
  */
 export const getMonthlyReports = async (params) => {
   if (USE_MOCK) {
+    const year = params?.year || 2026;
+    const month = params?.month || 8;
     return {
       data: {
         isSuccess: true,
+        code: 'COMMON_200',
+        message: '요청에 성공했습니다.',
         result: {
-          year: params?.year || 2026,
-          month: params?.month || 8,
+          year,
+          month,
+          recordedDates: [
+            '2026-08-03',
+            '2026-08-05',
+            '2026-08-07',
+            '2026-08-10',
+            '2026-08-11',
+            '2026-08-12',
+            '2026-08-13',
+            '2026-08-14',
+          ],
           weeklyReports: [
-            { reportId: 13, weekRange: '8월 1주차', avgScore: 78 },
-            { reportId: 14, weekRange: '8월 2주차', avgScore: 84 },
+            {
+              reportId: 13,
+              week: 1,
+              startDate: '2026-07-27',
+              endDate: '2026-08-02',
+              available: true,
+            },
+            {
+              reportId: 16,
+              week: 2,
+              startDate: '2026-08-03',
+              endDate: '2026-08-09',
+              available: true,
+            },
+            {
+              reportId: 19,
+              week: 3,
+              startDate: '2026-08-10',
+              endDate: '2026-08-16',
+              available: false,
+            },
           ],
         },
       },

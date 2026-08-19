@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import NavigationBar from '../components/NavigationBar.jsx';
 import colorBarImg from '../assets/images/colorbar.png';
 import before from '../assets/images/before.png';
 import after from '../assets/images/after.png';
+import { getMonthlyReports } from '../api/reports';
 
 const Report = () => {
   const navigate = useNavigate();
@@ -67,21 +68,28 @@ const Report = () => {
     },
   };
 
-  const monthlyReportsData = {
-    '2026-8': [
-      { week: 1, reportId: '2026-08-w1' },
-      { week: 2, reportId: '2026-08-w2' },
-    ],
-    '2026-7': [
-      { week: 1, reportId: '2026-07-w1' },
-      { week: 3, reportId: '2026-07-w3' },
-      { week: 4, reportId: '2026-07-w4' },
-    ],
-  };
+  const [weeklyReports, setWeeklyReports] = useState([]);
+
+  useEffect(() => {
+    const fetchMonthlyReports = async () => {
+      try {
+        const response = await getMonthlyReports({
+          year: currentYear,
+          month: currentMonth + 1,
+        });
+        const fetchedWeeklyReports = response.data.result.weeklyReports || [];
+        setWeeklyReports(fetchedWeeklyReports.filter((report) => report.available));
+      } catch (error) {
+        console.error('[Report] 월별 리포트 목록 조회 실패:', error);
+      }
+    };
+
+    fetchMonthlyReports();
+  }, [currentYear, currentMonth]);
 
   const currentKey = `${currentYear}-${currentMonth + 1}`;
   const currentDailyStatus = dailyReportData[currentKey] || {};
-  const reportsToDisplay = monthlyReportsData[currentKey] || [];
+  const reportsToDisplay = weeklyReports;
 
   const handleDateClick = (day) => {
     setSelectedDate(day);
@@ -245,18 +253,20 @@ const WeekDay = styled.span`
 const CalendarGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  row-gap: 8px;
+  row-gap: 4px;
   text-align: center;
 `;
 
 const DayCell = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding-top: 6px;
   cursor: ${(props) => (props.$empty ? 'default' : 'pointer')};
-  height: 48px;
+  height: 62px;
   background-color: ${(props) => props.$bgColor || 'transparent'};
   border-radius: 12px;
+  box-sizing: border-box;
   transition: transform 0.1s ease, background-color 0.2s ease;
 
   ${(props) =>
