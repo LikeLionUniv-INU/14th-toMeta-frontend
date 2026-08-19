@@ -139,9 +139,13 @@ export const searchIngredients = async (params) => {
   return api.get('/api/ingredients/search', { params });
 };
 
+// mock 환경에서 세트를 여러 개 생성해도 setId가 겹치지 않도록 카운터로 관리
+let mockSetIdCounter = 100;
+
 export const createCosmeticSet = async (setData) => {
   if (USE_MOCK) {
-    return { data: { isSuccess: true, result: { setId: 1 } } };
+    mockSetIdCounter += 1;
+    return { data: { isSuccess: true, result: { setId: mockSetIdCounter } } };
   }
   return api.post('/api/cosmetic-sets', setData);
 };

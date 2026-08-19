@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
-import api from "../api/axios";
+import { getCosmeticOptions, deleteMyCosmetic, createCosmeticSet } from "../api/cosmetics";
 import Header from "../components/Header";
 import NavigationBar from "../components/NavigationBar";
 import CosmeticCard from "../components/CosmeticCard";
@@ -13,10 +13,11 @@ export default function MyPouch() {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.state?.activeTab || "morning");
-  const [pouchData, setPouchData] = useState({
-    morning: { sets: [], cosmetics: [] },
-    night: { sets: [], cosmetics: [] },
-  });
+
+  // 세트: usageTime(morning/night/both)에 따라 탭별로 필터링해서 보여줌
+  const [sets, setSets] = useState([]);
+  // 단품 화장품: 탭과 무관하게 항상 전체 목록을 보여줌
+  const [cosmetics, setCosmetics] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [selectedCosmetics, setSelectedCosmetics] = useState([]);
@@ -34,159 +35,48 @@ export default function MyPouch() {
   }, [activeTab]);
 
   useEffect(() => {
-    const mockResponse = {
-      isSuccess: true,
-      code: "COMMON_200",
-      message: "요청에 성공했습니다.",
-      result: {
-        morning: {
-          sets: [
-            {
-              setId: 1,
-              name: "진정템",
-              cosmetics: [
-                {
-                  userCosmeticId: 11,
-                  productName: "아누아 어성초 77% 진정 토너",
-                  customName: null,
-                  productType: "skin_toner",
-                  usageTime: "both",
-                  mainIngredients: ["어성초"],
-                },
-                {
-                  userCosmeticId: 12,
-                  productName: "토리든 다이브인 저분자 히알루론산 세럼",
-                  customName: null,
-                  productType: "serum",
-                  usageTime: "morning",
-                  mainIngredients: ["히알루론산"],
-                },
-              ],
-            },
-            {
-              setId: 2,
-              name: "사용자 지정 이름",
-              cosmetics: [
-                {
-                  userCosmeticId: 13,
-                  productName: "진정 크림",
-                  customName: "데일리 진정 크림",
-                  productType: "soothing_cream",
-                  usageTime: "both",
-                  mainIngredients: ["티트리"],
-                },
-              ],
-            },
-          ],
-          cosmetics: [
-            {
-              userCosmeticId: 11,
-              productName: "아누아 어성초 77% 진정 토너",
-              customName: null,
-              productType: "skin_toner",
-              usageTime: "both",
-              mainIngredients: ["어성초"],
-            },
-            {
-              userCosmeticId: 12,
-              productName: "토리든 다이브인 저분자 히알루론산 세럼",
-              customName: null,
-              productType: "serum",
-              usageTime: "morning",
-              mainIngredients: ["히알루론산"],
-            },
-            {
-              userCosmeticId: 13,
-              productName: "진정 크림",
-              customName: "데일리 진정 크림",
-              productType: "soothing_cream",
-              usageTime: "both",
-              mainIngredients: ["티트리"],
-            },
-          ],
-        },
-        night: {
-          sets: [
-            {
-              setId: 3,
-              name: "나이트 진정 세트",
-              cosmetics: [
-                {
-                  userCosmeticId: 11,
-                  productName: "아누아 어성초 77% 진정 토너",
-                  customName: null,
-                  productType: "skin_toner",
-                  usageTime: "both",
-                  mainIngredients: ["어성초"],
-                },
-                {
-                  userCosmeticId: 14,
-                  productName: "브링그린 티트리 시카 크림",
-                  customName: null,
-                  productType: "soothing_cream",
-                  usageTime: "night",
-                  mainIngredients: ["티트리", "시카"],
-                },
-              ],
-            },
-          ],
-          cosmetics: [
-            {
-              userCosmeticId: 11,
-              productName: "아누아 어성초 77% 진정 토너",
-              customName: null,
-              productType: "skin_toner",
-              usageTime: "both",
-              mainIngredients: ["어성초"],
-            },
-            {
-              userCosmeticId: 14,
-              productName: "브링그린 티트리 시카 크림",
-              customName: null,
-              productType: "soothing_cream",
-              usageTime: "night",
-              mainIngredients: ["티트리", "시카"],
-            },
-          ],
-        },
-      },
+    const fetchCosmeticOptions = async () => {
+      try {
+        setLoading(true);
+        const response = await getCosmeticOptions();
+        const { sets: fetchedSets, cosmetics: fetchedCosmetics } = response.data.result;
+        setSets(fetchedSets || []);
+        setCosmetics(fetchedCosmetics || []);
+      } catch (error) {
+        console.error("[MyPouch] 화장품 목록 조회 실패:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    setPouchData(mockResponse.result);
-    setLoading(false);
+    fetchCosmeticOptions();
   }, []);
 
   useEffect(() => {
     if (location.state?.deletedSetId) {
       const deletedId = location.state.deletedSetId;
-      const targetTab = location.state.activeTab || activeTab;
 
-      setPouchData((prev) => ({
-        ...prev,
-        [targetTab]: {
-          ...prev[targetTab],
-          sets: prev[targetTab].sets.filter((s) => s.setId !== deletedId),
-        },
-      }));
+      setSets((prev) => prev.filter((s) => s.setId !== deletedId));
 
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location.state]);
 
-  const currentTabContent = pouchData[activeTab] || { sets: [], cosmetics: [] };
+  // 세트는 현재 탭(모닝/나이트)에 맞는 usageTime만, 화장품은 전체 그대로
+  const currentTabSets = sets.filter(
+    (set) => set.usageTime === activeTab || set.usageTime === "both"
+  );
 
-  const handleDeleteItem = (e, id) => {
+  const handleDeleteItem = async (e, id) => {
     e.stopPropagation();
-    setPouchData((prev) => ({
-      ...prev,
-      [activeTab]: {
-        ...prev[activeTab],
-        cosmetics: prev[activeTab].cosmetics.filter(
-          (item) => item.userCosmeticId !== id
-        ),
-      },
-    }));
-    setSelectedCosmetics((prev) => prev.filter((item) => item.userCosmeticId !== id));
+    try {
+      await deleteMyCosmetic(id);
+      setCosmetics((prev) => prev.filter((item) => item.userCosmeticId !== id));
+      setSelectedCosmetics((prev) => prev.filter((item) => item.userCosmeticId !== id));
+    } catch (error) {
+      console.error("[MyPouch] 화장품 삭제 실패:", error);
+      alert(error.message || "화장품 삭제에 실패했습니다.");
+    }
   };
 
   const handleSetClick = (setId) => {
@@ -216,39 +106,47 @@ export default function MyPouch() {
     }));
   };
 
-  const handleCreateSet = () => {
+  const handleCreateSet = async () => {
     if (!selectedRoutines.day && !selectedRoutines.night) {
       alert("낮 또는 밤을 최소 하나 이상 선택해 주세요.");
       return;
     }
 
-    const newSet = {
-      setId: Date.now(),
-      name: setName.trim() || "사용자 지정 이름",
-      cosmetics: selectedCosmetics,
-    };
+    let usageTime = "both";
+    if (selectedRoutines.day && !selectedRoutines.night) {
+      usageTime = "morning";
+    } else if (!selectedRoutines.day && selectedRoutines.night) {
+      usageTime = "night";
+    }
 
-    setPouchData((prev) => {
-      const updated = { ...prev };
-      if (selectedRoutines.day) {
-        updated.morning = {
-          ...updated.morning,
-          sets: [...updated.morning.sets, newSet],
-        };
-      }
-      if (selectedRoutines.night) {
-        updated.night = {
-          ...updated.night,
-          sets: [...updated.night.sets, newSet],
-        };
-      }
-      return updated;
-    });
+    const name = setName.trim() || "사용자 지정 이름";
 
-    setIsRoutineModalOpen(false);
-    setSelectedCosmetics([]);
-    setSetName("");
-    setSelectedRoutines({ day: false, night: false });
+    try {
+      const response = await createCosmeticSet({
+        name,
+        usageTime,
+        userCosmeticIds: selectedCosmetics.map((c) => c.userCosmeticId),
+      });
+
+      const newSet = {
+        setId: response.data.result.setId,
+        name,
+        usageTime,
+        mainIngredients: [
+          ...new Set(selectedCosmetics.flatMap((c) => c.mainIngredients || [])),
+        ],
+      };
+
+      setSets((prev) => [...prev, newSet]);
+
+      setIsRoutineModalOpen(false);
+      setSelectedCosmetics([]);
+      setSetName("");
+      setSelectedRoutines({ day: false, night: false });
+    } catch (error) {
+      console.error("[MyPouch] 세트 생성 실패:", error);
+      alert(error.message || "세트 생성에 실패했습니다.");
+    }
   };
 
   return (
@@ -276,20 +174,18 @@ export default function MyPouch() {
             <div>로딩 중...</div>
           ) : (
             <>
-              {currentTabContent.sets && currentTabContent.sets.length > 0 && (
+              {currentTabSets.length > 0 && (
                 <>
                   <SetListSection>
-                    {currentTabContent.sets.map((set) => (
+                    {currentTabSets.map((set) => (
                       <SetCard key={set.setId}>
                         <SetHeaderRow>
                           <SetTitle>{set.name}</SetTitle>
                         </SetHeaderRow>
                         <SetTagGroup>
-                          {set.cosmetics
-                            ?.flatMap((c) => c.mainIngredients || [])
-                            .map((tag, idx) => (
-                              <SetTag key={idx}>#{tag}</SetTag>
-                            ))}
+                          {(set.mainIngredients || []).slice(0, 5).map((tag, idx) => (
+                            <SetTag key={idx}>#{tag}</SetTag>
+                          ))}
                         </SetTagGroup>
                         <ChevronRightIcon onClick={() => handleSetClick(set.setId)}>
                           ›
@@ -302,31 +198,30 @@ export default function MyPouch() {
               )}
 
               <CardListSection>
-                {currentTabContent.cosmetics &&
-                  currentTabContent.cosmetics.map((item) => {
-                    const isSelected = selectedCosmetics.some(
-                      (selected) => selected.userCosmeticId === item.userCosmeticId
-                    );
-                    return (
-                      <CardWrapper
-                        key={item.userCosmeticId}
-                        $isSelected={isSelected}
-                        onClick={() => handleToggleSelect(item)}
+                {cosmetics.map((item) => {
+                  const isSelected = selectedCosmetics.some(
+                    (selected) => selected.userCosmeticId === item.userCosmeticId
+                  );
+                  return (
+                    <CardWrapper
+                      key={item.userCosmeticId}
+                      $isSelected={isSelected}
+                      onClick={() => handleToggleSelect(item)}
+                    >
+                      <CosmeticCard
+                        name={item.customName || item.productName}
+                        tags={(item.mainIngredients || [])
+                          .slice(0, 5)
+                          .map((tag) => `#${tag}`)}
+                      />
+                      <DeleteButton
+                        onClick={(e) => handleDeleteItem(e, item.userCosmeticId)}
                       >
-                        <CosmeticCard
-                          name={item.customName || item.productName}
-                          tags={(item.mainIngredients || []).map(
-                            (tag) => `#${tag}`
-                          )}
-                        />
-                        <DeleteButton
-                          onClick={(e) => handleDeleteItem(e, item.userCosmeticId)}
-                        >
-                          <TrashIcon src={Trash} alt="delete" />
-                        </DeleteButton>
-                      </CardWrapper>
-                    );
-                  })}
+                        <TrashIcon src={Trash} alt="delete" />
+                      </DeleteButton>
+                    </CardWrapper>
+                  );
+                })}
               </CardListSection>
             </>
           )}
