@@ -24,7 +24,7 @@ import CustomIngredient from './pages/CustomIngredient';
 import Report from './pages/Report';
 import MyPage from './pages/Mypage';
 import EditProfile from './pages/EditProfile';
-import DailyReport from './pages/Dailyreport/DailyReport';
+import DailyReport from './pages/DailyReport/DailyReport';
 import WeeklyReport from './pages/weeklyreport/WeeklyReport';
 import Home from './pages/Home';
 import Splash from './pages/Splash';
