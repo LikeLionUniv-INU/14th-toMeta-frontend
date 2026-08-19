@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { SprayCan } from 'lucide-react';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import { media } from '../styles/GlobalStyle';
@@ -81,13 +82,10 @@ export default function SearchResult() {
                     $isLandscape={isLandscape}
                     src={searchResults[0].imageUrl}
                     alt={searchResults[0].name}
+                    onLoad={handleImageLoad}
                   />
                 ) : (
-                  <span>
-                    제품
-                    <br />
-                    사진
-                  </span>
+                  <SprayCan size={64} strokeWidth={1.5} color="#b3b3b3" />
                 )}
               </ImagePlaceholder>
               <ProductName>{searchResults[0].name}</ProductName>
@@ -117,11 +115,7 @@ export default function SearchResult() {
                       {item.imageUrl ? (
                         <img src={item.imageUrl} alt={item.name} />
                       ) : (
-                        <span>
-                          제품
-                          <br />
-                          사진
-                        </span>
+                        <SprayCan size={30} strokeWidth={1.5} color="#828282" />
                       )}
                     </SmallImagePlaceholder>
                     <ListItemName>{item.name}</ListItemName>
