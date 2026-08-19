@@ -3,8 +3,6 @@ import styled from "styled-components";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import NavigationBar from "../components/NavigationBar";
 import CosmeticCard from "../components/CosmeticCard";
-import SunIcon from "../assets/images/record/sun.svg";
-import MoonIcon from "../assets/images/record/Moon.svg";
 import Trash from "../assets/images/trash.png";
 import { media } from '../styles/GlobalStyle';
 import { getCosmeticOptions, getCosmeticSetDetail, updateCosmeticSet, deleteCosmeticSet } from "../api/cosmetics";
