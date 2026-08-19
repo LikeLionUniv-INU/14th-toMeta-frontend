@@ -13,7 +13,7 @@ export const Wrapper = styled.div`
 `;
 
 export const Container = styled.div`
-  margin: 10px 20px 20px 20px;
+  margin: 10px 20px 30px 20px;
   display: flex;
   flex-direction: column;
   justify-content: ${(props) => (props.$center ? 'center' : 'flex-start')};
@@ -293,7 +293,7 @@ export const CycleChartImage = styled.img`
 export const NeedlePivot = styled.div`
   position: absolute;
   top: 50%;
-  left: 53%;
+  left: 52%;
   width: 0;
   height: 0;
   transform: translate(-50%, -50%) rotate(${(props) => props.$deg}deg);
@@ -646,12 +646,12 @@ export const BottomBanner = styled.div`
   }
 `;
 
-export const AvatarPlaceholder = styled.div`
+export const AvatarPlaceholder = styled.img`
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  background-color: #d1d5db;
   flex-shrink: 0;
+  transform: scaleX(-1);
 
   @media ${media.mobileM} {
     width: 90px;

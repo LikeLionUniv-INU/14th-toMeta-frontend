@@ -5,6 +5,7 @@ import { getDailyReport, updateDailyReportNote } from '../../api/reports';
 import * as S from './DailyReport.styles';
 import Header from '../../components/Header';
 import menstrualImg from '../../assets/images/menstrualcycle.png';
+import surprisedDr from '../../assets/images/dr-acne/surprised-dr.svg';
 
 import {
   SleepIcon,
@@ -477,7 +478,7 @@ export default function DailyReport({ date }) {
 
         {/* 하단 추천 배너 */}
         <S.BottomBanner>
-          <S.AvatarPlaceholder />
+          <S.AvatarPlaceholder src={surprisedDr} />
           <S.SpeechBubble>
             <div className="title">자극적인 과자 대신 이런 건 어때요?</div>
             <div className="link">/basak.com</div>
