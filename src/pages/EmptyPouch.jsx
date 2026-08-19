@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import NavigationBar from '../components/NavigationBar';
 import Img from '../assets/images/dr-acne/surprised-dr.svg';
 import { useNavigate } from 'react-router-dom';
+import { media } from '../styles/GlobalStyle';
 
 export default function EmptyPouch() {
   const navigate = useNavigate();
@@ -30,20 +31,28 @@ export default function EmptyPouch() {
 }
 
 const Container = styled.div`
-  margin: 30px 20px;
+  margin: 26px 17px;
   height: 100dvh;
   background-color: #ffffff;
   padding-bottom: 73px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+
+  @media ${media.mobileM} {
+    margin: 30px 20px;
+  }
 `;
 
 const Header = styled.header`
   text-align: center;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 15px;
   color: #000000;
+
+  @media ${media.mobileM} {
+    font-size: 18px;
+  }
 `;
 
 const ContentArea = styled.main`
@@ -52,42 +61,66 @@ const ContentArea = styled.main`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0 20px;
-  margin-top: -30px;
+  padding: 0 17px;
+  margin-top: -26px;
+
+  @media ${media.mobileM} {
+    padding: 0 20px;
+    margin-top: -30px;
+  }
 `;
 
 const ImagePlaceholder = styled.img`
-  width: 300px;
+  width: 255px;
   height: auto;
   object-fit: contain;
-  margin-bottom: 40px;
+  margin-bottom: 34px;
+
+  @media ${media.mobileM} {
+    width: 300px;
+    margin-bottom: 40px;
+  }
 `;
 
 const RegisterButton = styled.button`
-  width: 220px;
-  height: 54px;
+  width: 187px;
+  height: 46px;
   background-color: transparent;
   border: 1.5px dashed #b3b3b3;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 7px;
   cursor: pointer;
 
   &:active {
     background-color: #f8f8f8;
   }
+
+  @media ${media.mobileM} {
+    width: 220px;
+    height: 54px;
+    gap: 8px;
+  }
 `;
 
 const PlusIcon = styled.span`
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 500;
   color: #003b00;
+
+  @media ${media.mobileM} {
+    font-size: 20px;
+  }
 `;
 
 const ButtonText = styled.span`
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 700;
   color: #003b00;
+
+  @media ${media.mobileM} {
+    font-size: 20px;
+  }
 `;

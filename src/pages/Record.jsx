@@ -10,6 +10,7 @@ import MoonIcon from '../assets/images/record/Moon.svg';
 import AfterIcon from '../assets/images/after.png';
 import { getDailyRecord } from '../api/records';
 import { getCosmeticSetDetail } from '../api/cosmetics';
+import { media } from '../styles/GlobalStyle';
 import drVeryBad from '../assets/images/dr-acne/dr.verybad.svg';
 import drBad from '../assets/images/dr-acne/dr.bad.svg';
 import drNormal from '../assets/images/dr-acne/dr.normal.svg';
@@ -28,10 +29,8 @@ export default function Record() {
   const { date: paramDate } = useParams();
   const navigate = useNavigate();
 
-  // 기준 날짜 (URL 파라미터가 없을 경우 기본값 세팅)
   const targetDate = paramDate || '2026-08-12';
 
-  // 날짜 문자열 변환 함수 (예: '2026-08-12' -> '8월 12일 수요일')
   const formatDateText = (dateStr) => {
     if (!dateStr) return '오늘의 기록';
     if (dateStr.includes('-')) {
@@ -51,7 +50,6 @@ export default function Record() {
     return dateStr;
   };
 
-  // 피부 상태 텍스트 매핑
   const mapSkinStatus = (status) => {
     const statusMap = {
       very_bad: '매우 나쁨',
@@ -66,7 +64,6 @@ export default function Record() {
   const [activeTab, setActiveTab] = useState('morning');
   const [selectedSetDetail, setSelectedSetDetail] = useState(null);
 
-  // 일일 기록 상태
   const [recordData, setRecordData] = useState({
     dateText: '',
     skinStatus: '',
@@ -108,15 +105,13 @@ export default function Record() {
       ? recordData.morningSelections
       : recordData.nightSelections;
 
-  // 세트 클릭 시 상세 조회 API(/api/cosmetic-sets/{setId}) 호출 후 모달 오픈
-  // 세트 클릭 시 상세 조회 API 호출 후 모달 오픈
   const handleOpenSetDetail = async (setItem) => {
     try {
       const response = await getCosmeticSetDetail(setItem.cosmeticSetId);
       if (response.data && response.data.isSuccess) {
         const result = response.data.result;
         const formattedModalData = {
-          name: setItem.name || result.name, // 일일 기록에 명시된 세트 이름을 최우선으로 사용
+          name: setItem.name || result.name,
           items: (result.cosmetics || []).map((item) => ({
             id: item.userCosmeticId,
             name: item.productName || item.customName,
@@ -132,7 +127,6 @@ export default function Record() {
     }
   };
 
-  // 수정하기 클릭 시 기록 작성/수정 페이지(/todaynote/{date})로 이동
   const handleNavigateToEdit = () => {
     navigate(`/todaynote/${targetDate}`);
   };
@@ -275,7 +269,11 @@ const HeaderRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 12px 20px 0 20px;
+  margin: 10px 17px 0 17px;
+
+  @media ${media.mobileM} {
+    margin: 12px 20px 0 20px;
+  }
 `;
 
 const DateTitle = styled.h1`
@@ -284,19 +282,32 @@ const DateTitle = styled.h1`
   font-weight: 400;
   margin: 0;
   color: #000000;
+
+  @media ${media.mobileM} {
+    font-size: 24px;
+  }
 `;
 
 const StatusSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin: 20px;
+  gap: 14px;
+  margin: 17px;
+
+  @media ${media.mobileM} {
+    gap: 16px;
+    margin: 20px;
+  }
 `;
 
 const ProfileCircle = styled.img`
-  width: 80px;
+  width: 68px;
   height: auto;
   flex-shrink: 0;
+
+  @media ${media.mobileM} {
+    width: 80px;
+  }
 `;
 
 const StatusTextWrapper = styled.div`
@@ -305,35 +316,50 @@ const StatusTextWrapper = styled.div`
 `;
 
 const StatusLabel = styled.span`
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   color: #141212;
-  margin-left: 10px;
+  margin-left: 9px;
+
+  @media ${media.mobileM} {
+    font-size: 16px;
+    margin-left: 10px;
+  }
 `;
 
 const StatusValue = styled.span`
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 700;
   color: #141212;
-  margin-left: 10px;
-  margin-top: 6px;
+  margin-left: 9px;
+  margin-top: 5px;
+
+  @media ${media.mobileM} {
+    font-size: 22px;
+    margin-left: 10px;
+    margin-top: 6px;
+  }
 `;
 
 const TabGroup = styled.div`
   display: flex;
   border-bottom: 2px solid #eee;
-  margin-top: 8px;
+  margin-top: 7px;
+
+  @media ${media.mobileM} {
+    margin-top: 8px;
+  }
 `;
 
 const TabButton = styled.button`
   flex: 1;
-  padding: 12px 0;
+  padding: 10px 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
 
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
   color: ${(props) => (props.$active ? '#266210' : 'gray')};
   border-bottom: ${(props) => (props.$active ? '2px solid #266210' : 'none')};
@@ -345,28 +371,43 @@ const TabButton = styled.button`
   margin-bottom: -2px;
 
   img {
-    width: 18px;
-    height: 18px;
+    width: 15px;
+    height: 15px;
     transition: filter 0.2s ease;
 
     filter: ${(props) =>
-      props.$active
-        ? 'brightness(0) saturate(100%) invert(29%) sepia(85%) saturate(750%) hue-rotate(72deg) brightness(88%) contrast(96%)'
-        : 'brightness(0) saturate(100%) invert(50%) opacity(0.7)'};
+    props.$active
+      ? 'brightness(0) saturate(100%) invert(29%) sepia(85%) saturate(750%) hue-rotate(72deg) brightness(88%) contrast(96%)'
+      : 'brightness(0) saturate(100%) invert(50%) opacity(0.7)'};
+  }
+
+  @media ${media.mobileM} {
+    padding: 12px 0;
+    gap: 6px;
+    font-size: 14px;
+
+    img {
+      width: 18px;
+      height: 18px;
+    }
   }
 `;
 
 const CardListSection = styled.div`
-  margin: 16px 20px 0 20px;
+  margin: 14px 17px 0 17px;
   display: flex;
   flex-direction: column;
+
+  @media ${media.mobileM} {
+    margin: 16px 20px 0 20px;
+  }
 `;
 
 const CardList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  max-height: 250px;
+  gap: 8px;
+  max-height: 212px;
   overflow-y: auto;
   padding-right: 2px;
 
@@ -377,93 +418,154 @@ const CardList = styled.div`
     background-color: #d1d5db;
     border-radius: 4px;
   }
+
+  @media ${media.mobileM} {
+    gap: 10px;
+    max-height: 250px;
+  }
 `;
 
 const SetCard = styled.div`
   background-color: #fff8f2;
   border-radius: 12px;
-  padding: 14px 16px;
+  padding: 12px 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border: 1px solid #96be9c;
   cursor: pointer;
+
+  @media ${media.mobileM} {
+    padding: 14px 16px;
+  }
 `;
 
 const SetLeftContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
+
+  @media ${media.mobileM} {
+    gap: 8px;
+  }
 `;
 
 const SetTitle = styled.span`
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
   color: #141212;
+
+  @media ${media.mobileM} {
+    font-size: 14px;
+  }
 `;
 
 const ArrowIcon = styled.img`
-  width: 12px;
+  width: 10px;
   height: auto;
   object-fit: contain;
   flex-shrink: 0;
-  margin-right: 4px;
+  margin-right: 3px;
+
+  @media ${media.mobileM} {
+    width: 12px;
+    margin-right: 4px;
+  }
 `;
 
 const SetTagGroup = styled.div`
   display: flex;
-  gap: 6px;
+  gap: 5px;
   flex-wrap: wrap;
+
+  @media ${media.mobileM} {
+    gap: 6px;
+  }
 `;
 
 const SetTag = styled.span`
   background-color: #96be9c;
   color: #ffffff;
-  font-size: 11px;
-  padding: 3px 8px;
+  font-size: 9px;
+  padding: 3px 7px;
   border-radius: 12px;
   font-weight: 500;
+
+  @media ${media.mobileM} {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
 `;
 
 const OptionalSection = styled.div`
-  margin: 24px 20px 0 20px;
-  padding-top: 16px;
-  border-top: 8px solid #f7f9fa;
+  margin: 20px 17px 0 17px;
+  padding-top: 14px;
+  border-top: 7px solid #f7f9fa;
+
+  @media ${media.mobileM} {
+    margin: 24px 20px 0 20px;
+    padding-top: 16px;
+    border-top: 8px solid #f7f9fa;
+  }
 `;
 
 const OptionalGroup = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 17px;
+
+  @media ${media.mobileM} {
+    margin-bottom: 20px;
+  }
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 700;
   color: #000000;
-  margin: 0 0 8px 0;
+  margin: 0 0 7px 0;
+
+  @media ${media.mobileM} {
+    font-size: 20px;
+    margin: 0 0 8px 0;
+  }
 `;
 
 const SubDescription = styled.p`
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 500;
   color: #b4b4b4;
-  margin: 0 0 10px 0;
+  margin: 0 0 8px 0;
+
+  @media ${media.mobileM} {
+    font-size: 12px;
+    margin: 0 0 10px 0;
+  }
 `;
 
 const FoodCard = styled.div`
-  padding: 12px;
+  padding: 10px;
   border: 1px solid #89d7bc;
   background-color: #f3fffb;
   border-radius: 20px;
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 500;
   color: #141212;
+
+  @media ${media.mobileM} {
+    padding: 12px;
+    font-size: 11px;
+  }
 `;
 
 const PhotoGrid = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 10px;
   overflow-x: auto;
-  padding-top: 6px;
+  padding-top: 5px;
+
+  @media ${media.mobileM} {
+    gap: 12px;
+    padding-top: 6px;
+  }
 `;
 
 const PhotoItem = styled.div`
@@ -472,12 +574,17 @@ const PhotoItem = styled.div`
 `;
 
 const PhotoBox = styled.img`
-  width: 120px;
-  height: 120px;
+  width: 102px;
+  height: 102px;
   border-radius: 8px;
   object-fit: cover;
   background-color: #eee;
   display: block;
+
+  @media ${media.mobileM} {
+    width: 120px;
+    height: 120px;
+  }
 `;
 
 const ButtonWrapper = styled.div`

@@ -12,6 +12,7 @@ import AlreadyRecordedModal from '../components/modal/AlreadyRecordedModal';
 import CameraImg from '../assets/images/camera.png';
 import DrImg from '../assets/images/dr-acne/dr.normal.svg';
 import * as S from './TodayNote.styles';
+import { media } from '../styles/GlobalStyle';
 import { getCosmeticOptions, getCosmeticSetDetail } from '../api/cosmetics';
 import {
   getDailyRecord,
@@ -628,12 +629,16 @@ const CustomCalendarButton = forwardRef(({ onClick }, ref) => (
 const CalendarBtn = styled.button`
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 17px;
   cursor: pointer;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media ${media.mobileM} {
+    font-size: 20px;
+  }
 `;
 
 const DatePickerWrapper = styled.div`
@@ -648,15 +653,20 @@ const DatePickerWrapper = styled.div`
 const SelectedTagScrollContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
   overflow-x: auto;
   width: 100%;
-  padding: 4px 0;
+  padding: 3px 0;
 
   -ms-overflow-style: none;
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  @media ${media.mobileM} {
+    gap: 8px;
+    padding: 4px 0;
   }
 `;
 
@@ -664,19 +674,23 @@ const TagRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   width: max-content;
+
+  @media ${media.mobileM} {
+    gap: 8px;
+  }
 `;
 
 const SelectedTagChip = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   border: 1px solid ${(props) => (props.$isSet ? '#96BE9C' : '#89D7BC')};
   border-radius: 20px;
-  padding: 6px 10px;
+  padding: 5px 8px;
   background-color: ${(props) => (props.$isSet ? '#FFF1E5' : '#E7FDF7')};
-  font-size: 12px;
+  font-size: 10px;
   color: #363636;
   white-space: nowrap;
   flex-shrink: 0;
@@ -684,24 +698,34 @@ const SelectedTagChip = styled.div`
   button {
     background: none;
     border: none;
-    font-size: 11px;
+    font-size: 9px;
     color: #666666;
     cursor: pointer;
     padding: 0;
     display: flex;
     align-items: center;
   }
+
+  @media ${media.mobileM} {
+    gap: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+
+    button {
+      font-size: 11px;
+    }
+  }
 `;
 
 const AddMoreTagChip = styled.button`
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   border: 1px solid #b3b3b3;
   border-radius: 20px;
-  padding: 6px 12px;
+  padding: 5px 10px;
   background-color: #d9d9d9;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
   color: #363636;
   cursor: pointer;
@@ -709,14 +733,28 @@ const AddMoreTagChip = styled.button`
   flex-shrink: 0;
 
   span {
-    font-size: 13px;
+    font-size: 11px;
+  }
+
+  @media ${media.mobileM} {
+    gap: 4px;
+    padding: 6px 12px;
+    font-size: 12px;
+
+    span {
+      font-size: 13px;
+    }
   }
 `;
 
 const SkinSliderContainer = styled.div`
   width: 100%;
-  padding: 24px 10px 0 10px;
+  padding: 20px 8px 0 8px;
   box-sizing: border-box;
+
+  @media ${media.mobileM} {
+    padding: 24px 10px 0 10px;
+  }
 `;
 
 const SliderTrackWrapper = styled.div`
@@ -802,18 +840,28 @@ const SliderThumbHandle = styled.div`
 `;
 
 const DrAcneImage = styled.img`
-  width: 50px;
-  height: 50px;
+  width: 42px;
+  height: 42px;
   object-fit: contain;
   user-select: none;
   filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15));
+
+  @media ${media.mobileM} {
+    width: 50px;
+    height: 50px;
+  }
 `;
 
 const SliderLabelWrapper = styled.div`
   position: relative;
   width: 100%;
-  height: 24px;
-  margin-top: 30px;
+  height: 20px;
+  margin-top: 25px;
+
+  @media ${media.mobileM} {
+    height: 24px;
+    margin-top: 30px;
+  }
 `;
 
 const SliderPointLabel = styled.span`
@@ -823,8 +871,12 @@ const SliderPointLabel = styled.span`
   white-space: nowrap;
   transition: all 0.15s ease;
 
-  font-size: ${(props) => (props.$isSelected ? '14px' : '11px')};
+  font-size: ${(props) => (props.$isSelected ? '12px' : '9px')};
   font-weight: ${(props) => (props.$isSelected ? '600' : '400')};
   color: ${(props) => (props.$isSelected ? '#000000' : '#a0a0a0')};
   display: ${(props) => (props.$isSelected || props.$isEdge ? 'block' : 'none')};
+
+  @media ${media.mobileM} {
+    font-size: ${(props) => (props.$isSelected ? '14px' : '11px')};
+  }
 `;

@@ -8,15 +8,14 @@ import CosmeticCard from "../components/CosmeticCard";
 import SunIcon from "../assets/images/record/sun.svg";
 import MoonIcon from "../assets/images/record/Moon.svg";
 import Trash from "../assets/images/trash.png";
+import { media } from "../styles/GlobalStyle";
 
 export default function MyPouch() {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.state?.activeTab || "morning");
 
-  // 세트: usageTime(morning/night/both)에 따라 탭별로 필터링해서 보여줌
   const [sets, setSets] = useState([]);
-  // 단품 화장품: 탭과 무관하게 항상 전체 목록을 보여줌
   const [cosmetics, setCosmetics] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -62,7 +61,6 @@ export default function MyPouch() {
     }
   }, [location.state]);
 
-  // 세트는 현재 탭(모닝/나이트)에 맞는 usageTime만, 화장품은 전체 그대로
   const currentTabSets = sets.filter(
     (set) => set.usageTime === activeTab || set.usageTime === "both"
   );
@@ -318,7 +316,6 @@ export default function MyPouch() {
   );
 }
 
-// 2차 모달 
 const ModalSunSvg = () => (
   <svg
     width="50"
@@ -364,18 +361,22 @@ const ContentWrapper = styled.div`
 const TabGroup = styled.div`
   display: flex;
   border-bottom: 2px solid #eee;
-  margin-top: 8px;
+  margin-top: 7px;
+
+  @media ${media.mobileM} {
+    margin-top: 8px;
+  }
 `;
 
 const TabButton = styled.button`
   flex: 1;
-  padding: 12px 0;
+  padding: 10px 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
 
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
   color: ${(props) => (props.$active ? "#266210" : "gray")};
   border-bottom: ${(props) => (props.$active ? "2px solid #266210" : "none")};
@@ -387,8 +388,8 @@ const TabButton = styled.button`
   margin-bottom: -2px;
 
   img {
-    width: 18px;
-    height: 18px;
+    width: 15px;
+    height: 15px;
     transition: filter 0.2s ease;
 
     filter: ${(props) =>
@@ -396,29 +397,54 @@ const TabButton = styled.button`
       ? "brightness(0) saturate(100%) invert(29%) sepia(85%) saturate(750%) hue-rotate(72deg) brightness(88%) contrast(96%)"
       : "brightness(0) saturate(100%) invert(50%) opacity(0.7)"};
   }
+
+  @media ${media.mobileM} {
+    padding: 12px 0;
+    gap: 6px;
+    font-size: 14px;
+
+    img {
+      width: 18px;
+      height: 18px;
+    }
+  }
 `;
 
 const MainContent = styled.div`
-  padding: 16px 20px;
+  padding: 14px 17px;
+
+  @media ${media.mobileM} {
+    padding: 16px 20px;
+  }
 `;
 
 const SetListSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin-bottom: 17px;
+
+  @media ${media.mobileM} {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
 `;
 
 const SetCard = styled.div`
   position: relative;
   background-color: #fff8f2;
   border-radius: 12px;
-  padding: 14px 16px;
+  padding: 12px 14px;
   color: #141212;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
   border: 1px solid #96BE9C;
+
+  @media ${media.mobileM} {
+    padding: 14px 16px;
+    gap: 8px;
+  }
 `;
 
 const SetHeaderRow = styled.div`
@@ -427,50 +453,80 @@ const SetHeaderRow = styled.div`
 `;
 
 const SetTitle = styled.span`
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
+
+  @media ${media.mobileM} {
+    font-size: 16px;
+    gap: 4px;
+  }
 `;
 
 const ChevronRightIcon = styled.span`
   position: absolute;
-  right: 16px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 24px;
+  font-size: 20px;
   color: #141212;
   cursor: pointer;
-  padding: 4px;
+  padding: 3px;
+
+  @media ${media.mobileM} {
+    right: 16px;
+    font-size: 24px;
+    padding: 4px;
+  }
 `;
 
 const SetTagGroup = styled.div`
   display: flex;
-  gap: 6px;
+  gap: 5px;
   flex-wrap: wrap;
+
+  @media ${media.mobileM} {
+    gap: 6px;
+  }
 `;
 
 const SetTag = styled.span`
   background-color: #96be9c;
   color: #fff8f2;
-  font-size: 11px;
-  padding: 3px 8px;
+  font-size: 9px;
+  padding: 3px 7px;
   border-radius: 12px;
   font-weight: 500;
+
+  @media ${media.mobileM} {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
 `;
 
 const Divider = styled.div`
-  height: 10px;
+  height: 8px;
   background-color: #f2f2f2;
-  margin: 0 -20px 20px -20px;
+  margin: 0 -17px 17px -17px;
+
+  @media ${media.mobileM} {
+    height: 10px;
+    margin: 0 -20px 20px -20px;
+  }
 `;
 
 const CardListSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  @media ${media.mobileM} {
+    gap: 12px;
+    margin-bottom: 24px;
+  }
 `;
 
 const CardWrapper = styled.div`
@@ -501,8 +557,8 @@ const CardWrapper = styled.div`
 
 const DeleteButton = styled.button`
   position: absolute;
-  right: 12px;
-  bottom: 12px;
+  right: 10px;
+  bottom: 10px;
   background: none;
   border: none;
   padding: 0;
@@ -510,42 +566,66 @@ const DeleteButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media ${media.mobileM} {
+    right: 12px;
+    bottom: 12px;
+  }
 `;
 
 const TrashIcon = styled.img`
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   display: block;
+
+  @media ${media.mobileM} {
+    width: 14px;
+    height: 14px;
+  }
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 10px;
+
+  @media ${media.mobileM} {
+    gap: 12px;
+  }
 `;
 
 const ActionButton = styled.button`
   flex: 1;
-  padding: 12px 0;
+  padding: 10px 0;
   background-color: ${(props) => (props.$isSetButtonActive ? "#63BF8E" : "#ffffff")};
   border: 1px solid ${(props) => (props.$isSetButtonActive ? "#609668" : "#609668")};
   color: ${(props) => (props.$isSetButtonActive ? "#ffffff" : "#609668")};
   border-radius: 20px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
 
   &:active {
     background-color: ${(props) => (props.$isSetButtonActive ? "#7ca886" : "#f2f7f1")};
   }
+
+  @media ${media.mobileM} {
+    padding: 12px 0;
+    font-size: 14px;
+  }
 `;
 
 const GuideText = styled.p`
   font-weight: 500;
-  font-size: 10px;
+  font-size: 9px;
   color: #7C7C7C;
   text-align: center;
-  margin-top: 10px;
+  margin-top: 8px;
   margin-bottom: 0;
+
+  @media ${media.mobileM} {
+    font-size: 10px;
+    margin-top: 10px;
+  }
 `;
 
 const ModalOverlay = styled.div`
@@ -561,77 +641,117 @@ const ModalOverlay = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  padding: 0 20px;
+  padding: 0 17px;
   box-sizing: border-box;
+
+  @media ${media.mobileM} {
+    padding: 0 20px;
+  }
 `;
 
 const ModalContent = styled.div`
   background: #e6F5E8;
   width: 100%;
-  max-width: 357px;
-  min-height: 207px;
+  max-width: 303px;
+  min-height: 176px;
   border-radius: 20px;
-  padding: 24px 20px;
+  padding: 20px 17px;
   text-align: center;
   box-sizing: border-box;
+
+  @media ${media.mobileM} {
+    max-width: 357px;
+    min-height: 207px;
+    padding: 24px 20px;
+  }
 `;
 
 const ModalTitle = styled.h3`
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 800;
   color: #141212;
-  margin: 0 0 8px 0;
+  margin: 0 0 7px 0;
+
+  @media ${media.mobileM} {
+    font-size: 17px;
+    margin: 0 0 8px 0;
+  }
 `;
 
 const ModalDesc = styled.p`
-  font-size: 12px;
+  font-size: 10px;
   color: #777777;
-  margin: 0 0 16px 0;
+  margin: 0 0 14px 0;
+
+  @media ${media.mobileM} {
+    font-size: 12px;
+    margin: 0 0 16px 0;
+  }
 `;
 
 const ModalInput = styled.input`
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   border-radius: 10px;
   border: 1px solid #e0e0e0;
   background: #ffffff;
-  font-size: 12px;
+  font-size: 10px;
   box-sizing: border-box;
-  margin-bottom: 20px;
+  margin-bottom: 17px;
   outline: none;
 
   &::placeholder {
     color: #b5b5b5;
   }
+
+  @media ${media.mobileM} {
+    padding: 12px;
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
 `;
 
 const ModalButtonGroup = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 8px;
+
+  @media ${media.mobileM} {
+    gap: 10px;
+  }
 `;
 
 const ModalCancelBtn = styled.button`
   flex: 1;
-  padding: 10px 0;
+  padding: 8px 0;
   border-radius: 20px;
   border: 1px solid #8cb896;
   background: #ffffff;
   color: #333333;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   cursor: pointer;
+
+  @media ${media.mobileM} {
+    padding: 10px 0;
+    font-size: 13px;
+  }
 `;
 
 const ModalSubmitBtn = styled.button`
   flex: 1;
-  padding: 10px 0;
+  padding: 8px 0;
   border-radius: 20px;
   border: none;
   background: ${(props) => (props.$isActive ? "#8cb896" : "#D9D9D9")};
   color: #ffffff;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   cursor: ${(props) => (props.$isActive ? "pointer" : "default")};
+
+  @media ${media.mobileM} {
+    padding: 10px 0;
+    font-size: 13px;
+  }
 `;
 
 /* 2차 모달 스타일 */
@@ -639,41 +759,60 @@ const RoutineModalContainer = styled.div`
   width: 100%;
   background-color: #e6f5e8;
   border-radius: 20px;
-  padding: 20px;
+  padding: 17px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+
+  @media ${media.mobileM} {
+    padding: 20px;
+  }
 `;
 
 const RoutineModalTitle = styled.h3`
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 1.3;
   color: #000000;
   text-align: center;
-  margin: 20px 0 30px 0;
+  margin: 17px 0 26px 0;
+
+  @media ${media.mobileM} {
+    font-size: 24px;
+    margin: 20px 0 30px 0;
+  }
 `;
 
 const RoutineModalSubTitle = styled.p`
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 500;
   color: #828282;
   text-align: center;
-  margin: 0 0 50px 0;
+  margin: 0 0 42px 0;
   word-break: keep-all;
+
+  @media ${media.mobileM} {
+    font-size: 12px;
+    margin: 0 0 50px 0;
+  }
 `;
 
 const RoutineOptions = styled.div`
   display: flex;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 17px;
+
+  @media ${media.mobileM} {
+    gap: 14px;
+    margin-bottom: 20px;
+  }
 `;
 
 const RoutineCard = styled.button`
   flex: 1;
-  height: 140px;
+  height: 119px;
   background-color: ${(props) => (props.$isSelected ? "#82BF8B" : "#ffffff")};
   border: ${(props) => (props.$isSelected ? "1px solid #236F57" : "1px solid #85BBA8")};
   border-radius: 14px;
@@ -681,22 +820,33 @@ const RoutineCard = styled.button`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   cursor: pointer;
   color: ${(props) => (props.$isSelected ? "#FFFCFC" : "#000000")};
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   transition: all 0.2s ease;
+
+  @media ${media.mobileM} {
+    height: 140px;
+    gap: 12px;
+    font-size: 24px;
+  }
 `;
 
 const RoutineSubmitBtn = styled.button`
   width: 100%;
-  height: 40px;
+  height: 34px;
   background-color: #63BF8E;
   color: #ffffff;
   border: 1px solid #609668;
   border-radius: 20px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
+
+  @media ${media.mobileM} {
+    height: 40px;
+    font-size: 14px;
+  }
 `;

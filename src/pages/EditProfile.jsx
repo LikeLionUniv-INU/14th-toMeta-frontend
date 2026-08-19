@@ -5,9 +5,8 @@ import Button from '../components/Button.jsx';
 import Edit from '../assets/images/edit.png';
 import { useNavigate } from 'react-router-dom';
 import { getMyProfile, updateMyProfile } from '../api/user';
+import { media } from '../styles/GlobalStyle';
 
-// 화면 표시(한글 라벨) <-> API 코드 매핑
-// ※ 백엔드 enum 전체 목록이 명세서에 없어 임의로 매핑함. 실제 값 다르면 이 표만 수정하면 됨.
 const GENDER_CODE_MAP = { 남자: 'male', 여자: 'female' };
 const GENDER_LABEL_MAP = { male: '남자', female: '여자' };
 
@@ -46,16 +45,13 @@ const SKIN_TYPE_LABEL_MAP = {
 export default function EditProfile() {
   const navigate = useNavigate();
 
-  // 상단 고정 이름 (조회된 닉네임)
   const [currentNickname, setCurrentNickname] = useState('');
 
-  // 수정 입력용 상태 (초기값은 빈 문자열로 두어 placeholder가 보이게 처리)
   const [nicknameInput, setNicknameInput] = useState('');
   const [gender, setGender] = useState('');
   const [age, setAge] = useState('');
   const [skinType, setSkinType] = useState('');
 
-  // 변경 여부 비교용 원본 값
   const [initialProfile, setInitialProfile] = useState(null);
 
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -155,7 +151,6 @@ export default function EditProfile() {
             <circle cx="12" cy="7" r="4" />
           </svg>
         </ProfileAvatar>
-        {/* 상단 이름은 조회된 닉네임으로 고정 */}
         <ProfileName>
           {currentNickname ? `${currentNickname} 님` : ''}
         </ProfileName>
@@ -251,55 +246,87 @@ const PageContainer = styled.div`
   margin: 0 auto;
   min-height: 100dvh;
   background-color: #ffffff;
-  padding-bottom: 30px;
+  padding-bottom: 26px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+
+  @media ${media.mobileM} {
+    padding-bottom: 30px;
+  }
 `;
 
 const ProfileSection = styled.section`
   background-color: #ffffff;
-  padding: 30px 0;
+  padding: 26px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  @media ${media.mobileM} {
+    padding: 30px 0;
+  }
 `;
 
 const ProfileAvatar = styled.div`
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   background-color: #ffffff;
   border-radius: 50%;
   border: 1px solid #006014;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
+  margin-bottom: 9px;
   box-sizing: border-box;
+
+  @media ${media.mobileM} {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 10px;
+  }
 `;
 
 const ProfileName = styled.div`
   font-weight: 700;
-  font-size: 22px;
+  font-size: 19px;
   color: #000000;
-  margin-bottom: 8px;
+  margin-bottom: 7px;
+
+  @media ${media.mobileM} {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
 `;
 
 const FormContainer = styled.div`
-  padding: 20px 24px;
+  padding: 17px 20px;
   flex: 1;
+
+  @media ${media.mobileM} {
+    padding: 20px 24px;
+  }
 `;
 
 const FieldGroup = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 17px;
+
+  @media ${media.mobileM} {
+    margin-bottom: 20px;
+  }
 `;
 
 const Label = styled.label`
   display: block;
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 700;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   color: #222222;
+
+  @media ${media.mobileM} {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
 `;
 
 const InputWrapper = styled.div`
@@ -310,8 +337,8 @@ const InputWrapper = styled.div`
 
 const Input = styled.input`
   width: 100%;
-  padding: 10px 12px;
-  font-size: 12px;
+  padding: 9px 10px;
+  font-size: 10px;
   font-weight: 400;
   border: 1px solid #dee2e6;
   border-radius: 6px;
@@ -326,14 +353,25 @@ const Input = styled.input`
   &:focus {
     border-color: #cccccc;
   }
+
+  @media ${media.mobileM} {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
 `;
 
 const EditIcon = styled.img`
-  width: 18px;
-  height: 18px;
+  width: 15px;
+  height: 15px;
   position: absolute;
-  right: 12px;
+  right: 10px;
   pointer-events: none;
+
+  @media ${media.mobileM} {
+    width: 18px;
+    height: 18px;
+    right: 12px;
+  }
 `;
 
 const DropdownContainer = styled.div`
@@ -344,13 +382,18 @@ const SelectHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 12px;
-  font-size: 12px;
+  padding: 9px 10px;
+  font-size: 10px;
   font-weight: 400;
   border: 1px solid #eee2e6;
   border-radius: 6px;
   cursor: pointer;
   background-color: #ffffff;
+
+  @media ${media.mobileM} {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
 `;
 
 const ValueText = styled.span`
@@ -358,23 +401,31 @@ const ValueText = styled.span`
 `;
 
 const ArrowIcon = styled.span`
-  font-size: 10px;
+  font-size: 9px;
   color: #a8a8a8;
+
+  @media ${media.mobileM} {
+    font-size: 10px;
+  }
 `;
 
 const OptionList = styled.ul`
   list-style: none;
   padding: 0;
-  margin: 4px 0 0 0;
+  margin: 3px 0 0 0;
   border: 1px solid #eee2e6;
   border-radius: 6px;
   overflow: hidden;
   background-color: #ffffff;
+
+  @media ${media.mobileM} {
+    margin: 4px 0 0 0;
+  }
 `;
 
 const OptionItem = styled.li`
-  padding: 10px 12px;
-  font-size: 12px;
+  padding: 9px 10px;
+  font-size: 10px;
   font-weight: 400;
   text-align: center;
   border-bottom: 1px solid #eee2e6;
@@ -388,8 +439,17 @@ const OptionItem = styled.li`
   &:hover {
     background-color: #f9f9f9;
   }
+
+  @media ${media.mobileM} {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
 `;
 
 const ButtonSection = styled.div`
-  padding: 0 20px;
+  padding: 0 17px;
+
+  @media ${media.mobileM} {
+    padding: 0 20px;
+  }
 `;

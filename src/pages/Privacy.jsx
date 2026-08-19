@@ -2,114 +2,176 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
+import { media } from '../styles/GlobalStyle';
 
 const Container = styled.div`
-  padding: 30px 20px;
+  padding: 26px 17px;
   background-color: #ffffff;
   height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-sizing: border-box;
+
+  @media ${media.mobileM} {
+    padding: 30px 20px;
+  }
 `;
 
 const Content = styled.div`
-  padding-top: 60px;
+  padding-top: 51px;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 34px;
+
+  @media ${media.mobileM} {
+    padding-top: 60px;
+    gap: 40px;
+  }
 `;
 
 const Title = styled.h1`
-  font-size: 32px;
+  font-size: 27px;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.2;
   color: #000000;
-  margin-bottom: 20px;
+  word-break: keep-all;
+  margin-bottom: 0;
+
+  @media ${media.mobileM} {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
 `;
 
 const TermsSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 17px;
+
+  @media ${media.mobileM} {
+    gap: 20px;
+  }
 `;
 
 const CheckboxLabel = styled.label`
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 20px;
+  gap: 7px;
+  font-size: 17px;
   font-weight: 700;
   color: #000000;
   cursor: pointer;
   user-select: none;
+  white-space: nowrap;
 
   input[type="checkbox"] {
     display: none;
   }
+
+  @media ${media.mobileM} {
+    gap: 8px;
+    font-size: 20px;
+  }
 `;
 
 const CustomCheckIcon = styled.div`
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border-radius: 6px;
   background-color: ${({ $checked }) => ($checked ? "#609668" : "#FFFFFF")};
-  border: ${({ $checked }) => ($checked ? "none" : "1px solid #E9E9E9")};
+  border: ${({ $checked }) => ($checked ? "none" : "1px solid #828282")};
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background-color 0.2s ease;
   box-sizing: border-box;
+  flex-shrink: 0;
 
   svg {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     fill: none;
     stroke: #ffffff;
     stroke-width: 3;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
+
+  @media ${media.mobileM} {
+    width: 24px;
+    height: 24px;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
 `;
 
 const TermsBox = styled.div`
   background-color: #FFFFFF;
-  border: 1px solid #DEE2E6;
+  border: 1px solid #e6e6e6;
   border-radius: 12px;
-  padding: 16px;
-  line-height: 1.5;
+  padding: 14px;
+  line-height: 1.5; 
+  box-sizing: border-box;
+  word-break: keep-all;
 
   &.summary-text {
-    font-size: 12px;
+    font-size: 10px;
     color: #000000;
     font-weight: 500;
+  }
+
+  @media ${media.mobileM} {
+    padding: 16px;
+
+    &.summary-text {
+      font-size: 12px;
+    }
   }
 `;
 
 const PolicyItem = styled.div`
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 
   &:last-child {
     margin-bottom: 0;
   }
 
   h2 {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 700;
     color: #000000;
-    margin: 0 0 4px 0;
+    margin: 0 0 3px 0;
   }
 
   p, ul {
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 500;
     color: #707070;
     margin: 0;
     padding: 0;
     list-style: none;
+    word-break: keep-all;
   }
 
   li {
     margin-bottom: 2px;
+  }
+
+  @media ${media.mobileM} {
+    margin-bottom: 12px;
+
+    h2 {
+      font-size: 14px;
+      margin: 0 0 4px 0;
+    }
+
+    p, ul {
+      font-size: 12px;
+    }
   }
 `;
 

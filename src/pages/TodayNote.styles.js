@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+import styled from "styled-components";
+import { media } from '../styles/GlobalStyle';
 
 export const Container = styled.div`
   margin: 0 auto;
@@ -13,29 +14,43 @@ export const Header = styled.div`
   padding: 1px;
 
   button {
-    font-size: 1.25rem;
+    font-size: 17px;
     background: none;
     border: none;
     cursor: pointer;
   }
 
   h1 {
-    font-size: 1.125rem;
+    font-size: 15px;
     font-weight: 700;
+  }
+
+  @media ${media.mobileM} {
+    button {
+      font-size: 1.25rem;
+    }
+
+    h1 {
+      font-size: 1.125rem;
+    }
   }
 `;
 
 export const Content = styled.div`
-  padding: 30px 20px;
+  padding: 26px 17px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+
+  @media ${media.mobileM} {
+    padding: 30px 20px;
+  }
 `;
 
 export const DateSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   position: relative;
 
   h2 {
@@ -44,12 +59,25 @@ export const DateSection = styled.div`
     font-weight: 400;
     margin: 0;
   }
+
+  @media ${media.mobileM} {
+    gap: 8px;
+
+    h2 {
+      font-size: 24px;
+    }
+  }
 `;
 
 export const SectionDivider = styled.div`
-  height: 12px;
+  height: 10px;
   background-color: #f3f4f6;
-  margin: 0 -20px;
+  margin: 0 -17px;
+
+  @media ${media.mobileM} {
+    height: 12px;
+    margin: 0 -20px;
+  }
 `;
 
 export const Divider = styled.hr`
@@ -76,8 +104,8 @@ export const TodayLabel = styled.div`
 export const Label = styled.div`
   display: block;
   font-weight: 700;
-  margin-bottom: 0.5rem;
-  font-size: 14px;
+  margin-bottom: 7px;
+  font-size: 12px;
 
   .required {
     color: red;
@@ -90,22 +118,40 @@ export const Label = styled.div`
     font-weight: 400;
     margin-left: 4px;
   }
+
+  @media ${media.mobileM} {
+    margin-bottom: 0.5rem;
+    font-size: 14px;
+
+    .optional {
+      font-size: 12px;
+    }
+  }
 `;
 
 export const SubDescription = styled.p`
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 400;
   color: #828282;
-  margin-bottom: 0.5rem;
+  margin-bottom: 7px;
+
+  @media ${media.mobileM} {
+    font-size: 12px;
+    margin-bottom: 0.5rem;
+  }
 `;
 
 export const SliderSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24px 10px 10px 10px;
+  padding: 20px 8px 8px 8px;
   width: 100%;
   box-sizing: border-box;
+
+  @media ${media.mobileM} {
+    padding: 24px 10px 10px 10px;
+  }
 `;
 
 export const SliderTrackContainer = styled.div`
@@ -150,12 +196,17 @@ export const DrImageThumb = styled.img`
   left: ${({ $percentage }) => $percentage}%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 44px;
-  height: 44px;
+  width: 37px;
+  height: 37px;
   object-fit: contain;
   z-index: 4;
   pointer-events: none;
   transition: left 0.05s ease-out;
+
+  @media ${media.mobileM} {
+    width: 44px;
+    height: 44px;
+  }
 `;
 
 export const HiddenRangeInput = styled.input`
@@ -174,34 +225,47 @@ export const SliderLabels = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: 9px;
   color: #a0a0a0;
   margin-top: 6px;
+
+  @media ${media.mobileM} {
+    font-size: 11px;
+  }
 `;
 
 export const CurrentStatusText = styled.div`
   margin-top: 8px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   color: #111111;
   text-align: center;
+
+  @media ${media.mobileM} {
+    font-size: 16px;
+  }
 `;
 
 export const AddButton = styled.button`
   width: 100%;
   border: 2px dashed #d1d5db;
   border-radius: 0.5rem;
-  padding: 1rem;
+  padding: 14px;
   text-align: center;
   color: #828282;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 10px;
   background-color: transparent;
   cursor: pointer;
   transition: background-color 0.2s;
 
   &:hover {
     background-color: #f9fafb;
+  }
+
+  @media ${media.mobileM} {
+    padding: 1rem;
+    font-size: 12px;
   }
 `;
 
@@ -212,9 +276,9 @@ export const TextareaWrapper = styled.div`
     width: 100%;
     border: 1px solid #d1d5db;
     border-radius: 0.5rem;
-    padding: 0.75rem;
+    padding: 10px;
     font-weight: 400;
-    font-size: 10px;
+    font-size: 9px;
     color: #828282;
     height: 7rem;
     resize: none;
@@ -230,21 +294,36 @@ export const TextareaWrapper = styled.div`
     position: absolute;
     bottom: 0.5rem;
     right: 0.75rem;
-    font-size: 0.75rem;
+    font-size: 10px;
     color: #9ca3af;
+  }
+
+  @media ${media.mobileM} {
+    textarea {
+      padding: 0.75rem;
+      font-size: 10px;
+    }
+
+    .char-count {
+      font-size: 0.75rem;
+    }
   }
 `;
 
 export const ImageListContainer = styled.div`
   display: flex;
-  gap: 0.75rem;
+  gap: 10px;
   overflow-x: auto;
   padding-bottom: 0.5rem;
+
+  @media ${media.mobileM} {
+    gap: 0.75rem;
+  }
 `;
 
 export const CameraButton = styled.button`
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   flex-shrink: 0;
   background-color: #ededed;
   border-radius: 12px;
@@ -260,40 +339,68 @@ export const CameraButton = styled.button`
   }
 
   .camera-icon {
-    width: 25px;
-    height: 18px;
+    width: 21px;
+    height: 15px;
     object-fit: contain;
+  }
+
+  @media ${media.mobileM} {
+    width: 70px;
+    height: 70px;
+
+    .camera-icon {
+      width: 25px;
+      height: 18px;
+    }
   }
 `;
 
 export const ImageItem = styled.div`
   position: relative;
-  width: 5.5rem;
-  height: 5.5rem;
+  width: 75px;
+  height: 75px;
   flex-shrink: 0;
 
   img {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
     object-fit: cover;
     border-radius: 0.75rem;
   }
 
   .delete-btn {
     position: absolute;
-    top: -0.25rem;
-    right: -0.25rem;
+    top: -3px;
+    right: -3px;
     background-color: #374151;
     color: #ffffff;
     border: none;
     border-radius: 50%;
-    width: 1.25rem;
-    height: 1.25rem;
-    font-size: 0.75rem;
+    width: 17px;
+    height: 17px;
+    font-size: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+  }
+
+  @media ${media.mobileM} {
+    width: 5.5rem;
+    height: 5.5rem;
+
+    img {
+      width: 70px;
+      height: 70px;
+    }
+
+    .delete-btn {
+      top: -0.25rem;
+      right: -0.25rem;
+      width: 1.25rem;
+      height: 1.25rem;
+      font-size: 0.75rem;
+    }
   }
 `;
 

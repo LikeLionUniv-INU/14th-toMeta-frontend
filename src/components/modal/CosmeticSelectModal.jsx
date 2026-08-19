@@ -73,7 +73,12 @@ const CosmeticSelectModal = ({
                   $isSelected={isSelected}
                   onClick={() => onToggleProduct(item.name)}
                 >
-                  <CosmeticCard name={item.name} tags={item.tags} />
+                  <CosmeticCard
+                    name={item.name}
+                    tags={(item.tags || []).map((tag) =>
+                      tag.startsWith('#') ? tag : `#${tag}`,
+                    )}
+                  />
                 </CardWrapper>
               );
             })}

@@ -6,6 +6,7 @@ import Picker from 'react-mobile-picker';
 import NavigationBar from '../components/NavigationBar';
 import Button from '../components/Button';
 import { getMyPageData, updateNotificationSettings } from '../api/user';
+import { media } from '../styles/GlobalStyle';
 
 const PICKER_OPTIONS = {
   hour: Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0')),
@@ -269,7 +270,7 @@ export default function MyPage() {
 
 const PageContainer = styled.div`
   margin: 0 auto;
-  min-height: 100dvh;
+  height: 100dvh;
   background-color: #ffffff;
   padding-bottom: 73px;
   box-sizing: border-box;
@@ -278,86 +279,135 @@ const PageContainer = styled.div`
 
 const Header = styled.header`
   text-align: center;
-  padding: 16px 0;
+  padding: 14px 0;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 15px;
   color: #000000;
+
+  @media ${media.mobileM} {
+    padding: 16px 0;
+    font-size: 18px;
+  }
 `;
 
 const ProfileSection = styled.section`
   background-color: #ffffff;
-  padding: 30px 0;
+  padding: 26px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  @media ${media.mobileM} {
+    padding: 30px 0;
+  }
 `;
 
 const ProfileAvatar = styled.div`
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   background-color: #ffffff;
   border-radius: 50%;
   border: 1px solid #006014;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
+  margin-bottom: 9px;
   box-sizing: border-box;
+
+  @media ${media.mobileM} {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 10px;
+  }
 `;
 
 const ProfileName = styled.div`
   font-weight: 700;
-  font-size: 22px;
+  font-size: 19px;
   color: #000000;
-  margin-bottom: 8px;
+  margin-bottom: 7px;
+
+  @media ${media.mobileM} {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
 `;
 
 const EditButton = styled.button`
-  width: 108px;
+  width: 92px;
   background-color: #67c3a3;
   color: #ffffff;
   border: none;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 20px;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
   cursor: pointer;
+
+  @media ${media.mobileM} {
+    width: 108px;
+    padding: 6px 14px;
+    font-size: 12px;
+  }
 `;
 
 const ContentSection = styled.section`
-  padding: 24px 20px;
+  padding: 20px 17px;
+
+  @media ${media.mobileM} {
+    padding: 24px 20px;
+  }
 `;
 
 const FlexRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
+  margin-bottom: 27px;
+
+  @media ${media.mobileM} {
+    margin-bottom: 32px;
+  }
 `;
 
 const SectionTitle = styled.h3`
   font-weight: 700;
-  font-size: 18px;
+  font-size: 15px;
   color: #111111;
   margin: 0;
+
+  @media ${media.mobileM} {
+    font-size: 18px;
+  }
 `;
 
 const Badge = styled.span`
   background-color: ${(props) => (props.$isConnected ? '#EBFBEE' : '#FFF5F5')};
   color: ${(props) => (props.$isConnected ? '#40C057' : '#FA5252')};
-  padding: 4px 8px;
+  padding: 3px 7px;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
+
+  @media ${media.mobileM} {
+    padding: 4px 8px;
+    font-size: 14px;
+  }
 `;
 
 const NotificationList = styled.div`
   border-left: 2px solid #828282;
-  margin-top: 20px;
-  padding-left: 14px;
+  margin-top: 17px;
+  padding-left: 12px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 15px;
+
+  @media ${media.mobileM} {
+    margin-top: 20px;
+    padding-left: 14px;
+    gap: 18px;
+  }
 `;
 
 const NotificationItem = styled.div`
@@ -369,43 +419,66 @@ const NotificationItem = styled.div`
 const RightControls = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+
+  @media ${media.mobileM} {
+    gap: 12px;
+  }
 `;
 
 const ItemText = styled.span`
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 500;
   color: #000000;
   line-height: 1.3;
+
+  @media ${media.mobileM} {
+    font-size: 12px;
+  }
 `;
 
 const TimeText = styled.span`
-  font-size: 12px;
+  font-size: 10px;
   color: #999999;
   text-decoration: underline;
   text-underline-offset: 2px;
   cursor: pointer;
+
+  @media ${media.mobileM} {
+    font-size: 12px;
+  }
 `;
 
 const ToggleWrapper = styled.div`
-  width: 44px;
-  height: 24px;
+  width: 37px;
+  height: 20px;
   background-color: ${(props) => (props.$isActive ? '#63BF8E' : '#D1D1D1')};
   border-radius: 12px;
   padding: 2px;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
   box-sizing: border-box;
+
+  @media ${media.mobileM} {
+    width: 44px;
+    height: 24px;
+  }
 `;
 
 const ToggleCircle = styled.div`
-  width: 20px;
-  height: 20px;
+  width: 17px;
+  height: 17px;
   background-color: #ffffff;
   border-radius: 50%;
-  transform: ${(props) => (props.$isActive ? 'translateX(20px)' : 'translateX(0)')};
+  transform: ${(props) => (props.$isActive ? 'translateX(16px)' : 'translateX(0)')};
   transition: transform 0.2s ease-in-out;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  @media ${media.mobileM} {
+    width: 20px;
+    height: 20px;
+    transform: ${(props) => (props.$isActive ? 'translateX(20px)' : 'translateX(0)')};
+  }
 `;
 
 const ModalOverlay = styled.div`
@@ -427,7 +500,7 @@ const ModalContent = styled.div`
   background-color: #ffffff;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  padding: 24px 20px 32px 20px;
+  padding: 20px 17px 27px 17px;
   box-sizing: border-box;
   animation: slideUp 0.25s ease-out;
 
@@ -439,19 +512,28 @@ const ModalContent = styled.div`
       transform: translateY(0);
     }
   }
+
+  @media ${media.mobileM} {
+    padding: 24px 20px 32px 20px;
+  }
 `;
 
 const ModalTitle = styled.h2`
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 700;
   color: #111111;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   text-align: center;
+
+  @media ${media.mobileM} {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
 `;
 
 const PickerWrapper = styled.div`
   position: relative;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   width: 100%;
 
   [class*='picker-highlight'],
@@ -461,7 +543,7 @@ const PickerWrapper = styled.div`
   }
 
   .picker-item {
-    font-size: 18px;
+    font-size: 15px;
     color: #b3b3b3;
     display: flex;
     align-items: center;
@@ -471,7 +553,20 @@ const PickerWrapper = styled.div`
     &.picker-item-selected {
       color: #1b4325;
       font-weight: 800;
-      font-size: 22px;
+      font-size: 19px;
+    }
+  }
+
+  @media ${media.mobileM} {
+    margin-bottom: 12px;
+
+    .picker-item {
+      font-size: 18px;
+
+      &[class*='selected'],
+      &.picker-item-selected {
+        font-size: 22px;
+      }
     }
   }
 `;
@@ -491,34 +586,48 @@ const HighlightBox = styled.div`
 `;
 
 const NoticeText = styled.p`
-  font-size: 13px;
+  font-size: 11px;
   color: #888888;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 17px;
   font-weight: 500;
+
+  @media ${media.mobileM} {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
 `;
 
 const ModalButtonGroup = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 8px;
 
   button:last-child {
     flex: 1;
+  }
+
+  @media ${media.mobileM} {
+    gap: 10px;
   }
 `;
 
 const ModalSubButton = styled.button`
   flex: 0.35;
-  height: 52px;
+  height: 44px;
   border-radius: 10px;
   background-color: #e5e5e5;
   color: #333333;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
   border: none;
   cursor: pointer;
 
   &:active {
     background-color: #d6d6d6;
+  }
+
+  @media ${media.mobileM} {
+    height: 52px;
+    font-size: 15px;
   }
 `;
