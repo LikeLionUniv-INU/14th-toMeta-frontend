@@ -1,12 +1,84 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import { media } from '../styles/GlobalStyle';
+import {
+  registerHealthConnectConnection,
+  getHealthConnectStatus,
+} from '../api/healthConnect';
+
+// 세션스토리지 암호화 / 복호화 유틸리티 함수
+const saveEncryptedData = (key, data) => {
+  try {
+    const existingData = getDecryptedData(key) || {};
+    const updatedData = { ...existingData, ...data };
+
+    const jsonString = JSON.stringify(updatedData);
+    const encoded = btoa(encodeURIComponent(jsonString));
+
+    sessionStorage.setItem(key, encoded);
+  } catch (error) {
+    console.error('데이터 저장 실패:', error);
+  }
+};
+
+const getDecryptedData = (key) => {
+  try {
+    const encoded = sessionStorage.getItem(key);
+    if (!encoded) return null;
+
+    const jsonString = decodeURIComponent(atob(encoded));
+    return JSON.parse(jsonString);
+  } catch (error) {
+    console.error('데이터 읽기 실패:', error);
+    return null;
+  }
+};
 
 const HealthConnect = () => {
   const navigate = useNavigate();
   const [isRequesting, setIsRequesting] = useState(false);
+
+  // 이미 연결되어 있으면 권한 요청 단계를 건너뛴다
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const response = await getHealthConnectStatus();
+        if (response.data && response.data.isSuccess && response.data.result?.connected) {
+          navigate('/onboarding/profile');
+        }
+      } catch (error) {
+        console.error('[HealthConnect] 연결 상태 조회 실패:', error.message);
+      }
+    };
+
+    checkStatus();
+  }, [navigate]);
+
+  // Health Connect 권한이 승인되면 서버에 연결을 등록하고 기기 토큰을 저장한다
+  const registerConnection = useCallback(async (deviceId) => {
+    if (!deviceId) {
+      console.warn(
+        '[HealthConnect] deviceId가 없어 연결 등록(POST /api/health-connect/connections)을 건너뜁니다.',
+      );
+      navigate('/onboarding/profile');
+      return;
+    }
+
+    try {
+      const response = await registerHealthConnectConnection(deviceId);
+      if (response.data && response.data.isSuccess) {
+        saveEncryptedData('health_connect_data', {
+          healthDeviceToken: response.data.result.healthDeviceToken,
+        });
+      }
+    } catch (error) {
+      console.error('[HealthConnect] 연결 등록 실패:', error.message);
+    }
+
+    navigate('/onboarding/profile');
+  }, [navigate]);
 
   useEffect(() => {
     const bridge = window.ToMetaNative;
@@ -18,9 +90,21 @@ const HealthConnect = () => {
     const handleMessage = (event) => {
       setIsRequesting(false);
 
-      switch (event.data) {
+      const rawData = event.data;
+      let status = rawData;
+      let deviceId = null;
+
+      try {
+        const parsed = JSON.parse(rawData);
+        status = parsed.status ?? rawData;
+        deviceId = parsed.deviceId ?? null;
+      } catch {
+        // rawData가 'granted' 같은 순수 문자열이면 그대로 사용
+      }
+
+      switch (status) {
         case 'granted':
-          navigate('/onboarding/profile');
+          registerConnection(deviceId);
           break;
 
         case 'denied':
@@ -36,7 +120,7 @@ const HealthConnect = () => {
           break;
 
         default:
-          console.warn('알 수 없는 Native Bridge 응답:', event.data);
+          console.warn('알 수 없는 Native Bridge 응답:', rawData);
       }
     };
 
@@ -45,7 +129,7 @@ const HealthConnect = () => {
     return () => {
       bridge.removeEventListener('message', handleMessage);
     };
-  }, [navigate]);
+  }, [navigate, registerConnection]);
 
   const onConnect = () => {
     const bridge = window.ToMetaNative;

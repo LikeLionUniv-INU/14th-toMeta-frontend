@@ -2,19 +2,42 @@ import api from './axios';
 
 const USE_MOCK = false; // 실서버 연동 시 false로 변경
 
-export const getPresignedUploadUrl = async (imageData) => {
+export const getPresignedUploadUrl = async (files) => {
   if (USE_MOCK) {
     return {
       data: {
         isSuccess: true,
         result: {
-          uploadUrl: 'https://mock-s3-upload-url.com',
-          imageUrl: 'https://placehold.co/400x400',
+          uploads: files.map((file, index) => ({
+            uploadUrl: 'https://mock-s3-upload-url.com',
+            objectKey: `skin-images/mock/${index}-${file.name}`,
+            httpMethod: 'PUT',
+            contentType: file.type,
+          })),
         },
       },
     };
   }
-  return api.post('/api/images/presigned-upload-urls', imageData);
+  return api.post('/api/record-images/presigned-upload-url', {
+    images: files.map((file) => ({
+      contentType: file.type,
+      fileSize: file.size,
+    })),
+  });
+};
+
+export const uploadImageToS3 = async (uploadUrl, file, contentType) => {
+  const response = await fetch(uploadUrl, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': contentType,
+    },
+    body: file,
+  });
+
+  if (!response.ok) {
+    throw new Error('이미지 업로드에 실패했습니다.');
+  }
 };
 
 export const createDailyRecord = async (recordData) => {

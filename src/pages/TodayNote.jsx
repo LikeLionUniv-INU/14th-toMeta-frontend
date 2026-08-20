@@ -18,6 +18,8 @@ import {
   getDailyRecord,
   createDailyRecord,
   updateDailyRecord,
+  getPresignedUploadUrl,
+  uploadImageToS3,
 } from '../api/records';
 import useModalBackClose from '../hooks/useModalBackClose';
 
@@ -156,7 +158,11 @@ const TodayNote = () => {
         setFoodInput(data.foodMemo || '');
         setNoteInput(data.memo || '');
         setImages(
-          data.images?.map((img) => img.imageUrl || img.imageKey) || [],
+          data.images?.map((img) => ({
+            type: 'existing',
+            objectKey: img.imageKey,
+            previewUrl: img.imageUrl,
+          })) || [],
         );
       }
     } catch (error) {
@@ -405,13 +411,50 @@ const TodayNote = () => {
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     if (files.length > 0) {
-      const newImageUrls = files.map((file) => URL.createObjectURL(file));
-      setImages((prev) => [...prev, ...newImageUrls]);
+      const newImages = files.map((file) => ({
+        type: 'new',
+        file,
+        previewUrl: URL.createObjectURL(file),
+      }));
+      setImages((prev) => [...prev, ...newImages]);
     }
   };
 
   const handleRemoveImage = (index) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const uploadNewImages = async () => {
+    const newImages = images.filter((image) => image.type === 'new');
+
+    if (newImages.length === 0) {
+      return images.map((image) => image.objectKey);
+    }
+
+    const files = newImages.map((image) => image.file);
+    const presignedResponse = await getPresignedUploadUrl(files);
+    const uploads = presignedResponse.data.result.uploads;
+
+    await Promise.all(
+      uploads.map((upload, index) =>
+        uploadImageToS3(upload.uploadUrl, files[index], upload.contentType),
+      ),
+    );
+
+    let newIndex = 0;
+    const finalImageKeys = images.map((image) => {
+      if (image.type === 'existing') {
+        return image.objectKey;
+      }
+      return uploads[newIndex++].objectKey;
+    });
+
+    console.log('[TodayNote] 이미지 업로드 결과', {
+      presignedUploads: uploads,
+      finalImageKeys,
+    });
+
+    return finalImageKeys;
   };
 
   const handleSubmit = async () => {
@@ -420,18 +463,21 @@ const TodayNote = () => {
     const formattedDate = formatDateToYYYYMMDD(selectedDate);
     const morningIds = getProductIds(morningProducts);
     const nightIds = getProductIds(nightProducts);
-    const requestBody = {
-      skinStatus: mapSkinConditionToStatus(skinCondition),
-      morningCosmeticIds: morningIds.cosmeticIds,
-      morningCosmeticSetIds: morningIds.setIds,
-      nightCosmeticIds: nightIds.cosmeticIds,
-      nightCosmeticSetIds: nightIds.setIds,
-      foodMemo: foodInput,
-      imageKeys: images,
-      memo: noteInput,
-    };
 
     try {
+      const imageKeys = await uploadNewImages();
+
+      const requestBody = {
+        skinStatus: mapSkinConditionToStatus(skinCondition),
+        morningCosmeticIds: morningIds.cosmeticIds,
+        morningCosmeticSetIds: morningIds.setIds,
+        nightCosmeticIds: nightIds.cosmeticIds,
+        nightCosmeticSetIds: nightIds.setIds,
+        foodMemo: foodInput,
+        imageKeys,
+        memo: noteInput,
+      };
+
       if (isEditMode) {
         const response = await updateDailyRecord(formattedDate, requestBody);
         if (response.data && response.data.isSuccess) {
@@ -654,9 +700,9 @@ const TodayNote = () => {
               <img src={CameraImg} className="camera-icon" alt="카메라" />
             </S.CameraButton>
 
-            {images.map((imgUrl, index) => (
+            {images.map((image, index) => (
               <S.ImageItem key={index}>
-                <img src={imgUrl} alt={`피부 사진 ${index + 1}`} />
+                <img src={image.previewUrl} alt={`피부 사진 ${index + 1}`} />
                 <button
                   type="button"
                   className="delete-btn"
