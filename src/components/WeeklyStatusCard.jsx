@@ -42,7 +42,9 @@ export default function WeeklyStatusCard({ title, subtitle, days = [] }) {
       <Pill>
         <Row>
           {days.map((d) => (
-            <DayLabel key={d.date}>{d.day}</DayLabel>
+            <DayLabel key={d.date} $isToday={d.isToday}>
+              {d.day}
+            </DayLabel>
           ))}
         </Row>
         <Row>
@@ -103,9 +105,13 @@ const Row = styled.div`
 `;
 
 const DayLabel = styled.div`
-  text-align: center;
-  font-size: 11px;
-  font-weight: 700;
+  height: 16px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  font-size: ${(props) => (props.$isToday ? '14px' : '11px')};
+  font-weight: ${(props) => (props.$isToday ? '800' : '700')};
+  line-height: 1;
   color: #141212;
 `;
 
