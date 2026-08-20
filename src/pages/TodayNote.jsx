@@ -556,7 +556,7 @@ const TodayNote = () => {
 
   return (
     <S.Container>
-      <Header title={'기록'} variant="back" />
+      <Header title={'기록'} variant="back" onBack={() => navigate('/home')} />
 
       <S.Content>
         <S.DateSection>

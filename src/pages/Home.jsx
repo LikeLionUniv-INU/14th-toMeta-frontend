@@ -54,26 +54,10 @@ const Home = () => {
         date: item.date,
         day,
         isToday,
-        color: hasRecord
-          ? SKIN_STATUS_COLORS[item.skinStatus]
-          : isToday
-            ? '#ffffff'
-            : null,
+        color: hasRecord ? SKIN_STATUS_COLORS[item.skinStatus] : isToday ? '#ffffff' : null,
         children: (
-          <S.PlusButton
-            onClick={() =>
-              navigate(
-                hasRecord
-                  ? `/record/${item.date}`
-                  : `/todaynote/${item.date}`,
-              )
-            }
-          >
-            {hasRecord ? (
-              <StatusFace level={item.skinStatus} />
-            ) : isToday ? (
-              '+'
-            ) : null}
+          <S.PlusButton onClick={() => navigate(hasRecord ? `/record/${item.date}` : `/todaynote/${item.date}`)}>
+            {hasRecord ? <StatusFace level={item.skinStatus} /> : isToday ? '+' : null}
           </S.PlusButton>
         ),
       };
@@ -87,8 +71,7 @@ const Home = () => {
     };
   });
 
-  const { yesterdayReport, latestDailyReport, skinCareTip, nickname } =
-    homeData;
+  const { yesterdayReport, latestDailyReport, skinCareTip, nickname } = homeData;
 
   return (
     <S.Container>
@@ -134,33 +117,21 @@ const Home = () => {
           </S.PinsRight>
 
           <S.ReportCardHeading>지난 리포트 요약</S.ReportCardHeading>
-          <S.ReportCardBox>
-            {yesterdayReport?.recordExists ? yesterdayReport.summary : '-'}
-          </S.ReportCardBox>
+          <S.ReportCardBox>{yesterdayReport?.recordExists ? yesterdayReport.summary : '-'}</S.ReportCardBox>
 
           <div style={{ height: 12 }} />
 
           <S.ReportCardHeading>오늘 실천 가이드</S.ReportCardHeading>
-          <S.ReportCardBox>
-            {yesterdayReport?.recordExists ? yesterdayReport.actionGuide : '-'}
-          </S.ReportCardBox>
+          <S.ReportCardBox>{yesterdayReport?.recordExists ? yesterdayReport.actionGuide : '-'}</S.ReportCardBox>
 
-          {yesterdayReport?.recordExists &&
-            yesterdayReport.reportAvailable &&
-            latestDailyReport && (
-              <S.ReportCardButton
-                onClick={() =>
-                  navigate(`/report/daily/${latestDailyReport.date}`)
-                }
-              >
-                지난 리포트 보러가기
-              </S.ReportCardButton>
-            )}
+          {yesterdayReport?.recordExists && yesterdayReport.reportAvailable && latestDailyReport && (
+            <S.ReportCardButton onClick={() => navigate(`/report/daily/${latestDailyReport.date}`)}>
+              지난 리포트 보러가기
+            </S.ReportCardButton>
+          )}
 
-          {!yesterdayReport?.recordExists && (
-            <S.ReportCardOverlay>
-              어제 기록이 없어 리포트를 불러올 수 없어요.
-            </S.ReportCardOverlay>
+          {!(yesterdayReport?.recordExists && yesterdayReport.reportAvailable && latestDailyReport) && (
+            <S.ReportCardOverlay>어제 기록이 없어 리포트를 불러올 수 없어요.</S.ReportCardOverlay>
           )}
         </S.ReportCard>
 

@@ -52,8 +52,7 @@ export default function SearchCosmetic() {
   };
 
   const handleGoToCustom = () => {
-    closeModal();
-    navigate('/register/custom-name');
+    navigate('/register/custom-name', { replace: true });
   };
 
   return (
