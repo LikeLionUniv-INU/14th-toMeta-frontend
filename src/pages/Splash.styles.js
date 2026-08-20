@@ -4,7 +4,8 @@ import { media } from '../styles/GlobalStyle';
 export const Screen = styled.div`
   position: relative;
   width: 100%;
-  height: 100dvh;
+  height: 100%;
+  min-height: 100dvh;
   overflow: hidden;
   background-color: #ffffff;
 `;
@@ -111,8 +112,7 @@ export const DrImage = styled.img`
   ${(p) =>
     p.$visible &&
     css`
-      animation: ${popInFromHotspot} 0.4s cubic-bezier(0.34, 1.16, 0.64, 1)
-        forwards;
+      animation: ${popInFromHotspot} 0.4s cubic-bezier(0.34, 1.16, 0.64, 1) forwards;
     `}
 `;
 
@@ -126,11 +126,15 @@ export const SkipButton = styled.button`
   width: fit-content;
   border: none;
   background: transparent;
-  color: rgba(0, 0, 0, 0.85);
-  font-size: 18px;
+  color: rgb(130, 130, 130);
+  font-size: 20px;
   font-weight: 600;
   padding: 8px 14px;
   cursor: pointer;
+
+  @media ${media.mobileM} {
+    font-size: 24px;
+  }
 `;
 
 export const Caption = styled.div`
@@ -145,20 +149,27 @@ export const Caption = styled.div`
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   transition: opacity 0.4s ease;
   pointer-events: none;
+  white-space: pre-line;
+
+  font-family: 'NeoDunggeunmo', sans-serif;
 `;
 
 export const CaptionBubble = styled.p`
   margin: 0;
   max-width: 320px;
   min-height: 1.5em;
-  background-color: rgba(0, 0, 0, 0.55);
+  background-color: rgba(0, 0, 0, 0.5);
   color: #ffffff;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
   line-height: 1.5;
   text-align: center;
   padding: 10px 15px;
   border-radius: 20px;
+
+  @media ${media.mobileM} {
+    font-size: 24px;
+  }
 `;
 
 const blink = keyframes`
@@ -292,4 +303,54 @@ export const Blackout = styled.div`
   background-color: #000000;
   z-index: 100;
   animation: ${blackoutFade} 0.8s ease-in-out forwards;
+`;
+
+const popBig = keyframes`
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+`;
+
+const captionFadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+export const LogoStage = styled.button`
+  position: absolute;
+  inset: 0;
+  z-index: 110;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+`;
+
+export const LogoImage = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(0);
+  opacity: 0;
+  animation: ${popBig} 0.8s forwards;
+`;
+
+export const LogoCaption = styled.p`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 80px;
+  margin: 0;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+  color: #b3b3b3;
+  opacity: 0;
+  animation: ${captionFadeIn} 0.3s ease 0.4s forwards;
+
+  @media ${media.mobileM} {
+    font-size: 24px;
+  }
 `;

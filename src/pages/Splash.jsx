@@ -1,18 +1,23 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as S from './Splash.styles';
 import acneSkinImg from '../assets/images/acne-skin.png';
 import noAcneSkinImg from '../assets/images/no-acne-skin.png';
 import drsLabImg from '../assets/images/drs-lab.png';
 import worriedDrImg from '../assets/images/dr-acne/worried-dr.svg';
+import startlogoImg from '../assets/images/startlogo.png';
+import { getOnboardingStatus } from '../api';
 
-const CAPTION = '여드름을 터트려 여 박사님을 불러보세요!';
+const CAPTION = '여드름을 터트려\n여 박사님을 불러보세요!';
 const DR_MESSAGES = [
   '안녕, 친구들.\n나는 여드름 박사, 여 박사란다.',
   '나와 함께\n좋은 피부를 만들어보자꾸나.\n하 하 하 ~',
 ];
 
 const Splash = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState('acne');
+  const [isCheckingUser, setIsCheckingUser] = useState(false);
   const [typedLength, setTypedLength] = useState(0);
   const [popKey, setPopKey] = useState(0);
   const [msgIndex, setMsgIndex] = useState(0);
@@ -58,7 +63,7 @@ const Splash = () => {
         }
         return prev + 1;
       });
-    }, 110);
+    }, 65);
 
     return () => clearInterval(interval);
   }, [step, msgIndex]);
@@ -95,30 +100,61 @@ const Splash = () => {
     return () => clearTimeout(timer);
   }, [step, messageTyped, msgIndex, advanceMessage]);
 
+  // 암전이 다 끝날 즈음 로고를 뿅 등장시킨다
+  useEffect(() => {
+    if (step !== 'blackout') return undefined;
+    const timer = setTimeout(() => setStep('logo'), 700);
+    return () => clearTimeout(timer);
+  }, [step]);
+
+  // 온보딩 진행 상태에 따라 이어서 진행할 화면으로 보낸다.
+  // 401(세션 없음/만료)은 약관 동의 전이므로 /privacy로 보내는 게 맞는 동작.
+  const handleLogoClick = async () => {
+    if (step !== 'logo' || isCheckingUser) return;
+
+    try {
+      setIsCheckingUser(true);
+      const res = await getOnboardingStatus();
+      const result = res?.data?.isSuccess ? res.data.result : null;
+
+      if (!result) {
+        navigate('/privacy');
+        return;
+      }
+
+      const {
+        healthConnectLinked,
+        profileCompleted,
+        notificationSettingsCompleted,
+      } = result;
+
+      if (!healthConnectLinked) {
+        navigate('/health-connect');
+      } else if (!profileCompleted) {
+        navigate('/onboarding/profile');
+      } else if (!notificationSettingsCompleted) {
+        navigate('/onboarding/notification');
+      } else {
+        navigate('/home');
+      }
+    } catch (error) {
+      console.error('온보딩 상태 확인 실패:', error);
+      navigate('/privacy');
+    } finally {
+      setIsCheckingUser(false);
+    }
+  };
+
   return (
     <S.Screen>
       <S.BgLayer $src={acneSkinImg} $z={1} $hidden={step !== 'acne'} />
-      <S.BgLayer
-        $src={noAcneSkinImg}
-        $z={2}
-        $hidden={step === 'acne' || step === 'lab'}
-      />
+      <S.BgLayer $src={noAcneSkinImg} $z={2} $hidden={step === 'acne' || step === 'lab'} />
       <S.BgLayer $src={drsLabImg} $z={3} $hidden={step !== 'lab'} />
 
-      {step === 'acne' && (
-        <S.Hotspot
-          type="button"
-          onClick={handlePop}
-          aria-label="여드름 터트리기"
-        />
-      )}
+      {step === 'acne' && <S.Hotspot type="button" onClick={handlePop} aria-label="여드름 터트리기" />}
       {step === 'no-acne' && <S.PopRing key={popKey} />}
 
-      <S.DrImage
-        src={worriedDrImg}
-        alt="놀란 여박사님"
-        $visible={step === 'dr' || step === 'lab'}
-      />
+      <S.DrImage src={worriedDrImg} alt="놀란 여박사님" $visible={step === 'dr' || step === 'lab'} />
 
       <S.Caption $visible={step === 'acne'}>
         <S.CaptionBubble>
@@ -151,7 +187,14 @@ const Splash = () => {
         </S.MessageWrap>
       )}
 
-      {step === 'blackout' && <S.Blackout />}
+      {(step === 'blackout' || step === 'logo') && <S.Blackout />}
+
+      {step === 'logo' && (
+        <S.LogoStage type="button" onClick={handleLogoClick} aria-label="시작하기">
+          <S.LogoImage src={startlogoImg} alt="ToMeta 로고" />
+          <S.LogoCaption>화면을 클릭해주세요.</S.LogoCaption>
+        </S.LogoStage>
+      )}
     </S.Screen>
   );
 };
