@@ -138,7 +138,11 @@ export default function Record() {
 
   return (
     <Container>
-      <Header title={'기록'} variant="back" />
+      <Header
+        title={'기록'}
+        variant="back"
+        onBack={() => navigate('/home')}
+      />
       <ContentWrapper>
         <HeaderRow>
           <DateTitle>{recordData.dateText}</DateTitle>

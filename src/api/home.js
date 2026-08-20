@@ -1,6 +1,6 @@
 import api from './axios';
 
-const USE_MOCK = true; // 실서버 연동 시 false로 변경
+const USE_MOCK = false;
 
 /**
  * 홈 화면 조회
