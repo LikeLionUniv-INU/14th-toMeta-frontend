@@ -27,6 +27,38 @@ const PICKER_OPTIONS = {
   minute: Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0')),
 };
 
+const PUSH_PERMISSION_TIMEOUT_MS = 4000;
+
+// 안드로이드 네이티브 브릿지에 푸시 권한(POST_NOTIFICATIONS) 요청을 위임하고
+// 응답을 기다린다. 브릿지가 없거나(일반 브라우저) 응답이 없으면 온보딩이
+// 막히지 않도록 각각 'unsupported' / 'timeout'으로 처리한다.
+const requestPushPermission = () => {
+  const bridge = window.ToMetaNative;
+
+  if (!bridge?.postMessage || !bridge?.addEventListener) {
+    return Promise.resolve('unsupported');
+  }
+
+  return new Promise((resolve) => {
+    let settled = false;
+
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeoutId);
+      bridge.removeEventListener('message', handleMessage);
+      resolve(result);
+    };
+
+    const handleMessage = (event) => finish(event.data);
+
+    const timeoutId = setTimeout(() => finish('timeout'), PUSH_PERMISSION_TIMEOUT_MS);
+
+    bridge.addEventListener('message', handleMessage);
+    bridge.postMessage('requestPushPermission');
+  });
+};
+
 export default function NotificationPermission() {
   const navigate = useNavigate();
 
@@ -53,6 +85,15 @@ export default function NotificationPermission() {
 
     try {
       setIsLoading(true);
+
+      // 0. 네이티브 푸시 알림 권한 요청 (거부/타임아웃이어도 온보딩은 계속 진행)
+      if (allowNotification) {
+        const pushResult = await requestPushPermission();
+        if (pushResult !== 'granted') {
+          console.warn('푸시 알림 권한이 허용되지 않았습니다:', pushResult);
+        }
+      }
+
       const onboardingData = getDecryptedData('onboarding_data') || {};
 
       // 1. 프로필 데이터 전송 (PATCH /api/users/me/profile)
