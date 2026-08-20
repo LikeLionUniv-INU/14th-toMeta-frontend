@@ -58,9 +58,9 @@ const HeaderContainer = styled.header`
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.05);
   z-index: 100;
   background-color: #ffffff;
-  border-bottom: 1px solid #96be9c;
 
   @media ${media.mobileM} {
     height: 61px;

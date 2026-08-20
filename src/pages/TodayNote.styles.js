@@ -278,10 +278,14 @@ export const TextareaWrapper = styled.div`
     padding: 10px;
     font-weight: 400;
     font-size: 9px;
-    color: #828282;
+    color: #141212;
     height: 7rem;
     resize: none;
     box-sizing: border-box;
+
+    &::placeholder {
+      color: #828282;
+    }
 
     &:focus {
       outline: none;

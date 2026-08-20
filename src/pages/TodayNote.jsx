@@ -41,6 +41,7 @@ const TodayNote = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeType, setActiveType] = useState(null);
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [setComponentCache, setSetComponentCache] = useState({});
 
   const [detailModalSet, setDetailModalSet] = useState(null);
 
@@ -229,20 +230,23 @@ const TodayNote = () => {
   };
 
   const getProductIds = (productNames) => {
-    return productNames.reduce((ids, name) => {
-      const matchedSet = setProducts.find((set) => set.name === name);
-      if (matchedSet) {
-        ids.push(matchedSet.setId || matchedSet.id);
-        return ids;
-      }
-      const matchedItem = individualProducts.find(
-        (item) => (item.name || item.productName) === name,
-      );
-      if (matchedItem) {
-        ids.push(matchedItem.userCosmeticId || matchedItem.id);
-      }
-      return ids;
-    }, []);
+    return productNames.reduce(
+      (result, name) => {
+        const matchedSet = setProducts.find((set) => set.name === name);
+        if (matchedSet) {
+          result.setIds.push(matchedSet.setId || matchedSet.id);
+          return result;
+        }
+        const matchedItem = individualProducts.find(
+          (item) => (item.name || item.productName) === name,
+        );
+        if (matchedItem) {
+          result.cosmeticIds.push(matchedItem.userCosmeticId || matchedItem.id);
+        }
+        return result;
+      },
+      { cosmeticIds: [], setIds: [] },
+    );
   };
 
   const skinStatusOptions = [
@@ -261,27 +265,118 @@ const TodayNote = () => {
     nightProducts.length > 0 &&
     (!isBadSkin || noteInput.trim().length > 0);
 
+  const expandSetsToComponents = (names) => {
+    return names.reduce((result, name) => {
+      result.push(name);
+      const matchedSet = setProducts.find((set) => set.name === name);
+      if (matchedSet) {
+        const componentNames =
+          setComponentCache[matchedSet.setId || matchedSet.id] || [];
+        componentNames.forEach((componentName) => {
+          if (!result.includes(componentName)) result.push(componentName);
+        });
+      }
+      return result;
+    }, []);
+  };
+
+  const collapseComponentsIntoSets = (names) => {
+    return names.filter((name) => {
+      const isComponentOfSelectedSet = names.some((otherName) => {
+        if (otherName === name) return false;
+        const matchedSet = setProducts.find((set) => set.name === otherName);
+        if (!matchedSet) return false;
+        const componentNames =
+          setComponentCache[matchedSet.setId || matchedSet.id] || [];
+        return componentNames.includes(name);
+      });
+      return !isComponentOfSelectedSet;
+    });
+  };
+
   const handleOpenModal = (type) => {
     setActiveType(type);
-    setSelectedProducts(type === 'morning' ? morningProducts : nightProducts);
+    const baseProducts = type === 'morning' ? morningProducts : nightProducts;
+    setSelectedProducts(expandSetsToComponents(baseProducts));
     setIsModalOpen(true);
   };
 
-  const handleToggleProduct = (productName) => {
+  const handleToggleProduct = async (productName) => {
     if (selectedProducts.includes(productName)) {
+      const matchedSet = setProducts.find((set) => set.name === productName);
+
+      if (matchedSet) {
+        const componentNames =
+          setComponentCache[matchedSet.setId || matchedSet.id] || [];
+        setSelectedProducts((prev) =>
+          prev.filter(
+            (item) => item !== productName && !componentNames.includes(item),
+          ),
+        );
+        return;
+      }
+
+      const parentSetName = selectedProducts.find((name) => {
+        const set = setProducts.find((s) => s.name === name);
+        if (!set) return false;
+        const componentNames = setComponentCache[set.setId || set.id] || [];
+        return componentNames.includes(productName);
+      });
+
+      if (parentSetName) {
+        setSelectedProducts((prev) =>
+          prev.filter(
+            (item) => item !== productName && item !== parentSetName,
+          ),
+        );
+        return;
+      }
+
       setSelectedProducts((prev) =>
         prev.filter((item) => item !== productName),
       );
-    } else {
-      setSelectedProducts((prev) => [...prev, productName]);
+      return;
+    }
+
+    setSelectedProducts((prev) => [...prev, productName]);
+
+    const matchedSet = setProducts.find((set) => set.name === productName);
+    if (matchedSet) {
+      const setId = matchedSet.setId || matchedSet.id;
+      let componentNames = setComponentCache[setId];
+
+      if (!componentNames) {
+        try {
+          const response = await getCosmeticSetDetail(setId);
+          if (response.data && response.data.isSuccess) {
+            componentNames = (response.data.result.cosmetics || []).map(
+              (c) => c.customName || c.productName,
+            );
+            setSetComponentCache((prev) => ({ ...prev, [setId]: componentNames }));
+          }
+        } catch (error) {
+          console.error('세트 구성품 조회 실패:', error.message);
+        }
+      }
+
+      if (componentNames) {
+        setSelectedProducts((prev) => {
+          const next = [...prev];
+          componentNames.forEach((name) => {
+            if (!next.includes(name)) next.push(name);
+          });
+          return next;
+        });
+      }
     }
   };
 
   const handleModalSubmit = () => {
+    const finalProducts = collapseComponentsIntoSets(selectedProducts);
     if (activeType === 'morning') {
-      setMorningProducts(selectedProducts);
+      setMorningProducts(finalProducts);
     } else if (activeType === 'night') {
-      setNightProducts(selectedProducts);
+      setNightProducts(finalProducts);
     }
     setIsModalOpen(false);
   };
@@ -316,10 +411,14 @@ const TodayNote = () => {
     if (!isFormValid) return;
 
     const formattedDate = formatDateToYYYYMMDD(selectedDate);
+    const morningIds = getProductIds(morningProducts);
+    const nightIds = getProductIds(nightProducts);
     const requestBody = {
       skinStatus: mapSkinConditionToStatus(skinCondition),
-      morningCosmeticIds: getProductIds(morningProducts),
-      nightCosmeticIds: getProductIds(nightProducts),
+      morningCosmeticIds: morningIds.cosmeticIds,
+      morningCosmeticSetIds: morningIds.setIds,
+      nightCosmeticIds: nightIds.cosmeticIds,
+      nightCosmeticSetIds: nightIds.setIds,
       foodMemo: foodInput,
       imageKeys: images,
       memo: noteInput,
@@ -416,6 +515,7 @@ const TodayNote = () => {
               locale={ko}
               dateFormat="yyyy.MM.dd"
               customInput={<CustomCalendarButton />}
+              maxDate={new Date()}
             />
           </DatePickerWrapper>
         </S.DateSection>
@@ -647,6 +747,11 @@ const DatePickerWrapper = styled.div`
 
   .react-datepicker-popper {
     z-index: 10;
+  }
+
+  .react-datepicker__current-month {
+    font-family: 'Wanted Sans Variable', 'Wanted Sans', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', sans-serif;
+    font-size: 16px;
   }
 `;
 
