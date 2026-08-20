@@ -5,7 +5,7 @@ export const Screen = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 100dvh;
+  min-height: 100%;
   overflow: hidden;
   background-color: #ffffff;
 `;

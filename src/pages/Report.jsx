@@ -225,7 +225,7 @@ const Report = () => {
 
         <ReportList>
           {reportsToDisplay.map((report) => (
-            <ReportButton key={report.weekNumber} type="button" onClick={() => navigate(`/report/${report.reportId}`)}>
+            <ReportButton key={report.weekNumber} type="button" onClick={() => navigate(`/report/weekly/${report.reportId}`)}>
               {weekNames[report.weekNumber] || `${report.weekNumber}주차`} 주간 리포트
             </ReportButton>
           ))}
