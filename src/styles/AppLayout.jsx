@@ -15,7 +15,7 @@ const Background = styled.div`
   justify-content: center;
   width: 100%;
   height: 100dvh;
-  background-color: #f0f0f5;
+  background-color: #fffffa;
 `;
 
 const MobileContainer = styled.div`
