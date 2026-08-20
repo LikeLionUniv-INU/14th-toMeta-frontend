@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../components/Header';
+import Portal from '../components/Portal';
 import { media } from '../styles/GlobalStyle';
 import { searchCosmetics } from '../api';
 import useModalBackClose from '../hooks/useModalBackClose';
@@ -107,6 +108,7 @@ export default function SearchCosmetic() {
 
       {/* 검색 결과 없음 모달 */}
       {isModalOpen && (
+        <Portal>
         <Overlay onClick={closeModal}>
           <ModalContainer onClick={(e) => e.stopPropagation()}>
             <ModalTitle>
@@ -129,6 +131,7 @@ export default function SearchCosmetic() {
             </ButtonGroup>
           </ModalContainer>
         </Overlay>
+        </Portal>
       )}
     </Container>
   );
@@ -238,6 +241,8 @@ const Overlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
+  max-width: 430px;
+  margin: 0 auto;
   background-color: rgba(98, 98, 98, 0.3);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);

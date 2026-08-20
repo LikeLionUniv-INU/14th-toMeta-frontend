@@ -7,6 +7,7 @@ import homeIcon from '../assets/images/navigationbar/home.svg';
 import reportIcon from '../assets/images/navigationbar/report.svg';
 import myIcon from '../assets/images/navigationbar/my.svg';
 import { media } from '../styles/GlobalStyle';
+import Portal from './Portal';
 
 export default function NavigationBar() {
   const navigate = useNavigate();
@@ -30,36 +31,51 @@ export default function NavigationBar() {
   };
 
   return (
-    <NavContainer>
-      {navList.map((item) => {
-        const isActive = checkIsActive(item.path);
-        return (
-          <NavItem key={item.name} onClick={() => handleNavClick(item)}>
-            <Icon src={item.icon} className={isActive ? 'active' : ''} alt={item.name} />
-            <NavText className={isActive ? 'active' : ''}>{item.name}</NavText>
-          </NavItem>
-        );
-      })}
-    </NavContainer>
+    <Portal>
+      <NavContainer>
+        <NavInner>
+          {navList.map((item) => {
+            const isActive = checkIsActive(item.path);
+            return (
+              <NavItem key={item.name} onClick={() => handleNavClick(item)}>
+                <Icon src={item.icon} className={isActive ? 'active' : ''} alt={item.name} />
+                <NavText className={isActive ? 'active' : ''}>{item.name}</NavText>
+              </NavItem>
+            );
+          })}
+        </NavInner>
+      </NavContainer>
+    </Portal>
   );
 }
 
+// 안드로이드 제스처 바 / 아이폰 홈 인디케이터에 아이콘이 가려지지 않도록,
+// 실제 터치 영역(NavInner)은 기존 높이를 유지하고 흰 배경만
+// safe-area-inset-bottom만큼 아래로 더 확장한다.
 const NavContainer = styled.nav`
   position: fixed;
   bottom: 0;
   left: 0;
+  right: 0;
+  max-width: 430px;
+  margin: 0 auto;
   width: 100%;
   height: calc(60px + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);
   background-color: #ffffff;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
   box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.05);
   z-index: 1000;
   box-sizing: border-box;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+`;
+
+const NavInner = styled.div`
+  height: 60px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 
   @media ${media.mobileM} {
     height: calc(73px + env(safe-area-inset-bottom));
