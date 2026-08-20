@@ -14,6 +14,7 @@ const Background = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
+  height: 100vh;
   height: 100dvh;
   background-color: #fffffa;
 `;
@@ -21,9 +22,12 @@ const Background = styled.div`
 const MobileContainer = styled.div`
   width: 100%;
   max-width: 430px;
+  height: 100vh;
   height: 100dvh;
+  padding-top: env(safe-area-inset-top);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
   overflow-y: auto;
+  box-sizing: border-box;
 
   -webkit-overflow-scrolling: touch;
 

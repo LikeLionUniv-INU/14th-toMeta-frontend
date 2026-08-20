@@ -142,8 +142,7 @@ export default function NotificationPermission() {
 
       // 4. 모든 등록 완료 시 세션스토리지 비우고 홈으로 이동
       sessionStorage.removeItem('onboarding_data');
-      closeModal();
-      navigate('/home');
+      navigate('/home', { replace: true });
     } catch (error) {
       console.error('온보딩 최종 전송 실패:', error);
       alert(error.message || '오류가 발생했습니다. 다시 시도해 주세요.');

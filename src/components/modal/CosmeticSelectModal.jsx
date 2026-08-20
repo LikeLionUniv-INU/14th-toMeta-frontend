@@ -111,7 +111,7 @@ const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  z-index: 1000;
+  z-index: 1200;
 `;
 
 const ModalContainer = styled.div`
@@ -119,7 +119,7 @@ const ModalContainer = styled.div`
   max-height: 85dvh;
   background-color: #ffffff;
   border-radius: 20px 20px 0 0;
-  padding: 30px 0 20px 0;
+  padding: 30px 0 calc(20px + env(safe-area-inset-bottom)) 0;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;

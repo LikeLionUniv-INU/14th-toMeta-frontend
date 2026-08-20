@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { SprayCan } from 'lucide-react';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import Appticon from '../assets/images/appticon.png';
@@ -85,7 +84,7 @@ export default function SearchResult() {
                     onLoad={handleImageLoad}
                   />
                 ) : (
-                  <SprayCan size={64} strokeWidth={1.5} color="#b3b3b3" />
+                  <img src={Appticon} alt={searchResults[0].productName} />
                 )}
               </ImagePlaceholder>
               <ProductName>{searchResults[0].productName}</ProductName>
@@ -112,7 +111,10 @@ export default function SearchResult() {
                         <img src={Appticon} size={30} strokeWidth={1.5} />
                       )}
                     </SmallImagePlaceholder>
-                    <ListItemName>{item.productName}</ListItemName>
+                    <ListItemTextWrap>
+                      <ListItemBrand>{item.brandName}</ListItemBrand>
+                      <ListItemName>{item.productName}</ListItemName>
+                    </ListItemTextWrap>
                   </ListItem>
                 );
               })}
@@ -246,9 +248,9 @@ const ProductList = styled.div`
 
 const ListItem = styled.div`
   width: 100%;
-  height: 60px;
+  min-height: 60px;
   background-color: ${(props) => (props.$isSelected ? '#e7fff7' : '#ffffff')};
-  border-radius: 50px;
+  border-radius: 25px;
   padding: 10px 20px;
   display: flex;
   align-items: center;
@@ -261,7 +263,7 @@ const ListItem = styled.div`
   }
 
   @media ${media.mobileM} {
-    height: 69px;
+    min-height: 69px;
   }
 `;
 
@@ -303,6 +305,27 @@ const SmallImagePlaceholder = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+`;
+
+const ListItemTextWrap = styled.div`
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+`;
+
+const ListItemBrand = styled.span`
+  font-size: 11px;
+  font-weight: 500;
+  color: #767676;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media ${media.mobileM} {
+    font-size: 12px;
   }
 `;
 

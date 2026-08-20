@@ -61,7 +61,7 @@ const Report = () => {
     bad: '#FF8237',
     normal: '#FFAA6E',
     good: '#FFD3A5',
-    very_good: '#FFFBDC',
+    very_good: '#fff3ce',
   };
 
   const [dailyStatusMap, setDailyStatusMap] = useState({});
@@ -139,16 +139,11 @@ const Report = () => {
   const reportsToDisplay = weeklyReports;
 
   const [noReportModalVariant, setNoReportModalVariant] = useState(null);
-  const closeNoReportModal = useModalBackClose(
-    Boolean(noReportModalVariant),
-    () => setNoReportModalVariant(null),
-  );
+  const closeNoReportModal = useModalBackClose(Boolean(noReportModalVariant), () => setNoReportModalVariant(null));
 
   const handleDateClick = (day) => {
     if (reportExistsMap[day]) {
-      const formattedMonth = String(currentMonth + 1).padStart(2, '0');
-      const formattedDay = String(day).padStart(2, '0');
-      navigate(`/report/daily/${currentYear}-${formattedMonth}-${formattedDay}`);
+      navigate(`/report/daily/${formatLocalDate(new Date(currentYear, currentMonth, day))}`);
     } else if (currentDailyStatus[day]) {
       const clickedIsToday =
         currentYear === today.getFullYear() && currentMonth === today.getMonth() && day === today.getDate();
@@ -225,7 +220,7 @@ const Report = () => {
 
         <ReportList>
           {reportsToDisplay.map((report) => (
-            <ReportButton key={report.weekNumber} type="button" onClick={() => navigate(`/report/${report.reportId}`)}>
+            <ReportButton key={report.weekNumber} type="button" onClick={() => navigate(`/report/weekly/${report.reportId}`)}>
               {weekNames[report.weekNumber] || `${report.weekNumber}주차`} 주간 리포트
             </ReportButton>
           ))}

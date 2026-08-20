@@ -214,7 +214,7 @@ export const TipBubble = styled.div`
   padding: 12px 14px;
   border-radius: 20px;
   flex: 1;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 3px 3px 2px rgba(31, 41, 51, 0.2);
 
   &::before {
     content: '';
