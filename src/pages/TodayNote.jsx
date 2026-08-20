@@ -19,6 +19,7 @@ import {
   createDailyRecord,
   updateDailyRecord,
 } from '../api/records';
+import useModalBackClose from '../hooks/useModalBackClose';
 
 const TodayNote = () => {
   const navigate = useNavigate();
@@ -39,14 +40,20 @@ const TodayNote = () => {
   const [individualProducts, setIndividualProducts] = useState([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const closeCosmeticModal = useModalBackClose(isModalOpen, () => setIsModalOpen(false));
   const [activeType, setActiveType] = useState(null);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [setComponentCache, setSetComponentCache] = useState({});
 
   const [detailModalSet, setDetailModalSet] = useState(null);
+  const closeDetailModal = useModalBackClose(Boolean(detailModalSet), () => setDetailModalSet(null));
 
   const [isAlreadyRecordedModalOpen, setIsAlreadyRecordedModalOpen] =
     useState(false);
+  const closeAlreadyRecordedModal = useModalBackClose(
+    isAlreadyRecordedModalOpen,
+    () => setIsAlreadyRecordedModalOpen(false),
+  );
 
   const fileInputRef = useRef(null);
 
@@ -378,7 +385,7 @@ const TodayNote = () => {
     } else if (activeType === 'night') {
       setNightProducts(finalProducts);
     }
-    setIsModalOpen(false);
+    closeCosmeticModal();
   };
 
   const handleRemoveProduct = (type, productName) => {
@@ -696,12 +703,12 @@ const TodayNote = () => {
 
       <AlreadyRecordedModal
         isOpen={isAlreadyRecordedModalOpen}
-        onClose={() => setIsAlreadyRecordedModalOpen(false)}
+        onClose={closeAlreadyRecordedModal}
       />
 
       <CosmeticSelectModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={closeCosmeticModal}
         setProducts={setProducts}
         individualProducts={individualProducts}
         selectedProducts={selectedProducts}
@@ -712,7 +719,7 @@ const TodayNote = () => {
 
       <SetDetailModal
         setItem={detailModalSet}
-        onClose={() => setDetailModalSet(null)}
+        onClose={closeDetailModal}
       />
     </S.Container>
   );

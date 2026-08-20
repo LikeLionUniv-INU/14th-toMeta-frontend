@@ -5,6 +5,7 @@ import NavigationBar from "../components/NavigationBar";
 import CosmeticCard from "../components/CosmeticCard";
 import Trash from "../assets/images/trash.png";
 import { media } from '../styles/GlobalStyle';
+import useModalBackClose from '../hooks/useModalBackClose';
 import { getCosmeticOptions, getCosmeticSetDetail, updateCosmeticSet, deleteCosmeticSet } from "../api/cosmetics";
 
 export default function Set() {
@@ -20,9 +21,11 @@ export default function Set() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const closeDeleteModal = useModalBackClose(isDeleteModalOpen, () => setIsDeleteModalOpen(false));
 
   const [allCosmetics, setAllCosmetics] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const closeAddModal = useModalBackClose(isAddModalOpen, () => setIsAddModalOpen(false));
   const [selectedToAdd, setSelectedToAdd] = useState([]);
 
   useEffect(() => {
@@ -105,7 +108,7 @@ export default function Set() {
     } catch (error) {
       console.error("[Set] 세트 삭제 실패:", error);
       alert(error.message || "세트 삭제에 실패했습니다.");
-      setIsDeleteModalOpen(false);
+      closeDeleteModal();
     }
   };
 
@@ -147,7 +150,7 @@ export default function Set() {
           mainIngredients: c.tags,
         })),
       ]);
-      setIsAddModalOpen(false);
+      closeAddModal();
       setSelectedToAdd([]);
     } catch (error) {
       console.error("[Set] 세트에 화장품 추가 실패:", error);
@@ -219,14 +222,14 @@ export default function Set() {
       </ContentWrapper>
 
       {isDeleteModalOpen && (
-        <ModalOverlay onClick={() => setIsDeleteModalOpen(false)}>
+        <ModalOverlay onClick={closeDeleteModal}>
           <ModalContainer onClick={(e) => e.stopPropagation()}>
             <ModalTitle>이 세트를 삭제할까요?</ModalTitle>
             <ModalDescription>
               세트를 삭제해도 등록된 단품 화장품은 그대로 남아있어요!
             </ModalDescription>
             <ModalButtonGroup>
-              <ModalCancelButton onClick={() => setIsDeleteModalOpen(false)}>
+              <ModalCancelButton onClick={closeDeleteModal}>
                 취소
               </ModalCancelButton>
               <ModalConfirmButton onClick={handleDeleteSet}>
@@ -238,11 +241,11 @@ export default function Set() {
       )}
 
       {isAddModalOpen && (
-        <ModalOverlay onClick={() => setIsAddModalOpen(false)}>
+        <ModalOverlay onClick={closeAddModal}>
           <AddModalContainer onClick={(e) => e.stopPropagation()}>
             <AddModalHeader>
               <AddModalTitle>{title}</AddModalTitle>
-              <AddModalCloseButton onClick={() => setIsAddModalOpen(false)}>
+              <AddModalCloseButton onClick={closeAddModal}>
                 ×
               </AddModalCloseButton>
             </AddModalHeader>

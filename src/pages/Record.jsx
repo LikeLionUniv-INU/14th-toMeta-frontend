@@ -11,6 +11,7 @@ import AfterIcon from '../assets/images/after.png';
 import { getDailyRecord } from '../api/records';
 import { getCosmeticSetDetail } from '../api/cosmetics';
 import { media } from '../styles/GlobalStyle';
+import useModalBackClose from '../hooks/useModalBackClose';
 import drVeryBad from '../assets/images/dr-acne/dr.verybad.svg';
 import drBad from '../assets/images/dr-acne/dr.bad.svg';
 import drNormal from '../assets/images/dr-acne/dr.normal.svg';
@@ -63,6 +64,10 @@ export default function Record() {
 
   const [activeTab, setActiveTab] = useState('morning');
   const [selectedSetDetail, setSelectedSetDetail] = useState(null);
+  const closeSetDetailModal = useModalBackClose(
+    Boolean(selectedSetDetail),
+    () => setSelectedSetDetail(null),
+  );
 
   const [recordData, setRecordData] = useState({
     dateText: '',
@@ -258,7 +263,7 @@ export default function Record() {
       {selectedSetDetail && (
         <SetDetailModal
           setItem={selectedSetDetail}
-          onClose={() => setSelectedSetDetail(null)}
+          onClose={closeSetDetailModal}
         />
       )}
     </Container>

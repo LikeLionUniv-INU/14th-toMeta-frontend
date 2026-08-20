@@ -5,6 +5,7 @@ import Picker from 'react-mobile-picker';
 import Button from '../components/Button';
 import { media } from '../styles/GlobalStyle';
 import Bell from '../assets/images/bell.svg';
+import useModalBackClose from '../hooks/useModalBackClose';
 
 import { updateMyProfile, createNotificationSettings } from '../api';
 
@@ -64,6 +65,7 @@ export default function NotificationPermission() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const closeModal = useModalBackClose(isModalOpen, () => setIsModalOpen(false));
 
   // 모달 기본 시간 설정 22:30
   const [pickerValue, setPickerValue] = useState({
@@ -140,7 +142,7 @@ export default function NotificationPermission() {
 
       // 4. 모든 등록 완료 시 세션스토리지 비우고 홈으로 이동
       sessionStorage.removeItem('onboarding_data');
-      setIsModalOpen(false);
+      closeModal();
       navigate('/home');
     } catch (error) {
       console.error('온보딩 최종 전송 실패:', error);
@@ -179,7 +181,7 @@ export default function NotificationPermission() {
       </ButtonGroup>
 
       {isModalOpen && (
-        <ModalOverlay onClick={() => setIsModalOpen(false)}>
+        <ModalOverlay onClick={closeModal}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalTitle>매일 몇 시에 알림을 드릴까요?</ModalTitle>
 
@@ -208,10 +210,7 @@ export default function NotificationPermission() {
             </NoticeText>
 
             <ModalButtonGroup>
-              <ModalSubButton
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-              >
+              <ModalSubButton type="button" onClick={closeModal}>
                 취소
               </ModalSubButton>
               <Button onClick={() => handleFinalSubmit(true)}>

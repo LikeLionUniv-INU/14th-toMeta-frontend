@@ -9,6 +9,7 @@ import { getMonthlyReports } from '../api/reports';
 import { getDailyRecord } from '../api/records';
 import { formatLocalDate } from '../utils/dateFormat';
 import NoReportModal from '../components/modal/NoReportModal';
+import useModalBackClose from '../hooks/useModalBackClose';
 
 const Report = () => {
   const navigate = useNavigate();
@@ -138,6 +139,10 @@ const Report = () => {
   const reportsToDisplay = weeklyReports;
 
   const [noReportModalVariant, setNoReportModalVariant] = useState(null);
+  const closeNoReportModal = useModalBackClose(
+    Boolean(noReportModalVariant),
+    () => setNoReportModalVariant(null),
+  );
 
   const handleDateClick = (day) => {
     if (reportExistsMap[day]) {
@@ -232,7 +237,7 @@ const Report = () => {
       <NoReportModal
         isOpen={!!noReportModalVariant}
         variant={noReportModalVariant || 'past'}
-        onClose={() => setNoReportModalVariant(null)}
+        onClose={closeNoReportModal}
       />
     </Container>
   );

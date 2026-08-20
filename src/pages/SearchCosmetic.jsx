@@ -4,11 +4,13 @@ import styled from 'styled-components';
 import Header from '../components/Header';
 import { media } from '../styles/GlobalStyle';
 import { searchCosmetics } from '../api';
+import useModalBackClose from '../hooks/useModalBackClose';
 
 export default function SearchCosmetic() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const closeModal = useModalBackClose(isModalOpen, () => setIsModalOpen(false));
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSearch = async (e) => {
@@ -45,12 +47,12 @@ export default function SearchCosmetic() {
   };
 
   const handleRetrySearch = () => {
-    setIsModalOpen(false);
+    closeModal();
     setSearchTerm('');
   };
 
   const handleGoToCustom = () => {
-    setIsModalOpen(false);
+    closeModal();
     navigate('/register/custom-name');
   };
 
@@ -106,7 +108,7 @@ export default function SearchCosmetic() {
 
       {/* 검색 결과 없음 모달 */}
       {isModalOpen && (
-        <Overlay onClick={() => setIsModalOpen(false)}>
+        <Overlay onClick={closeModal}>
           <ModalContainer onClick={(e) => e.stopPropagation()}>
             <ModalTitle>
               검색 결과를
