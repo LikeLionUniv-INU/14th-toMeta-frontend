@@ -9,7 +9,6 @@ import SunIcon from "../assets/images/record/sun.svg";
 import MoonIcon from "../assets/images/record/moon.svg";
 import Trash from "../assets/images/trash.png";
 import { media } from "../styles/GlobalStyle";
-import Portal from "../components/Portal";
 import useModalBackClose from "../hooks/useModalBackClose";
 
 export default function MyPouch() {
@@ -257,7 +256,6 @@ export default function MyPouch() {
       </ContentWrapper>
 
       {isModalOpen && (
-        <Portal>
         <ModalOverlay onClick={closeSetModal}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalTitle>선택한 제품을 세트로 묶을까요?</ModalTitle>
@@ -286,11 +284,9 @@ export default function MyPouch() {
             </ModalButtonGroup>
           </ModalContent>
         </ModalOverlay>
-        </Portal>
       )}
 
       {isRoutineModalOpen && (
-        <Portal>
         <ModalOverlay onClick={closeSetModal}>
           <RoutineModalContainer onClick={(e) => e.stopPropagation()}>
             <RoutineModalTitle>
@@ -324,7 +320,6 @@ export default function MyPouch() {
             </RoutineSubmitBtn>
           </RoutineModalContainer>
         </ModalOverlay>
-        </Portal>
       )}
 
       <NavigationBar />
@@ -365,7 +360,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: 70px;
 `;
 
 const ContentWrapper = styled.div`
@@ -647,10 +642,8 @@ const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  max-width: 430px;
-  margin: 0 auto;
+  width: 100%;
+  height: 100%;
   background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);

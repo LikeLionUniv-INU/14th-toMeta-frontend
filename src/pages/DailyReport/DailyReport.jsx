@@ -4,7 +4,6 @@ import { getMyProfile } from '../../api/user';
 import { getDailyReport, updateDailyReportNote } from '../../api/reports';
 import * as S from './DailyReport.styles';
 import Header from '../../components/Header';
-import Portal from '../../components/Portal';
 import menstrualImg from '../../assets/images/menstrualcycle.png';
 import surprisedDr from '../../assets/images/dr-acne/surprised-dr.svg';
 
@@ -484,7 +483,6 @@ export default function DailyReport({ date }) {
 
       {/* 데이터 수집 중 모달 */}
       {isCollecting && (
-        <Portal>
         <S.CollectingOverlay>
           <S.CollectingModal>
             <S.ModalTitle>
@@ -500,7 +498,6 @@ export default function DailyReport({ date }) {
             </S.ModalButton>
           </S.CollectingModal>
         </S.CollectingOverlay>
-        </Portal>
       )}
     </S.Wrapper>
   );

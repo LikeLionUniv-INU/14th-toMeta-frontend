@@ -5,7 +5,6 @@ import Picker from 'react-mobile-picker';
 import Button from '../components/Button';
 import { media } from '../styles/GlobalStyle';
 import Bell from '../assets/images/bell.svg';
-import Portal from '../components/Portal';
 import useModalBackClose from '../hooks/useModalBackClose';
 
 import { updateMyProfile, createNotificationSettings } from '../api';
@@ -181,7 +180,6 @@ export default function NotificationPermission() {
       </ButtonGroup>
 
       {isModalOpen && (
-        <Portal>
         <ModalOverlay onClick={closeModal}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalTitle>매일 몇 시에 알림을 드릴까요?</ModalTitle>
@@ -220,7 +218,6 @@ export default function NotificationPermission() {
             </ModalButtonGroup>
           </ModalContent>
         </ModalOverlay>
-        </Portal>
       )}
     </Container>
   );
@@ -327,8 +324,6 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  max-width: 430px;
-  margin: 0 auto;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: flex-end;
