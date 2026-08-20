@@ -54,7 +54,7 @@ const WeeklyReport = () => {
         // 유저 프로필 및 주간 리포트 병렬 호출
         const [profileRes, reportRes] = await Promise.all([
           getMyProfile(),
-          getWeeklyReportDetail(reportId || 13),
+          getWeeklyReportDetail(reportId),
         ]);
 
         if (profileRes?.data?.isSuccess) {
