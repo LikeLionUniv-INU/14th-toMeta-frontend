@@ -20,9 +20,10 @@ export default function SearchResult() {
 
   // SearchCosmetic에서 넘겨받은 실제 검색 결과 배열
   const searchResults = location.state?.searchResults || [];
+  const searchId = location.state?.searchId;
 
   const [selectedListId, setSelectedListId] = useState(
-    searchResults.length === 1 ? searchResults[0].id : null,
+    searchResults.length === 1 ? searchResults[0].itemId : null,
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -32,7 +33,7 @@ export default function SearchResult() {
 
     // 결과가 여러 개인데 아무것도 선택 안 한 경우 방어
     const targetId =
-      searchResults.length === 1 ? searchResults[0].id : selectedListId;
+      searchResults.length === 1 ? searchResults[0].itemId : selectedListId;
 
     if (!targetId) {
       alert('사용 중인 제품을 선택해 주세요.');
@@ -42,7 +43,10 @@ export default function SearchResult() {
     try {
       setIsSubmitting(true);
 
-      const res = await registerCosmeticFromSearch({ id: targetId });
+      const res = await registerCosmeticFromSearch({
+        searchId,
+        itemId: targetId,
+      });
 
       if (res.data.isSuccess) {
         navigate('/pouch-redirect');
@@ -81,14 +85,14 @@ export default function SearchResult() {
                   <ProductImage
                     $isLandscape={isLandscape}
                     src={searchResults[0].imageUrl}
-                    alt={searchResults[0].name}
+                    alt={searchResults[0].productName}
                     onLoad={handleImageLoad}
                   />
                 ) : (
                   <SprayCan size={64} strokeWidth={1.5} color="#b3b3b3" />
                 )}
               </ImagePlaceholder>
-              <ProductName>{searchResults[0].name}</ProductName>
+              <ProductName>{searchResults[0].productName}</ProductName>
             </SingleProductCard>
           </>
         ) : (
@@ -101,24 +105,24 @@ export default function SearchResult() {
             </MainTitle>
             <ProductList>
               {searchResults.map((item) => {
-                const isChecked = selectedListId === item.id;
+                const isChecked = selectedListId === item.itemId;
                 return (
                   <ListItem
-                    key={item.id}
+                    key={item.itemId}
                     $isSelected={isChecked}
-                    onClick={() => setSelectedListId(item.id)}
+                    onClick={() => setSelectedListId(item.itemId)}
                   >
                     <RadioButton $isChecked={isChecked}>
                       {isChecked && <RadioInnerCircle />}
                     </RadioButton>
                     <SmallImagePlaceholder $isSelected={isChecked}>
                       {item.imageUrl ? (
-                        <img src={item.imageUrl} alt={item.name} />
+                        <img src={item.imageUrl} alt={item.productName} />
                       ) : (
                         <SprayCan size={30} strokeWidth={1.5} color="#828282" />
                       )}
                     </SmallImagePlaceholder>
-                    <ListItemName>{item.name}</ListItemName>
+                    <ListItemName>{item.productName}</ListItemName>
                   </ListItem>
                 );
               })}

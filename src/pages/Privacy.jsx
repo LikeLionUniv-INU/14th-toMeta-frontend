@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import { media } from '../styles/GlobalStyle';
+import { agreeConsents } from '../api';
 
 const Container = styled.div`
   padding: 26px 17px;
@@ -179,12 +180,32 @@ const Privacy = () => {
   const navigate = useNavigate();
   const [serviceTermsChecked, setServiceTermsChecked] = useState(false);
   const [privacyPolicyChecked, setPrivacyPolicyChecked] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isAllChecked = serviceTermsChecked && privacyPolicyChecked;
 
-  const handleSubmit = () => {
-    if (!isAllChecked) return;
-    navigate('/health-connect');
+  const handleSubmit = async () => {
+    if (!isAllChecked || isSubmitting) return;
+
+    try {
+      setIsSubmitting(true);
+
+      const res = await agreeConsents({
+        termsAgreed: serviceTermsChecked,
+        privacyAgreed: privacyPolicyChecked,
+      });
+
+      if (res.data.isSuccess) {
+        navigate('/health-connect');
+      } else {
+        alert(res.data.message || '약관 동의에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('약관 동의 실패:', error);
+      alert(error.message || '약관 동의 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -264,8 +285,8 @@ const Privacy = () => {
         </TermsSection>
       </Content>
 
-      <Button disabled={!isAllChecked} onClick={handleSubmit}>
-        확인
+      <Button disabled={!isAllChecked || isSubmitting} onClick={handleSubmit}>
+        {isSubmitting ? '확인 중...' : '확인'}
       </Button>
     </Container>
   );
