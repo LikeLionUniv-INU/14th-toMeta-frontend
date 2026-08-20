@@ -213,7 +213,8 @@ const SingleProductCard = styled.div`
 
 const ImagePlaceholder = styled.div`
   width: 100%;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   background-color: #ffffff;
   display: flex;
   align-items: center;
@@ -225,16 +226,30 @@ const ImagePlaceholder = styled.div`
 `;
 
 const ProductImage = styled.img`
+  max-width: 100%;
+  max-height: 100%;
   width: ${({ $isLandscape }) => ($isLandscape ? '100%' : 'auto')};
   height: ${({ $isLandscape }) => ($isLandscape ? 'auto' : '100%')};
+  object-fit: contain;
 `;
 
 const ProductName = styled.p`
-  font-size: 18px;
+  width: 100%;
+  flex-shrink: 0;
+  font-size: 15px;
   font-weight: 700;
   color: #000000;
   text-align: center;
-  margin: 40px 0 0 0;
+  margin: 16px 0 0 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media ${media.mobileM} {
+    font-size: 18px;
+  }
 `;
 
 const ProductList = styled.div`
@@ -308,12 +323,16 @@ const SmallImagePlaceholder = styled.div`
 `;
 
 const ListItemName = styled.span`
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   color: #111111;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  @media ${media.mobileM} {
+    font-size: 14px;
+  }
 `;
 
 const ButtonWrapper = styled.div`

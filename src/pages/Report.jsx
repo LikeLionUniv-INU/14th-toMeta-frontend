@@ -6,6 +6,7 @@ import colorBarImg from '../assets/images/colorbar.png';
 import before from '../assets/images/before.png';
 import after from '../assets/images/after.png';
 import { getMonthlyReports } from '../api/reports';
+import { getDailyRecord } from '../api/records';
 
 const Report = () => {
   const navigate = useNavigate();
@@ -61,9 +62,12 @@ const Report = () => {
   };
 
   const [dailyStatusMap, setDailyStatusMap] = useState({});
+  const [reportExistsMap, setReportExistsMap] = useState({});
   const [weeklyReports, setWeeklyReports] = useState([]);
 
   useEffect(() => {
+    let isCancelled = false;
+
     const fetchMonthlyReports = async () => {
       try {
         const response = await getMonthlyReports({
@@ -73,22 +77,61 @@ const Report = () => {
 
         const fetchedDailyReports = response.data.result.dailyReports || [];
         const statusMap = {};
+        const reportMap = {};
+        const unreportedDates = [];
+
         fetchedDailyReports.forEach((item) => {
+          const day = Number(item.date.split('-')[2]);
           if (item.hasDailyReport && item.skinCondition) {
-            const day = Number(item.date.split('-')[2]);
             statusMap[day] = item.skinCondition.toLowerCase();
+            reportMap[day] = true;
+          } else {
+            unreportedDates.push({ day, date: item.date });
           }
         });
+
         setDailyStatusMap(statusMap);
+        setReportExistsMap(reportMap);
 
         const fetchedWeeklyReports = response.data.result.weeklyReports || [];
         setWeeklyReports(fetchedWeeklyReports);
+
+        // 리포트가 아직 발행 안 된 날짜는, 헬스데이터 없이 기록만 했을 수도 있으니
+        // 일일 기록 API에서 피부 상태만 따로 가져와 캘린더에 색만 입혀준다
+        // (리포트가 없으니 클릭해도 리포트 상세로는 이동하지 않음).
+        if (unreportedDates.length > 0) {
+          const results = await Promise.allSettled(
+            unreportedDates.map(({ date }) => getDailyRecord(date)),
+          );
+
+          if (isCancelled) return;
+
+          const recordStatusMap = {};
+          results.forEach((result, index) => {
+            if (
+              result.status === 'fulfilled' &&
+              result.value?.data?.isSuccess &&
+              result.value.data.result?.skinStatus
+            ) {
+              recordStatusMap[unreportedDates[index].day] =
+                result.value.data.result.skinStatus.toLowerCase();
+            }
+          });
+
+          if (Object.keys(recordStatusMap).length > 0) {
+            setDailyStatusMap((prev) => ({ ...prev, ...recordStatusMap }));
+          }
+        }
       } catch (error) {
         console.error('[Report] 월별 리포트 목록 조회 실패:', error);
       }
     };
 
     fetchMonthlyReports();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [currentYear, currentMonth]);
 
   const currentDailyStatus = dailyStatusMap;
@@ -97,7 +140,7 @@ const Report = () => {
   const handleDateClick = (day) => {
     setSelectedDate(day);
 
-    if (currentDailyStatus[day]) {
+    if (reportExistsMap[day]) {
       const formattedMonth = String(currentMonth + 1).padStart(2, '0');
       const formattedDay = String(day).padStart(2, '0');
       navigate(
@@ -148,7 +191,7 @@ const Report = () => {
               <DayCell
                 key={day}
                 $bgColor={dailyBgColor}
-                $hasReport={!!status}
+                $hasReport={!!reportExistsMap[day]}
                 onClick={() => handleDateClick(day)}
               >
                 <DayCircle $isSelected={isSelected} $isSunday={isSunday}>
