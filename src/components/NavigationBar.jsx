@@ -49,7 +49,8 @@ const NavContainer = styled.nav`
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 60px;
+  height: calc(60px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
   background-color: #ffffff;
   display: flex;
   justify-content: space-around;
@@ -61,7 +62,7 @@ const NavContainer = styled.nav`
   box-sizing: border-box;
 
   @media ${media.mobileM} {
-    height: 73px;
+    height: calc(73px + env(safe-area-inset-bottom));
   }
 `;
 

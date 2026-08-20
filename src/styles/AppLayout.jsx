@@ -24,8 +24,10 @@ const MobileContainer = styled.div`
   max-width: 430px;
   height: 100vh;
   height: 100dvh;
+  padding-top: env(safe-area-inset-top);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
   overflow-y: auto;
+  box-sizing: border-box;
 
   -webkit-overflow-scrolling: touch;
 
