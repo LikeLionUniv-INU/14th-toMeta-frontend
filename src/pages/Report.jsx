@@ -244,7 +244,6 @@ const Container = styled.div`
   max-width: 430px;
   height: 100dvh;
   margin: 0 0 73px 0;
-  background-color: #ffffff;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
