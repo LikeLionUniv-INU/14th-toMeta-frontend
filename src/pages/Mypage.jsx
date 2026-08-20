@@ -7,6 +7,7 @@ import NavigationBar from '../components/NavigationBar';
 import Button from '../components/Button';
 import { getMyPageData, updateNotificationSettings } from '../api/user';
 import { media } from '../styles/GlobalStyle';
+import useModalBackClose from '../hooks/useModalBackClose';
 
 const PICKER_OPTIONS = {
   hour: Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0')),
@@ -31,6 +32,7 @@ export default function MyPage() {
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const closeModal = useModalBackClose(isModalOpen, () => setIsModalOpen(false));
   const [targetReport, setTargetReport] = useState(null);
   const [pickerValue, setPickerValue] = useState({
     hour: '22',
@@ -121,7 +123,7 @@ export default function MyPage() {
     try {
       await updateNotificationSettings(payload);
       setTimes(updatedTimes);
-      setIsModalOpen(false);
+      closeModal();
     } catch (error) {
       console.error('[MyPage] 알림 시간 변경 실패:', error);
       alert(error.message || '알림 시간 변경에 실패했습니다.');
@@ -199,7 +201,7 @@ export default function MyPage() {
       </ContentSection>
 
       {isModalOpen && (
-        <ModalOverlay onClick={() => setIsModalOpen(false)}>
+        <ModalOverlay onClick={closeModal}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalTitle>{targetReport === 'record' ? '기록 작성' : '주간 리포트'} 알림 시간 설정</ModalTitle>
 
@@ -221,7 +223,7 @@ export default function MyPage() {
             <NoticeText>설정한 시간에 맞추어 리포트 알림을 보내드려요.</NoticeText>
 
             <ModalButtonGroup>
-              <ModalSubButton type="button" onClick={() => setIsModalOpen(false)}>
+              <ModalSubButton type="button" onClick={closeModal}>
                 취소
               </ModalSubButton>
               <Button onClick={handleSaveTime}>확인 및 설정 완료</Button>

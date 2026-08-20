@@ -18,7 +18,7 @@ const AlreadyRecordedModal = ({ isOpen, onClose }) => {
         </AlertModalDesc>
         <AlertModalButton
           type="button"
-          onClick={() => navigate('/record')}
+          onClick={() => navigate('/record', { replace: true })}
         >
           기록 확인하기
         </AlertModalButton>
