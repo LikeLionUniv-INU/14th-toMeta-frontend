@@ -2,20 +2,11 @@ import api from './axios';
 
 const USE_MOCK = false; // 실서버 연동 시 false로 변경
 
-export const registerHealthConnectConnection = async (deviceId) => {
-  if (USE_MOCK) {
-    console.log('[Mock API] Health Connect 연결 등록:', deviceId);
-    return {
-      data: {
-        isSuccess: true,
-        code: 'COMMON_200',
-        message: '요청에 성공했습니다.',
-        result: { healthDeviceToken: 'mock-health-device-token' },
-      },
-    };
-  }
-  return api.post('/api/health-connect/connections', { deviceId });
-};
+// POST /api/health-connect/connections, POST /api/health-connect/sync는
+// 안드로이드 네이티브(HealthConnectRepository / HealthSyncCoordinator)가
+// anonymous_session 쿠키와 자체 healthDeviceToken 저장소를 이용해 직접 호출한다.
+// 프론트(React)는 그 결과를 window.ToMetaNative 메시지로만 전달받으므로
+// 이 두 엔드포인트를 axios로 호출할 필요가 없다.
 
 export const getHealthConnectStatus = async () => {
   if (USE_MOCK) {
@@ -29,23 +20,4 @@ export const getHealthConnectStatus = async () => {
     };
   }
   return api.get('/api/health-connect/status');
-};
-
-export const syncHealthConnectData = async (healthDeviceToken, payload) => {
-  if (USE_MOCK) {
-    console.log('[Mock API] Health Connect 데이터 동기화:', payload);
-    return {
-      data: {
-        isSuccess: true,
-        code: 'COMMON_200',
-        message: '요청에 성공했습니다.',
-        result: null,
-      },
-    };
-  }
-  return api.post('/api/health-connect/sync', payload, {
-    headers: {
-      Authorization: `Bearer ${healthDeviceToken}`,
-    },
-  });
 };

@@ -34,6 +34,8 @@ export const getDecryptedData = (key) => {
   }
 };
 
+const NICKNAME_REGEX = /^[가-힣a-zA-Z0-9]{1,10}$/;
+
 export default function ProfileInput() {
   const [nickname, setNickname] = useState('');
   const [gender, setGender] = useState(''); // 'male' | 'female'
@@ -41,7 +43,7 @@ export default function ProfileInput() {
   const navigate = useNavigate();
 
   const isValid =
-    nickname.trim().length > 0 && gender !== '' && ageGroup !== '';
+    NICKNAME_REGEX.test(nickname.trim()) && gender !== '' && ageGroup !== '';
 
   useEffect(() => {
     const savedData = getDecryptedData('onboarding_data');
