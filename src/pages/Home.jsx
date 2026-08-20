@@ -46,25 +46,36 @@ const Home = () => {
   const weekDays = (homeData.week?.days || []).map((item) => {
     const day = DAY_NAMES[new Date(item.date).getDay()];
 
-    if (item.date === today) {
-      return {
-        date: item.date,
-        day,
-        color: '#ffffff',
-        children: (
-          <S.PlusButton onClick={() => navigate('/todaynote')}>+</S.PlusButton>
-        ),
-      };
-    }
+    if (item.date === today || item.date < today) {
+      const hasRecord = Boolean(item.skinStatus);
+      const isToday = item.date === today;
 
-    if (item.date < today) {
       return {
         date: item.date,
         day,
-        color: item.skinStatus ? SKIN_STATUS_COLORS[item.skinStatus] : null,
-        children: item.skinStatus ? (
-          <StatusFace level={item.skinStatus} />
-        ) : null,
+        isToday,
+        color: hasRecord
+          ? SKIN_STATUS_COLORS[item.skinStatus]
+          : isToday
+            ? '#ffffff'
+            : null,
+        children: (
+          <S.PlusButton
+            onClick={() =>
+              navigate(
+                hasRecord
+                  ? `/record/${item.date}`
+                  : `/todaynote/${item.date}`,
+              )
+            }
+          >
+            {hasRecord ? (
+              <StatusFace level={item.skinStatus} />
+            ) : isToday ? (
+              '+'
+            ) : null}
+          </S.PlusButton>
+        ),
       };
     }
 

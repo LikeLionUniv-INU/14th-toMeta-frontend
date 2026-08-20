@@ -1,6 +1,6 @@
 import api from './axios';
 
-const USE_MOCK = true; // 실서버 연동 시 false로 변경
+const USE_MOCK = false; // 실서버 연동 시 false로 변경
 
 /**
  * 데일리 리포트 조회
@@ -27,8 +27,7 @@ export const getDailyReport = async (date) => {
           },
           aiAnalysis:
             '오늘 밤 피부 온도가 평소보다 높아졌는데, 이는 늦은 시간 고열량 야식 섭취와 수면 부족이 복합적으로 작용했기 때문으로 추정돼요.',
-          personalizedSolution:
-            '자극적인 과자 대신 수분이 많은 간식으로 바꿔보세요.',
+          personalizedSolution: '자극적인 과자 대신 수분이 많은 간식으로 바꿔보세요.',
           note: null,
         },
       },
@@ -57,26 +56,16 @@ export const getMonthlyReports = async (params) => {
 
     const lastDate = new Date(year, month, 0).getDate();
     const recordedDays = [2, 3, 4, 5, 7, 10, 11, 12, 13, 14];
-    const skinConditionCycle = [
-      'VERY_BAD',
-      'BAD',
-      'NORMAL',
-      'GOOD',
-      'VERY_GOOD',
-    ];
+    const skinConditionCycle = ['VERY_BAD', 'BAD', 'NORMAL', 'GOOD', 'VERY_GOOD'];
 
     const dailyReports = Array.from({ length: lastDate }, (_, i) => {
       const day = i + 1;
-      const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(
-        day,
-      ).padStart(2, '0')}`;
+      const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
       const hasDailyReport = recordedDays.includes(day);
       return {
         date: dateStr,
         hasDailyReport,
-        skinCondition: hasDailyReport
-          ? skinConditionCycle[day % skinConditionCycle.length]
-          : null,
+        skinCondition: hasDailyReport ? skinConditionCycle[day % skinConditionCycle.length] : null,
       };
     });
 
@@ -261,18 +250,15 @@ export const getWeeklyReportDetail = async (reportId) => {
           photos: [
             {
               date: '2026-07-27',
-              imageUrl:
-                'https://placehold.co/120x150/e2e8f0/64748b?text=Photo+1',
+              imageUrl: 'https://placehold.co/120x150/e2e8f0/64748b?text=Photo+1',
             },
             {
               date: '2026-07-29',
-              imageUrl:
-                'https://placehold.co/120x150/e2e8f0/64748b?text=Photo+2',
+              imageUrl: 'https://placehold.co/120x150/e2e8f0/64748b?text=Photo+2',
             },
             {
               date: '2026-08-01',
-              imageUrl:
-                'https://placehold.co/120x150/e2e8f0/64748b?text=Photo+3',
+              imageUrl: 'https://placehold.co/120x150/e2e8f0/64748b?text=Photo+3',
             },
           ],
 

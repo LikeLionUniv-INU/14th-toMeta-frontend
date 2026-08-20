@@ -1,6 +1,6 @@
 import api from './axios';
 
-const USE_MOCK = true; // 실서버 연동 시 false로 변경
+const USE_MOCK = false; // 실서버 연동 시 false로 변경
 
 export const agreeConsents = async (consentData) => {
   if (USE_MOCK) {
@@ -10,7 +10,7 @@ export const agreeConsents = async (consentData) => {
         isSuccess: true,
         code: 'COMMON_200',
         message: '요청에 성공했습니다.',
-        result: { memberId: 'mock-user-123' },
+        result: null,
       },
     };
   }

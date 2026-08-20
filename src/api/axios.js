@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '',
-  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -19,11 +18,12 @@ api.interceptors.response.use(
         error.message = serverData.message;
       }
 
-      if (error.response.status === 401) {
-        if (window.location.pathname !== '/onboarding') {
-          window.location.href = '/onboarding';
-        }
-      }
+      // TODO: 다른 페이지 테스트 끝나면 이 401 리다이렉트 다시 켜기
+      // if (error.response.status === 401) {
+      //   if (window.location.pathname !== '/onboarding') {
+      //     window.location.href = '/onboarding';
+      //   }
+      // }
     } else {
       if (error.code === 'ECONNABORTED') {
         error.message = '요청 시간이 초과되었습니다. 다시 시도해 주세요.';

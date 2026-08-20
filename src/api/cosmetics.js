@@ -1,50 +1,50 @@
 import api from './axios';
 
-const USE_MOCK = true; // 실서버 연동 시 false로 변경
+const USE_MOCK = false; // 실서버 연동 시 false로 변경
 
 export const getCosmeticOptions = async () => {
   if (USE_MOCK) {
     return {
       data: {
         isSuccess: true,
-        code: "COMMON_200",
-        message: "요청에 성공했습니다.",
+        code: 'COMMON_200',
+        message: '요청에 성공했습니다.',
         result: {
           sets: [
             {
               setId: 1,
-              name: "진정템",
-              usageTime: "morning",
-              tags: ["어성초", "진정", "피지조절"],
+              name: '진정템',
+              usageTime: 'morning',
+              tags: ['어성초', '진정', '피지조절'],
             },
             {
               setId: 2,
-              name: "사용자 지정 이름",
-              usageTime: "both",
-              tags: ["티트리", "진정", "수분보충"],
+              name: '사용자 지정 이름',
+              usageTime: 'both',
+              tags: ['티트리', '진정', '수분보충'],
             },
           ],
           cosmetics: [
             {
               userCosmeticId: 11,
-              productName: "아누아 어성초 77% 진정 토너",
-              brandName: "아누아",
-              productType: "toner",
-              tags: ["toner", "진정", "어성초", "판테놀"],
+              productName: '아누아 어성초 77% 진정 토너',
+              brandName: '아누아',
+              productType: 'toner',
+              tags: ['toner', '진정', '어성초', '판테놀'],
             },
             {
               userCosmeticId: 12,
-              productName: "토리든 다이브인 저분자 히알루론산 세럼",
-              brandName: "토리든",
-              productType: "serum",
-              tags: ["serum", "보습", "히알루론산", "판테놀"],
+              productName: '토리든 다이브인 저분자 히알루론산 세럼',
+              brandName: '토리든',
+              productType: 'serum',
+              tags: ['serum', '보습', '히알루론산', '판테놀'],
             },
             {
               userCosmeticId: 13,
-              productName: "진정 크림",
+              productName: '진정 크림',
               brandName: null,
-              productType: "cream",
-              tags: ["cream", "티트리", "시카"],
+              productType: 'cream',
+              tags: ['cream', '티트리', '시카'],
             },
           ],
         },
@@ -96,11 +96,16 @@ export const registerCosmeticFromSearch = async (cosmeticData) => {
         isSuccess: true,
         code: 'COMMON_200',
         message: '요청에 성공했습니다.',
-        result: null,
+        result: {
+          userCosmeticId: 3,
+          productName: '아누아 어성초 77 수딩 토너',
+          productType: 'skin_toner',
+          tags: ['스킨/토너', '피부진정', '어성초', '병풀'],
+        },
       },
     };
   }
-  return api.post('/api/user-cosmetics/from-search', cosmeticData);
+  return api.post('/api/user-cosmetics/search-result', cosmeticData);
 };
 
 export const registerCosmeticManual = async (customData) => {
@@ -137,13 +142,7 @@ export const searchIngredients = async (params) => {
     return {
       data: {
         isSuccess: true,
-        result: [
-          '히알루론산',
-          '판테놀',
-          '세라마이드',
-          '나이아신아마이드',
-          '티트리',
-        ],
+        result: ['히알루론산', '판테놀', '세라마이드', '나이아신아마이드', '티트리'],
       },
     };
   }
@@ -166,26 +165,26 @@ export const getCosmeticSetDetail = async (setId) => {
     return {
       data: {
         isSuccess: true,
-        code: "COMMON_200",
-        message: "요청에 성공했습니다.",
+        code: 'COMMON_200',
+        message: '요청에 성공했습니다.',
         result: {
           setId: Number(setId),
-          name: setId === 1 ? "진정템" : "진정 꿀조합",
-          usageTime: "morning",
+          name: setId === 1 ? '진정템' : '진정 꿀조합',
+          usageTime: 'morning',
           cosmetics: [
             {
               userCosmeticId: 12,
-              productName: "아누아 어성초 77% 진정 토너",
+              productName: '아누아 어성초 77% 진정 토너',
               customName: null,
-              productType: "skin_toner",
-              mainIngredients: ["어성초", "진정", "피지조절"],
+              productType: 'skin_toner',
+              mainIngredients: ['어성초', '진정', '피지조절'],
             },
             {
               userCosmeticId: 15,
-              productName: "토리든 다이브인 저분자 히알루론산 세럼",
+              productName: '토리든 다이브인 저분자 히알루론산 세럼',
               customName: null,
-              productType: "serum",
-              mainIngredients: ["히알루론산", "수분", "속건조"],
+              productType: 'serum',
+              mainIngredients: ['히알루론산', '수분', '속건조'],
             },
           ],
         },
