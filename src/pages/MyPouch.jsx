@@ -9,6 +9,7 @@ import SunIcon from "../assets/images/record/sun.svg";
 import MoonIcon from "../assets/images/record/moon.svg";
 import Trash from "../assets/images/trash.png";
 import { media } from "../styles/GlobalStyle";
+import useModalBackClose from "../hooks/useModalBackClose";
 
 export default function MyPouch() {
   const navigate = useNavigate();
@@ -28,6 +29,16 @@ export default function MyPouch() {
     day: false,
     night: false,
   });
+
+  // 이름 입력(isModalOpen) -> 루틴 선택(isRoutineModalOpen) 2단계를
+  // 하나의 뒤로가기 히스토리 항목으로 묶어서 관리한다.
+  const closeSetModal = useModalBackClose(
+    isModalOpen || isRoutineModalOpen,
+    () => {
+      setIsModalOpen(false);
+      setIsRoutineModalOpen(false);
+    },
+  );
 
   useEffect(() => {
     setSelectedCosmetics([]);
@@ -138,7 +149,7 @@ export default function MyPouch() {
 
       setSets((prev) => [...prev, newSet]);
 
-      setIsRoutineModalOpen(false);
+      closeSetModal();
       setSelectedCosmetics([]);
       setSetName("");
       setSelectedRoutines({ day: false, night: false });
@@ -245,7 +256,7 @@ export default function MyPouch() {
       </ContentWrapper>
 
       {isModalOpen && (
-        <ModalOverlay onClick={() => setIsModalOpen(false)}>
+        <ModalOverlay onClick={closeSetModal}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalTitle>선택한 제품을 세트로 묶을까요?</ModalTitle>
             <ModalDesc>
@@ -260,7 +271,7 @@ export default function MyPouch() {
               onChange={(e) => setSetName(e.target.value)}
             />
             <ModalButtonGroup>
-              <ModalCancelBtn onClick={() => setIsModalOpen(false)}>
+              <ModalCancelBtn onClick={closeSetModal}>
                 취소
               </ModalCancelBtn>
               <ModalSubmitBtn
@@ -276,7 +287,7 @@ export default function MyPouch() {
       )}
 
       {isRoutineModalOpen && (
-        <ModalOverlay onClick={() => setIsRoutineModalOpen(false)}>
+        <ModalOverlay onClick={closeSetModal}>
           <RoutineModalContainer onClick={(e) => e.stopPropagation()}>
             <RoutineModalTitle>
               언제 사용하는 제품인가요?
