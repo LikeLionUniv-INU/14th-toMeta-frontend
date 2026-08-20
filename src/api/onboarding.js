@@ -22,7 +22,13 @@ export const getOnboardingStatus = async () => {
     return {
       data: {
         isSuccess: true,
-        result: { isOnboardingCompleted: false, step: 'BASIC_INFO' },
+        code: 'COMMON_200',
+        message: '요청에 성공했습니다.',
+        result: {
+          profileCompleted: false,
+          healthConnectLinked: false,
+          notificationSettingsCompleted: false,
+        },
       },
     };
   }

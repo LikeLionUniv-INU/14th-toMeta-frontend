@@ -48,7 +48,6 @@ const LoadingContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #ffffff;
   gap: 16px;
 `;
 

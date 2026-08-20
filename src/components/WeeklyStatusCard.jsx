@@ -9,6 +9,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { media } from '../styles/GlobalStyle';
 
 // hex 색을 흰색/검은색 쪽으로 amount(0~1)만큼 섞는다 (비네트 그라디언트용)
 const mixColor = (hex, target, amount) => {
@@ -63,7 +64,7 @@ const Card = styled.div`
   width: 100%;
   box-sizing: border-box;
   background-color: #f4fffa;
-  border: 1px solid #dedcdc;
+  border: 1px solid #a2a2a2;
   border-radius: 12px;
   padding: 12px;
 `;
@@ -96,11 +97,15 @@ const Pill = styled.div`
 
 const Row = styled.div`
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 4px;
 
   & + & {
     margin-top: 10px;
+  }
+
+  @media ${media.mobileM} {
+    grid-template-columns: repeat(7, 1fr);
   }
 `;
 
@@ -122,8 +127,9 @@ const CircleWrapper = styled.div`
 
 const Circle = styled.div`
   width: 100%;
-  max-width: 40px;
+  max-width: 32px;
   aspect-ratio: 1 / 1;
+  overflow: hidden;
   border: 1px solid #bcbcbc;
   border-radius: 50%;
   background: ${(props) => props.$bg};
@@ -131,4 +137,8 @@ const Circle = styled.div`
   align-items: center;
   justify-content: center;
   font-size: 18px;
+
+  @media ${media.mobileM} {
+    max-width: 40px;
+  }
 `;

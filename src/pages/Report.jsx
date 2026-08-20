@@ -7,22 +7,24 @@ import before from '../assets/images/before.png';
 import after from '../assets/images/after.png';
 import { getMonthlyReports } from '../api/reports';
 import { getDailyRecord } from '../api/records';
+import { formatLocalDate } from '../utils/dateFormat';
+import NoReportModal from '../components/modal/NoReportModal';
 
 const Report = () => {
   const navigate = useNavigate();
   const today = new Date();
+  const todayStr = formatLocalDate(today);
 
-  const [currentDate, setCurrentDate] = useState(
-    new Date(today.getFullYear(), today.getMonth(), 1),
-  );
-  const [selectedDate, setSelectedDate] = useState(today.getDate());
+  const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
 
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
 
   const isCurrentMonthOrFuture =
-    currentYear > today.getFullYear() ||
-    (currentYear === today.getFullYear() && currentMonth >= today.getMonth());
+    currentYear > today.getFullYear() || (currentYear === today.getFullYear() && currentMonth >= today.getMonth());
+
+  const prevMonthLabel = `${new Date(currentYear, currentMonth - 1, 1).getMonth() + 1}월`;
+  const nextMonthLabel = `${new Date(currentYear, currentMonth + 1, 1).getMonth() + 1}월`;
 
   const handlePrevMonth = () => {
     setCurrentDate(new Date(currentYear, currentMonth - 1, 1));
@@ -85,7 +87,8 @@ const Report = () => {
           if (item.hasDailyReport && item.skinCondition) {
             statusMap[day] = item.skinCondition.toLowerCase();
             reportMap[day] = true;
-          } else {
+          } else if (item.date <= todayStr) {
+            // 미래 날짜는 기록이 있을 수 없으니 조회하지 않는다
             unreportedDates.push({ day, date: item.date });
           }
         });
@@ -100,9 +103,7 @@ const Report = () => {
         // 일일 기록 API에서 피부 상태만 따로 가져와 캘린더에 색만 입혀준다
         // (리포트가 없으니 클릭해도 리포트 상세로는 이동하지 않음).
         if (unreportedDates.length > 0) {
-          const results = await Promise.allSettled(
-            unreportedDates.map(({ date }) => getDailyRecord(date)),
-          );
+          const results = await Promise.allSettled(unreportedDates.map(({ date }) => getDailyRecord(date)));
 
           if (isCancelled) return;
 
@@ -113,8 +114,7 @@ const Report = () => {
               result.value?.data?.isSuccess &&
               result.value.data.result?.skinStatus
             ) {
-              recordStatusMap[unreportedDates[index].day] =
-                result.value.data.result.skinStatus.toLowerCase();
+              recordStatusMap[unreportedDates[index].day] = result.value.data.result.skinStatus.toLowerCase();
             }
           });
 
@@ -132,20 +132,22 @@ const Report = () => {
     return () => {
       isCancelled = true;
     };
-  }, [currentYear, currentMonth]);
+  }, [currentYear, currentMonth, todayStr]);
 
   const currentDailyStatus = dailyStatusMap;
   const reportsToDisplay = weeklyReports;
 
-  const handleDateClick = (day) => {
-    setSelectedDate(day);
+  const [noReportModalVariant, setNoReportModalVariant] = useState(null);
 
+  const handleDateClick = (day) => {
     if (reportExistsMap[day]) {
       const formattedMonth = String(currentMonth + 1).padStart(2, '0');
       const formattedDay = String(day).padStart(2, '0');
-      navigate(
-        `/report/daily/${currentYear}-${formattedMonth}-${formattedDay}`,
-      );
+      navigate(`/report/daily/${currentYear}-${formattedMonth}-${formattedDay}`);
+    } else if (currentDailyStatus[day]) {
+      const clickedIsToday =
+        currentYear === today.getFullYear() && currentMonth === today.getMonth() && day === today.getDate();
+      setNoReportModalVariant(clickedIsToday ? 'today' : 'past');
     }
   };
 
@@ -153,19 +155,21 @@ const Report = () => {
     <Container>
       <Content>
         <Header>
-          <NavButton type="button" onClick={handlePrevMonth}>
-            <NavIcon src={before} alt="이전달" />
-          </NavButton>
+          <NavGroup>
+            <NavButton type="button" onClick={handlePrevMonth}>
+              <NavIcon src={before} alt="이전달" />
+            </NavButton>
+            <NavMonthLabel>{prevMonthLabel}</NavMonthLabel>
+          </NavGroup>
           <HeaderTitle>
             {currentYear}년 {currentMonth + 1}월
           </HeaderTitle>
-          {!isCurrentMonthOrFuture ? (
-            <NavButton type="button" onClick={handleNextMonth}>
+          <NavGroup $align="end" $hidden={isCurrentMonthOrFuture}>
+            <NavMonthLabel>{nextMonthLabel}</NavMonthLabel>
+            <NavButton type="button" tabIndex={isCurrentMonthOrFuture ? -1 : 0} onClick={handleNextMonth}>
               <NavIcon src={after} alt="다음달" />
             </NavButton>
-          ) : (
-            <NavPlaceholder />
-          )}
+          </NavGroup>
         </Header>
 
         <WeekGrid>
@@ -182,7 +186,8 @@ const Report = () => {
               return <DayCell key={`empty-${index}`} $empty />;
             }
 
-            const isSelected = selectedDate === day;
+            const isToday =
+              currentYear === today.getFullYear() && currentMonth === today.getMonth() && day === today.getDate();
             const isSunday = index % 7 === 0;
             const status = currentDailyStatus[day];
             const dailyBgColor = status ? statusColors[status] : 'transparent';
@@ -194,7 +199,7 @@ const Report = () => {
                 $hasReport={!!reportExistsMap[day]}
                 onClick={() => handleDateClick(day)}
               >
-                <DayCircle $isSelected={isSelected} $isSunday={isSunday}>
+                <DayCircle $isToday={isToday} $isSunday={isSunday}>
                   {day}
                 </DayCircle>
               </DayCell>
@@ -215,19 +220,20 @@ const Report = () => {
 
         <ReportList>
           {reportsToDisplay.map((report) => (
-            <ReportButton
-              key={report.weekNumber}
-              type="button"
-              onClick={() => navigate(`/report/${report.reportId}`)}
-            >
-              {weekNames[report.weekNumber] || `${report.weekNumber}주차`} 주간
-              리포트
+            <ReportButton key={report.weekNumber} type="button" onClick={() => navigate(`/report/${report.reportId}`)}>
+              {weekNames[report.weekNumber] || `${report.weekNumber}주차`} 주간 리포트
             </ReportButton>
           ))}
         </ReportList>
       </Content>
 
       <NavigationBar />
+
+      <NoReportModal
+        isOpen={!!noReportModalVariant}
+        variant={noReportModalVariant || 'past'}
+        onClose={() => setNoReportModalVariant(null)}
+      />
     </Container>
   );
 };
@@ -238,7 +244,6 @@ const Container = styled.div`
   max-width: 430px;
   height: 100dvh;
   margin: 0 0 73px 0;
-  background-color: #FFFFFF;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -251,8 +256,8 @@ const Content = styled.main`
 `;
 
 const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   margin-bottom: 24px;
 `;
@@ -262,6 +267,20 @@ const HeaderTitle = styled.h2`
   font-weight: 500;
   color: #000000;
   margin: 0;
+`;
+
+const NavGroup = styled.div`
+  display: flex;
+  align-items: center;
+  justify-self: ${(props) => (props.$align === 'end' ? 'end' : 'start')};
+  gap: 8px;
+  visibility: ${(props) => (props.$hidden ? 'hidden' : 'visible')};
+  pointer-events: ${(props) => (props.$hidden ? 'none' : 'auto')};
+`;
+
+const NavMonthLabel = styled.span`
+  font-size: 12px;
+  color: #737373;
 `;
 
 const NavButton = styled.button`
@@ -275,14 +294,9 @@ const NavButton = styled.button`
 `;
 
 const NavIcon = styled.img`
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   object-fit: contain;
-`;
-
-const NavPlaceholder = styled.div`
-  width: 24px;
-  height: 24px;
 `;
 
 const WeekGrid = styled.div`
@@ -301,8 +315,9 @@ const WeekDay = styled.span`
 const CalendarGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  row-gap: 4px;
+  row-gap: 0px;
   text-align: center;
+  border-top: 1px solid #c9c9c9;
 `;
 
 const DayCell = styled.div`
@@ -337,9 +352,9 @@ const DayCircle = styled.div`
   justify-content: center;
   font-size: 12px;
   font-weight: 600;
-  background-color: ${(props) => (props.$isSelected ? '#63BF8E' : 'transparent')};
+  background-color: ${(props) => (props.$isToday ? '#63BF8E' : 'transparent')};
   color: ${(props) => {
-    if (props.$isSelected) return '#FFFFFF';
+    if (props.$isToday) return '#FFFFFF';
     if (props.$isSunday) return '#E85B4E';
     return '#333333';
   }};

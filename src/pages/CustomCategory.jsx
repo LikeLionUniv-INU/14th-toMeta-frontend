@@ -93,7 +93,6 @@ const Container = styled.div`
   max-width: 430px;
   min-height: 100dvh;
   margin: 0 auto;
-  background-color: #ffffff;
   position: relative;
   display: flex;
   flex-direction: column;

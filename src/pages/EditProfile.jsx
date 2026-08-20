@@ -245,7 +245,6 @@ function CustomSelect({
 const PageContainer = styled.div`
   margin: 0 auto;
   min-height: 100dvh;
-  background-color: #ffffff;
   padding-bottom: 26px;
   box-sizing: border-box;
   display: flex;
