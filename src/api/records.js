@@ -1,6 +1,6 @@
 import api from './axios';
 
-const USE_MOCK = true; // 실서버 연동 시 false로 변경
+const USE_MOCK = false; // 실서버 연동 시 false로 변경
 
 export const getPresignedUploadUrl = async (imageData) => {
   if (USE_MOCK) {

@@ -8,9 +8,7 @@ export const media = {
 
 // 2. 프로젝트 전체 리셋 및 웹앱 기본 스타일
 export const GlobalStyle = createGlobalStyle`
-  /* 1. 전체 기본 폰트 Wanted Sans 가변 폰트는 index.html의 <link>로 로드한다.
-     (styled-components가 주입하는 <style> 안에서 @import를 쓰면 브라우저 프리로더가
-     늦게 발견해서 렌더링이 지연되므로, 실무에서는 head의 link 태그로 로드하는 쪽을 쓴다.) */
+  /* 1. 전체 기본 폰트 Wanted Sans 가변 폰트는 index.html의 <link>로 로드 */
 
   /* 2. 엄마까투리체 등록 */
   @font-face {

@@ -1,6 +1,6 @@
 import api from './axios';
 
-const USE_MOCK = true; // 실서버 연동 시 false로 변경
+const USE_MOCK = false; // 실서버 연동 시 false로 변경
 
 /**
  * 홈 화면 조회
@@ -31,8 +31,7 @@ export const getHomeData = async () => {
             recordExists: true,
             reportAvailable: true,
             dailyReportId: 12,
-            summary:
-              '어제 수면 시간이 부족하고 피부 온도가 평균보다 높게 측정되었어요.',
+            summary: '어제 수면 시간이 부족하고 피부 온도가 평균보다 높게 측정되었어요.',
             actionGuide: '쿨링 진정 팩으로 어제 올라간 피부 온도 내려주기',
           },
           latestDailyReport: {

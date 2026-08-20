@@ -22,12 +22,13 @@ export default function SearchCosmetic() {
       const res = await searchCosmetics({ keyword: trimmed });
 
       if (res.data.isSuccess) {
-        const results = res.data.result || [];
+        const { searchId, items } = res.data.result || {};
 
-        if (res?.data?.isSuccess && results.length > 0) {
+        if (items && items.length > 0) {
           navigate('/register/search-result', {
             state: {
-              searchResults: results,
+              searchId,
+              searchResults: items,
               searchTerm: trimmed,
             },
           });
@@ -37,7 +38,7 @@ export default function SearchCosmetic() {
       }
     } catch (error) {
       console.error('검색 중 오류 발생:', error);
-      setIsModalOpen(true);
+      alert(error.message || '검색 중 오류가 발생했습니다. 다시 시도해 주세요.');
     } finally {
       setIsLoading(false);
     }
