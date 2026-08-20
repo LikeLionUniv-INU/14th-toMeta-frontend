@@ -11,8 +11,9 @@ export default defineConfig({
       // CORS 문제가 없고, Chrome이 localhost를 보안 컨텍스트로 취급해서
       // 백엔드가 내려주는 Secure 쿠키도 정상적으로 저장된다.
       '/api': {
-        target: 'http://1.201.116.41:8080',
+        target: 'https://tometa-server.duckdns.org',
         changeOrigin: true,
+        secure: false,
       },
     },
   },
