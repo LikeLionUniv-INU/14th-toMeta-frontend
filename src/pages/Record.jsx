@@ -68,6 +68,7 @@ export default function Record() {
     dateText: '',
     skinStatus: '',
     food: '',
+    memo: '',
     skinPhotos: [],
     morningSelections: [],
     nightSelections: [],
@@ -83,6 +84,7 @@ export default function Record() {
             dateText: formatDateText(result.date || targetDate),
             skinStatus: result.skinStatus || '',
             food: result.foodMemo || '',
+            memo: result.memo || '',
             skinPhotos: (result.images || []).map((img) => img.imageUrl),
             morningSelections: result.morningSelections || [],
             nightSelections: result.nightSelections || [],
@@ -132,6 +134,7 @@ export default function Record() {
   };
 
   const hasFood = !!(recordData.food && recordData.food.trim());
+  const hasMemo = !!(recordData.memo && recordData.memo.trim());
   const hasPhotos = !!(
     recordData.skinPhotos && recordData.skinPhotos.length > 0
   );
@@ -211,12 +214,19 @@ export default function Record() {
           </CardList>
         </CardListSection>
 
-        {(hasFood || hasPhotos) && (
+        {(hasFood || hasPhotos || hasMemo) && (
           <OptionalSection>
             {hasFood && (
               <OptionalGroup>
                 <SectionTitle>오늘 먹은 음식</SectionTitle>
                 <FoodCard>{recordData.food}</FoodCard>
+              </OptionalGroup>
+            )}
+
+            {hasMemo && (
+              <OptionalGroup>
+                <SectionTitle>특이사항</SectionTitle>
+                <FoodCard>{recordData.memo}</FoodCard>
               </OptionalGroup>
             )}
 

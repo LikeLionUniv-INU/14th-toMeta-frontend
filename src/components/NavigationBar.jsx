@@ -6,6 +6,7 @@ import storageIcon from '../assets/images/navigationbar/storage.svg';
 import homeIcon from '../assets/images/navigationbar/home.svg';
 import reportIcon from '../assets/images/navigationbar/report.svg';
 import myIcon from '../assets/images/navigationbar/my.svg';
+import { media } from '../styles/GlobalStyle';
 
 export default function NavigationBar() {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ const NavContainer = styled.nav`
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 73px;
+  height: 60px;
   background-color: #ffffff;
   display: flex;
   justify-content: space-around;
@@ -58,6 +59,10 @@ const NavContainer = styled.nav`
   box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.05);
   z-index: 1000;
   box-sizing: border-box;
+
+  @media ${media.mobileM} {
+    height: 73px;
+  }
 `;
 
 const NavItem = styled.div`
@@ -72,12 +77,17 @@ const NavItem = styled.div`
 `;
 
 const Icon = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   transition: all 0.2s ease-in-out;
 
   &.active {
     filter: invert(15%) sepia(80%) saturate(1800%) hue-rotate(85deg) brightness(40%) contrast(120%);
+  }
+
+  @media ${media.mobileM} {
+    width: 24px;
+    height: 24px;
   }
 `;
 
