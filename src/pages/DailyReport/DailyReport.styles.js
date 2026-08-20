@@ -709,6 +709,8 @@ export const CollectingOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
+  max-width: 430px;
+  margin: 0 auto;
   background-color: rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
