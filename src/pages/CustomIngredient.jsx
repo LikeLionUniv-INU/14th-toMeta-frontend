@@ -18,7 +18,7 @@ export default function CustomIngredient() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 완료 버튼 활성화 로직
-  const isValid = ingredients.length >= 1 && ingredients.length <= 5;
+  const isValid = ingredients.length >= 1 && ingredients.length <= 3;
 
   // 성분 추가 로직
   const handleAddIngredient = (e) => {
@@ -30,9 +30,9 @@ export default function CustomIngredient() {
 
       if (!trimmed) return;
 
-      // 1. 이미 5개가 다 찬 상태에서 또 엔터를 누른 경우
-      if (ingredients.length >= 5) {
-        alert('주요 성분은 최대 5개까지 입력할 수 있습니다.');
+      // 1. 이미 3개가 다 찬 상태에서 또 엔터를 누른 경우
+      if (ingredients.length >= 3) {
+        alert('주요 성분은 최대 3개까지 입력할 수 있습니다.');
         setInputIngredient('');
         return;
       }
@@ -103,15 +103,15 @@ export default function CustomIngredient() {
         </MainTitle>
 
         <SubDescription>
-          주요 성분을 최소 1개, 최대 5개까지 입력해 주세요!
+          주요 성분을 최소 1개, 최대 3개까지 입력해 주세요!
         </SubDescription>
 
         <InputWrapper>
           <StyledInput
             type="text"
             placeholder={
-              ingredients.length >= 5
-                ? '5개가 전부 입력되었어요.'
+              ingredients.length >= 3
+                ? '3개가 전부 입력되었어요.'
                 : '성분명을 입력 후 엔터를 눌러주세요.'
             }
             value={inputIngredient}

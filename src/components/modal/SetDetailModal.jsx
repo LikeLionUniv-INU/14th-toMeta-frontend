@@ -51,7 +51,7 @@ const DetailModalContainer = styled.div`
   max-height: 85dvh;
   background-color: #ffffff;
   border-radius: 20px 20px 0 0;
-  padding: 30px 0 20px 0;
+  padding: 30px 0 calc(20px + env(safe-area-inset-bottom)) 0;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
