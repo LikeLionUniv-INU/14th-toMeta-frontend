@@ -5,7 +5,6 @@ export const Container = styled.div`
   max-width: 430px;
   height: 100dvh;
   margin: 0 auto;
-  background-color: #ffffff;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -196,10 +195,14 @@ export const TipContainer = styled.div`
 `;
 
 export const AvatarImage = styled.img`
-  width: 90px;
+  width: 75px;
   height: auto;
   flex-shrink: 0;
   transform: scaleX(-1);
+
+  @media ${media.mobileM} {
+    width: 90px;
+  }
 `;
 
 export const TipBubble = styled.div`

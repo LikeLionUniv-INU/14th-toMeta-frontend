@@ -88,7 +88,6 @@ export const Container = styled.div`
   flex-direction: column;
   justify-content: space-between;
   height: 100dvh;
-  background-color: #ffffff;
   box-sizing: border-box;
   padding: 26px 17px;
 

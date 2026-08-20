@@ -9,7 +9,6 @@ export const Wrapper = styled.div`
   width: 100%;
   padding: 0;
   position: relative;
-  background-color: #fbfcff;
 `;
 
 export const Container = styled.div`

@@ -254,7 +254,6 @@ export default function Record() {
 const Container = styled.div`
   min-height: 100dvh;
   margin: 0 auto;
-  background-color: #ffffff;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;

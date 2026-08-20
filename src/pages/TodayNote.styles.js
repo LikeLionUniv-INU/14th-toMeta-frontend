@@ -3,7 +3,6 @@ import { media } from '../styles/GlobalStyle';
 
 export const Container = styled.div`
   margin: 0 auto;
-  background-color: #ffffff;
   min-height: 100dvh;
 `;
 

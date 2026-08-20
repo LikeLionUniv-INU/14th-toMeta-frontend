@@ -192,7 +192,6 @@ const Container = styled.div`
   justify-content: space-between;
   min-height: 100%;
   padding: 30px 20px;
-  background-color: #ffffff;
   box-sizing: border-box;
   position: relative;
 `;

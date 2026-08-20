@@ -74,7 +74,6 @@ const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
 `;
 
 const LoadingText = styled.div`
