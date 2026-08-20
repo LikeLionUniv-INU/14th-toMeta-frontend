@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { SprayCan } from 'lucide-react';
 import Header from '../components/Header';
 import Button from '../components/Button';
+import Appticon from '../assets/images/appticon.png';
 import { media } from '../styles/GlobalStyle';
 import { registerCosmeticFromSearch } from '../api';
 
@@ -22,9 +23,7 @@ export default function SearchResult() {
   const searchResults = location.state?.searchResults || [];
   const searchId = location.state?.searchId;
 
-  const [selectedListId, setSelectedListId] = useState(
-    searchResults.length === 1 ? searchResults[0].itemId : null,
-  );
+  const [selectedListId, setSelectedListId] = useState(searchResults.length === 1 ? searchResults[0].itemId : null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // [확인] 버튼 클릭 시 모달 없이 즉시 백엔드 등록 API 호출
@@ -32,8 +31,7 @@ export default function SearchResult() {
     if (isSubmitting) return;
 
     // 결과가 여러 개인데 아무것도 선택 안 한 경우 방어
-    const targetId =
-      searchResults.length === 1 ? searchResults[0].itemId : selectedListId;
+    const targetId = searchResults.length === 1 ? searchResults[0].itemId : selectedListId;
 
     if (!targetId) {
       alert('사용 중인 제품을 선택해 주세요.');
@@ -55,9 +53,7 @@ export default function SearchResult() {
       }
     } catch (error) {
       console.error('검색 화장품 등록 실패:', error);
-      alert(
-        error.message || '등록 중 오류가 발생했습니다. 다시 시도해 주세요.',
-      );
+      alert(error.message || '등록 중 오류가 발생했습니다. 다시 시도해 주세요.');
     } finally {
       setIsSubmitting(false);
     }
@@ -107,19 +103,13 @@ export default function SearchResult() {
               {searchResults.map((item) => {
                 const isChecked = selectedListId === item.itemId;
                 return (
-                  <ListItem
-                    key={item.itemId}
-                    $isSelected={isChecked}
-                    onClick={() => setSelectedListId(item.itemId)}
-                  >
-                    <RadioButton $isChecked={isChecked}>
-                      {isChecked && <RadioInnerCircle />}
-                    </RadioButton>
+                  <ListItem key={item.itemId} $isSelected={isChecked} onClick={() => setSelectedListId(item.itemId)}>
+                    <RadioButton $isChecked={isChecked}>{isChecked && <RadioInnerCircle />}</RadioButton>
                     <SmallImagePlaceholder $isSelected={isChecked}>
                       {item.imageUrl ? (
                         <img src={item.imageUrl} alt={item.productName} />
                       ) : (
-                        <SprayCan size={30} strokeWidth={1.5} color="#828282" />
+                        <img src={Appticon} size={30} strokeWidth={1.5} />
                       )}
                     </SmallImagePlaceholder>
                     <ListItemName>{item.productName}</ListItemName>
@@ -132,12 +122,7 @@ export default function SearchResult() {
 
         {/* 하단 버튼 영역 */}
         <ButtonWrapper>
-          <Button
-            onClick={handleConfirmClick}
-            disabled={
-              (searchResults.length > 1 && !selectedListId) || isSubmitting
-            }
-          >
+          <Button onClick={handleConfirmClick} disabled={(searchResults.length > 1 && !selectedListId) || isSubmitting}>
             {isSubmitting ? '등록 중...' : '확인'}
           </Button>
           <ButtonGroup>

@@ -41,11 +41,7 @@ export default function MyPage() {
     const fetchMyPageData = async () => {
       try {
         const response = await getMyPageData();
-        const {
-          nickname: fetchedNickname,
-          healthConnectLinked,
-          notificationSettings,
-        } = response.data.result;
+        const { nickname: fetchedNickname, healthConnectLinked, notificationSettings } = response.data.result;
 
         setNickname(fetchedNickname);
         setIsHealthConnected(healthConnectLinked);
@@ -117,8 +113,7 @@ export default function MyPage() {
     const payload = {
       dailyReportEnabled: toggle.daily,
       recordReminderEnabled: toggle.record,
-      recordReminderTime:
-        targetReport === 'record' ? formatted24 : times.record,
+      recordReminderTime: targetReport === 'record' ? formatted24 : times.record,
       weeklyReportEnabled: toggle.weekly,
       weeklyReportTime: targetReport === 'weekly' ? formatted24 : times.weekly,
     };
@@ -169,19 +164,14 @@ export default function MyPage() {
       <ContentSection>
         <FlexRow>
           <SectionTitle>Health Connect 연동</SectionTitle>
-          <Badge $isConnected={isHealthConnected}>
-            {isHealthConnected ? '연동됨' : '미연동'}
-          </Badge>
+          <Badge $isConnected={isHealthConnected}>{isHealthConnected ? '연동됨' : '미연동'}</Badge>
         </FlexRow>
 
         <SectionTitle>앱 푸시 알림</SectionTitle>
         <NotificationList>
           <NotificationItem>
             <ItemText>일간 리포트 발행</ItemText>
-            <ToggleWrapper
-              onClick={() => handleToggle('daily')}
-              $isActive={toggle.daily}
-            >
+            <ToggleWrapper onClick={() => handleToggle('daily')} $isActive={toggle.daily}>
               <ToggleCircle $isActive={toggle.daily} />
             </ToggleWrapper>
           </NotificationItem>
@@ -189,13 +179,8 @@ export default function MyPage() {
           <NotificationItem>
             <ItemText>기록 작성</ItemText>
             <RightControls>
-              <TimeText onClick={() => handleOpenTimeModal('record')}>
-                {formatDisplayTime(times.record)}
-              </TimeText>
-              <ToggleWrapper
-                onClick={() => handleToggle('record')}
-                $isActive={toggle.record}
-              >
+              <TimeText onClick={() => handleOpenTimeModal('record')}>{formatDisplayTime(times.record)}</TimeText>
+              <ToggleWrapper onClick={() => handleToggle('record')} $isActive={toggle.record}>
                 <ToggleCircle $isActive={toggle.record} />
               </ToggleWrapper>
             </RightControls>
@@ -204,13 +189,8 @@ export default function MyPage() {
           <NotificationItem>
             <ItemText>주간 리포트 발행</ItemText>
             <RightControls>
-              <TimeText onClick={() => handleOpenTimeModal('weekly')}>
-                {formatDisplayTime(times.weekly)}
-              </TimeText>
-              <ToggleWrapper
-                onClick={() => handleToggle('weekly')}
-                $isActive={toggle.weekly}
-              >
+              <TimeText onClick={() => handleOpenTimeModal('weekly')}>{formatDisplayTime(times.weekly)}</TimeText>
+              <ToggleWrapper onClick={() => handleToggle('weekly')} $isActive={toggle.weekly}>
                 <ToggleCircle $isActive={toggle.weekly} />
               </ToggleWrapper>
             </RightControls>
@@ -221,18 +201,10 @@ export default function MyPage() {
       {isModalOpen && (
         <ModalOverlay onClick={() => setIsModalOpen(false)}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
-            <ModalTitle>
-              {targetReport === 'record' ? '기록 작성' : '주간 리포트'} 알림
-              시간 설정
-            </ModalTitle>
+            <ModalTitle>{targetReport === 'record' ? '기록 작성' : '주간 리포트'} 알림 시간 설정</ModalTitle>
 
             <PickerWrapper>
-              <Picker
-                value={pickerValue}
-                onChange={setPickerValue}
-                itemHeight={44}
-                height={176}
-              >
+              <Picker value={pickerValue} onChange={setPickerValue} itemHeight={44} height={176}>
                 {Object.keys(PICKER_OPTIONS).map((name) => (
                   <Picker.Column key={name} name={name}>
                     {PICKER_OPTIONS[name].map((option) => (
@@ -246,15 +218,10 @@ export default function MyPage() {
               <HighlightBox />
             </PickerWrapper>
 
-            <NoticeText>
-              설정한 시간에 맞추어 리포트 알림을 보내드려요.
-            </NoticeText>
+            <NoticeText>설정한 시간에 맞추어 리포트 알림을 보내드려요.</NoticeText>
 
             <ModalButtonGroup>
-              <ModalSubButton
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-              >
+              <ModalSubButton type="button" onClick={() => setIsModalOpen(false)}>
                 취소
               </ModalSubButton>
               <Button onClick={handleSaveTime}>확인 및 설정 완료</Button>
@@ -385,6 +352,7 @@ const Badge = styled.span`
   color: ${(props) => (props.$isConnected ? '#40C057' : '#FA5252')};
   padding: 3px 7px;
   border-radius: 4px;
+  border: 1px solid #d5d5d5;
   font-size: 12px;
   font-weight: 600;
 
