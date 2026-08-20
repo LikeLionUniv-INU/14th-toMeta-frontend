@@ -5,7 +5,6 @@ import NavigationBar from "../components/NavigationBar";
 import CosmeticCard from "../components/CosmeticCard";
 import Trash from "../assets/images/trash.png";
 import { media } from '../styles/GlobalStyle';
-import Portal from '../components/Portal';
 import useModalBackClose from '../hooks/useModalBackClose';
 import { getCosmeticOptions, getCosmeticSetDetail, updateCosmeticSet, deleteCosmeticSet } from "../api/cosmetics";
 
@@ -223,7 +222,6 @@ export default function Set() {
       </ContentWrapper>
 
       {isDeleteModalOpen && (
-        <Portal>
         <ModalOverlay onClick={closeDeleteModal}>
           <ModalContainer onClick={(e) => e.stopPropagation()}>
             <ModalTitle>이 세트를 삭제할까요?</ModalTitle>
@@ -240,11 +238,9 @@ export default function Set() {
             </ModalButtonGroup>
           </ModalContainer>
         </ModalOverlay>
-        </Portal>
       )}
 
       {isAddModalOpen && (
-        <Portal>
         <ModalOverlay onClick={closeAddModal}>
           <AddModalContainer onClick={(e) => e.stopPropagation()}>
             <AddModalHeader>
@@ -291,7 +287,6 @@ export default function Set() {
             </AddModalSubmitButton>
           </AddModalContainer>
         </ModalOverlay>
-        </Portal>
       )}
 
       <NavigationBar />
@@ -305,7 +300,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: 70px;
 `;
 
 const CustomHeader = styled.header`
@@ -545,8 +540,6 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  max-width: 430px;
-  margin: 0 auto;
   background-color: rgba(98, 98, 98, 0.3);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);

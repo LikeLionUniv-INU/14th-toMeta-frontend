@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import Portal from '../Portal';
 import { media } from '../../styles/GlobalStyle';
 
 const CONTENT = {
@@ -19,7 +18,6 @@ const NoReportModal = ({ isOpen, onClose, variant = 'past' }) => {
   const { title, desc } = CONTENT[variant];
 
   return (
-    <Portal>
     <AlertModalOverlay onClick={onClose}>
       <AlertModalCard onClick={(e) => e.stopPropagation()}>
         <AlertModalTitle>{title}</AlertModalTitle>
@@ -29,7 +27,6 @@ const NoReportModal = ({ isOpen, onClose, variant = 'past' }) => {
         </AlertModalButton>
       </AlertModalCard>
     </AlertModalOverlay>
-    </Portal>
   );
 };
 
@@ -41,8 +38,6 @@ const AlertModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  max-width: 430px;
-  margin: 0 auto;
   background-color: rgba(98, 98, 98, 0.3);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);

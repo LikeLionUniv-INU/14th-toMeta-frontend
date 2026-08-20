@@ -7,7 +7,6 @@ import NavigationBar from '../components/NavigationBar';
 import Button from '../components/Button';
 import { getMyPageData, updateNotificationSettings } from '../api/user';
 import { media } from '../styles/GlobalStyle';
-import Portal from '../components/Portal';
 import useModalBackClose from '../hooks/useModalBackClose';
 
 const PICKER_OPTIONS = {
@@ -202,7 +201,6 @@ export default function MyPage() {
       </ContentSection>
 
       {isModalOpen && (
-        <Portal>
         <ModalOverlay onClick={closeModal}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalTitle>{targetReport === 'record' ? '기록 작성' : '주간 리포트'} 알림 시간 설정</ModalTitle>
@@ -232,7 +230,6 @@ export default function MyPage() {
             </ModalButtonGroup>
           </ModalContent>
         </ModalOverlay>
-        </Portal>
       )}
 
       <NavigationBar />
@@ -243,7 +240,7 @@ export default function MyPage() {
 const PageContainer = styled.div`
   margin: 0 auto;
   height: 100dvh;
-  padding-bottom: calc(73px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: 73px;
   box-sizing: border-box;
   position: relative;
 `;
@@ -458,9 +455,7 @@ const ModalOverlay = styled.div`
   top: 0;
   left: 0;
   right: 0;
-  bottom: calc(73px + env(safe-area-inset-bottom, 0px));
-  max-width: 430px;
-  margin: 0 auto;
+  bottom: 73px;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: flex-end;

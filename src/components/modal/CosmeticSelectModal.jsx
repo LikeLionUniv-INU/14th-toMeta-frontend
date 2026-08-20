@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Button from '../Button';
 import CosmeticCard from '../CosmeticCard';
-import Portal from '../Portal';
 import { media } from '../../styles/GlobalStyle';
 
 const CosmeticSelectModal = ({
@@ -20,7 +19,6 @@ const CosmeticSelectModal = ({
   if (!isOpen) return null;
 
   return (
-    <Portal>
     <ModalOverlay onClick={onClose}>
       <ModalContainer onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
@@ -98,7 +96,6 @@ const CosmeticSelectModal = ({
         </ModalFooter>
       </ModalContainer>
     </ModalOverlay>
-    </Portal>
   );
 };
 
@@ -110,8 +107,6 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  max-width: 430px;
-  margin: 0 auto;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;

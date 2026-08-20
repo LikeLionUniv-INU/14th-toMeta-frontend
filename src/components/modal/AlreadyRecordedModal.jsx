@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import Portal from '../Portal';
 import { media } from '../../styles/GlobalStyle';
 
 const AlreadyRecordedModal = ({ isOpen, onClose }) => {
@@ -9,7 +8,6 @@ const AlreadyRecordedModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <Portal>
     <AlertModalOverlay onClick={onClose}>
       <AlertModalCard onClick={(e) => e.stopPropagation()}>
         <AlertModalTitle>
@@ -26,7 +24,6 @@ const AlreadyRecordedModal = ({ isOpen, onClose }) => {
         </AlertModalButton>
       </AlertModalCard>
     </AlertModalOverlay>
-    </Portal>
   );
 };
 
@@ -38,8 +35,6 @@ const AlertModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  max-width: 430px;
-  margin: 0 auto;
   background-color: rgba(98, 98, 98, 0.3);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
