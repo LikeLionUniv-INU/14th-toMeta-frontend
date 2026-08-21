@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 import Button from '../Button';
 import CosmeticCard from '../CosmeticCard';
+import Portal from '../Portal';
 
 const SetDetailModal = ({ setItem, onClose }) => {
   if (!setItem) return null;
 
   return (
+    <Portal>
     <DetailModalOverlay onClick={onClose}>
       <DetailModalContainer onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
@@ -28,6 +30,7 @@ const SetDetailModal = ({ setItem, onClose }) => {
         </ModalFooter>
       </DetailModalContainer>
     </DetailModalOverlay>
+    </Portal>
   );
 };
 
@@ -39,6 +42,8 @@ const DetailModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
+  max-width: 430px;
+  margin: 0 auto;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;

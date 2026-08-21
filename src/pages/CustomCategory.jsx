@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -86,7 +86,6 @@ export default function CustomCategory() {
   );
 }
 
-/*  Style Components  */
 
 const Container = styled.div`
   width: 100%;
@@ -187,10 +186,4 @@ const PrevButton = styled.button`
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-`;
-
-const NextButton = styled(PrevButton)`
-  background-color: ${(props) => (props.disabled ? '#b3b3b3' : '#63bf8e')};
-  color: ${(props) => (props.disabled ? '#fdfffd' : '#ffffff')};
-  border: none;
 `;

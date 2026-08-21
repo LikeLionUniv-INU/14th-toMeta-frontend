@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 import Button from '../components/Button';
 import { media } from '../styles/GlobalStyle';
 
-// 세션스토리지 암호화 / 복호화 유틸리티 함수
 export const saveEncryptedData = (key, data) => {
   try {
     const existingData = getDecryptedData(key) || {};
     const updatedData = { ...existingData, ...data };
 
-    // Base64 기반 인코딩 (추가 라이브러리 없이 브라우저 내장 함수 사용)
     const jsonString = JSON.stringify(updatedData);
     const encoded = btoa(encodeURIComponent(jsonString));
 
@@ -38,8 +36,8 @@ const NICKNAME_REGEX = /^[가-힣a-zA-Z0-9]{1,10}$/;
 
 export default function ProfileInput() {
   const [nickname, setNickname] = useState('');
-  const [gender, setGender] = useState(''); // 'male' | 'female'
-  const [ageGroup, setAgeGroup] = useState(''); // '10s' | '20s' | '30s' | '40s' | 'etc'
+  const [gender, setGender] = useState('');
+  const [ageGroup, setAgeGroup] = useState('');
   const navigate = useNavigate();
 
   const isValid =
@@ -57,7 +55,6 @@ export default function ProfileInput() {
   const handleNext = () => {
     if (!isValid) return;
 
-    // 세션스토리지에 전체 저장
     saveEncryptedData('onboarding_data', {
       nickname: nickname.trim(),
       gender,
@@ -162,8 +159,6 @@ export default function ProfileInput() {
     </Container>
   );
 }
-
-// Styled Components
 
 const Container = styled.div`
   display: flex;

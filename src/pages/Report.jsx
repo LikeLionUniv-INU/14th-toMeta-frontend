@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import NavigationBar from '../components/NavigationBar.jsx';
@@ -243,7 +243,7 @@ export default Report;
 const Container = styled.div`
   max-width: 430px;
   height: 100dvh;
-  margin: 0 0 73px 0;
+  margin: 0 0 calc(73px + env(safe-area-inset-bottom, 0px)) 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

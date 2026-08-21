@@ -1,6 +1,4 @@
-import React from 'react';
 
-// 1. 수면
 export const SleepIcon = ({ size = 20, color = '#1c1b1f' }) => (
   <svg
     width={size}
@@ -16,7 +14,6 @@ export const SleepIcon = ({ size = 20, color = '#1c1b1f' }) => (
   </svg>
 );
 
-// 2. 평균 피부온도
 export const TempIcon = ({ size = 24, color = '#1c1b1f' }) => (
   <svg
     width={size}
@@ -32,7 +29,6 @@ export const TempIcon = ({ size = 24, color = '#1c1b1f' }) => (
   </svg>
 );
 
-// 3. 운동
 export const ExerciseIcon = ({ size = 20, color = '#1c1b1f' }) => (
   <svg
     width={size}
@@ -51,7 +47,6 @@ export const ExerciseIcon = ({ size = 20, color = '#1c1b1f' }) => (
   </svg>
 );
 
-// 4. 칼로리 소모
 export const CalorieIcon = ({ size = 20, color = '#1c1b1f' }) => (
   <svg
     width={size}
@@ -68,7 +63,6 @@ export const CalorieIcon = ({ size = 20, color = '#1c1b1f' }) => (
   </svg>
 );
 
-// 5. 생리주기
 export const CycleIcon = ({ size = 20, color = '#1c1b1f' }) => (
   <svg
     width={size}
@@ -84,7 +78,6 @@ export const CycleIcon = ({ size = 20, color = '#1c1b1f' }) => (
   </svg>
 );
 
-// 6. 산소포화도
 export const OxygenIcon = ({ size = 24, color = '#1c1b1f' }) => (
   <svg
     width={size}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../components/Header';
@@ -18,18 +18,15 @@ export default function SearchResult() {
     setIsLandscape(naturalWidth >= naturalHeight);
   };
 
-  // SearchCosmetic에서 넘겨받은 실제 검색 결과 배열
   const searchResults = location.state?.searchResults || [];
   const searchId = location.state?.searchId;
 
   const [selectedListId, setSelectedListId] = useState(searchResults.length === 1 ? searchResults[0].itemId : null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // [확인] 버튼 클릭 시 모달 없이 즉시 백엔드 등록 API 호출
   const handleConfirmClick = async () => {
     if (isSubmitting) return;
 
-    // 결과가 여러 개인데 아무것도 선택 안 한 경우 방어
     const targetId = searchResults.length === 1 ? searchResults[0].itemId : selectedListId;
 
     if (!targetId) {
@@ -71,7 +68,6 @@ export default function SearchResult() {
       <Header title="검색 결과" variant="back" />
       <Content>
         {searchResults.length === 1 ? (
-          /* 검색 결과가 하나일 경우 */
           <>
             <MainTitle>이 제품이 맞으신가요?</MainTitle>
             <SingleProductCard>
@@ -91,7 +87,6 @@ export default function SearchResult() {
             </SingleProductCard>
           </>
         ) : (
-          /* 검색 결과가 여러 건일 경우 */
           <>
             <MainTitle $alignLeft>
               이 중 어떤 제품을
@@ -122,7 +117,6 @@ export default function SearchResult() {
           </>
         )}
 
-        {/* 하단 버튼 영역 */}
         <ButtonWrapper>
           <Button onClick={handleConfirmClick} disabled={(searchResults.length > 1 && !selectedListId) || isSubmitting}>
             {isSubmitting ? '등록 중...' : '확인'}
@@ -141,7 +135,6 @@ export default function SearchResult() {
   );
 }
 
-/* Style Components */
 const Container = styled.div`
   width: 100%;
   max-width: 430px;

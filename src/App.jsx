@@ -1,5 +1,3 @@
-import React from 'react';
-import styled from 'styled-components';
 import { GlobalStyle } from './styles/GlobalStyle';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -66,7 +64,6 @@ function App() {
             element={<CustomIngredient />}
           />
           <Route path="/report" element={<Report />} />
-          {/* 리포트 페이지 라우트 */}
           <Route path="/report/daily" element={<DailyReport />} />
           <Route path="/report/daily/:date" element={<DailyReport />} />
           <Route path="/report/weekly/:reportId" element={<WeeklyReport />} />

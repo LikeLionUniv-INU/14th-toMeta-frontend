@@ -1,8 +1,3 @@
-// 피부 상태 5단계(very_bad~very_good)에 어울리는 심플한 표정 아이콘.
-// WeeklyStatusCard의 원 안에 들어가는 콘텐츠로 사용한다.
-
-import React from 'react';
-
 const FACES = {
   very_bad: {
     mouth: 'M6.5 18.5 Q12 12 17.5 18.5',

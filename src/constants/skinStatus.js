@@ -1,4 +1,3 @@
-// 피부 상태 5단계 컬러칩 (주간 리포트 / 홈 화면 공용)
 export const SKIN_STATUS_COLORS = {
   very_bad: '#ff5900',
   bad: '#ff8237',

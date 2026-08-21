@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import NavigationBar from "../components/NavigationBar";
 import CosmeticCard from "../components/CosmeticCard";
 import Trash from "../assets/images/trash.png";
 import { media } from '../styles/GlobalStyle';
+import Portal from '../components/Portal';
 import useModalBackClose from '../hooks/useModalBackClose';
 import { getCosmeticOptions, getCosmeticSetDetail, updateCosmeticSet, deleteCosmeticSet } from "../api/cosmetics";
 
@@ -222,6 +223,7 @@ export default function Set() {
       </ContentWrapper>
 
       {isDeleteModalOpen && (
+        <Portal>
         <ModalOverlay onClick={closeDeleteModal}>
           <ModalContainer onClick={(e) => e.stopPropagation()}>
             <ModalTitle>이 세트를 삭제할까요?</ModalTitle>
@@ -238,9 +240,11 @@ export default function Set() {
             </ModalButtonGroup>
           </ModalContainer>
         </ModalOverlay>
+        </Portal>
       )}
 
       {isAddModalOpen && (
+        <Portal>
         <ModalOverlay onClick={closeAddModal}>
           <AddModalContainer onClick={(e) => e.stopPropagation()}>
             <AddModalHeader>
@@ -287,6 +291,7 @@ export default function Set() {
             </AddModalSubmitButton>
           </AddModalContainer>
         </ModalOverlay>
+        </Portal>
       )}
 
       <NavigationBar />
@@ -300,7 +305,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding-bottom: 70px;
+  padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
 `;
 
 const CustomHeader = styled.header`
@@ -390,40 +395,6 @@ const SubHeaderMessage = styled.p`
 const ContentWrapper = styled.div`
   width: 100%;
   flex: 1;
-`;
-
-const TabGroup = styled.div`
-  display: flex;
-  border-bottom: 2px solid #eee;
-  margin-top: 8px;
-`;
-
-const DisabledTabButton = styled.div`
-  flex: 1;
-  padding: 12px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-
-  font-size: 14px;
-  font-weight: 700;
-  color: ${(props) => (props.$active ? "#266210" : "gray")};
-  border-bottom: ${(props) => (props.$active ? "2px solid #266210" : "none")};
-  margin-bottom: -2px;
-
-  cursor: default;
-  pointer-events: none;
-
-  img {
-    width: 18px;
-    height: 18px;
-
-    filter: ${(props) =>
-    props.$active
-      ? "brightness(0) saturate(100%) invert(29%) sepia(85%) saturate(750%) hue-rotate(72deg) brightness(88%) contrast(96%)"
-      : "brightness(0) saturate(100%) invert(50%) opacity(0.7)"};
-  }
 `;
 
 const MainContent = styled.div`
@@ -540,6 +511,8 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
+  max-width: 430px;
+  margin: 0 auto;
   background-color: rgba(98, 98, 98, 0.3);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);

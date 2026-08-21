@@ -2,9 +2,6 @@ import api from './axios';
 
 const USE_MOCK = false; // 실서버 연동 시 false로 변경
 
-/**
- * 데일리 리포트 조회
- */
 export const getDailyReport = async (date) => {
   if (USE_MOCK) {
     return {
@@ -36,9 +33,6 @@ export const getDailyReport = async (date) => {
   return api.get(`/api/reports/daily/${date}`);
 };
 
-/**
- * 데일리 리포트 Note 수정
- */
 export const updateDailyReportNote = async (date, noteData) => {
   if (USE_MOCK) {
     return { data: { isSuccess: true, result: null } };
@@ -46,9 +40,6 @@ export const updateDailyReportNote = async (date, noteData) => {
   return api.patch(`/api/reports/daily/${date}/note`, noteData);
 };
 
-/**
- * 월간 리포트 목록 조회
- */
 export const getMonthlyReports = async (params) => {
   if (USE_MOCK) {
     const year = params?.year || 2026;
@@ -99,9 +90,6 @@ export const getMonthlyReports = async (params) => {
   return api.get('/api/reports', { params });
 };
 
-/**
- * 주간 리포트 상세 조회 (와이어프레임 및 명세서 완벽 반영 Mock)
- */
 export const getWeeklyReportDetail = async (reportId) => {
   if (USE_MOCK) {
     return {
@@ -115,7 +103,6 @@ export const getWeeklyReportDetail = async (reportId) => {
           startDate: '2026-07-27',
           endDate: '2026-08-02',
 
-          // 1. 상태 (월~일)
           skinStatus: [
             { date: '2026-07-27', value: 'very_bad' },
             { date: '2026-07-28', value: 'bad' },
@@ -126,7 +113,6 @@ export const getWeeklyReportDetail = async (reportId) => {
             { date: '2026-08-02', value: 'good' },
           ],
 
-          // 2. 수면 (월~일)
           sleepSession: [
             {
               date: '2026-07-27',
@@ -191,7 +177,6 @@ export const getWeeklyReportDetail = async (reportId) => {
             },
           ],
 
-          // 3. 평균 피부온도
           skinTemperature: [
             { date: '2026-07-27', value: 30.0 }, // 월
             { date: '2026-07-28', value: 33.8 }, // 화
@@ -202,7 +187,6 @@ export const getWeeklyReportDetail = async (reportId) => {
             { date: '2026-08-02', value: 32.0 }, // 일
           ],
 
-          // 4. 운동 시간
           exerciseDuration: [
             { date: '2026-07-27', value: '45' },
             { date: '2026-07-28', value: null },
@@ -213,7 +197,6 @@ export const getWeeklyReportDetail = async (reportId) => {
             { date: '2026-08-02', value: null },
           ],
 
-          // 5. 운동 소모 칼로리
           totalCaloriesBurned: [
             { date: '2026-07-27', value: '66' },
             { date: '2026-07-28', value: null },
@@ -224,7 +207,6 @@ export const getWeeklyReportDetail = async (reportId) => {
             { date: '2026-08-02', value: '421' },
           ],
 
-          // 6. 생리주기
           menstrualCycle: [
             { date: '2026-07-27', menstrualCycleDay: '14', cycleLength: '28' },
             { date: '2026-07-28', menstrualCycleDay: '15', cycleLength: '28' },
@@ -235,7 +217,6 @@ export const getWeeklyReportDetail = async (reportId) => {
             { date: '2026-08-02', menstrualCycleDay: '20', cycleLength: '28' },
           ],
 
-          // 7. 평균 산소포화도
           avgSpo2: [
             { date: '2026-07-27', value: '97.5' },
             { date: '2026-07-28', value: null },
@@ -246,7 +227,6 @@ export const getWeeklyReportDetail = async (reportId) => {
             { date: '2026-08-02', value: '98.2' },
           ],
 
-          // 8. 사진 모아보기
           photos: [
             {
               date: '2026-07-27',
@@ -262,7 +242,6 @@ export const getWeeklyReportDetail = async (reportId) => {
             },
           ],
 
-          // 9. 요약 & AI 분석
           weeklySummary: '전반적으로 붉은기와 열감이 많이 감소한 한 주였어요!',
           aiAnalysis: [
             '이번 주는 전반적으로 붉은기와 열감이 많이 감소한 한 주였어요!',
@@ -271,7 +250,6 @@ export const getWeeklyReportDetail = async (reportId) => {
             '이번 주는 지난주보다 수분 섭취량이 늘어났어요! 이러한 수분 보충이 피부결 진정과 유지에 긍정적인 도움이 되었을 것으로 기대돼요. 💧',
           ],
 
-          // 10. 맞춤 솔루션 & 메모
           personalizedSolution:
             '이번 주는 취침 시간이 불규칙했어요. 다음 주에는 ‘주 3회 이상 밤 12시 전 눕기’를 목표로 수면 리듬을 맞춰보는 건 어떨까요?',
           note: '',
@@ -282,9 +260,6 @@ export const getWeeklyReportDetail = async (reportId) => {
   return api.get(`/api/reports/weekly/${reportId}`);
 };
 
-/**
- * 주간 리포트 Note 수정
- */
 export const updateWeeklyReportNote = async (reportId, noteData) => {
   if (USE_MOCK) {
     if (noteData.note && noteData.note.length > 300) {

@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Picker from 'react-mobile-picker';
 import Button from '../components/Button';
 import { media } from '../styles/GlobalStyle';
 import Bell from '../assets/images/bell.svg';
+import Portal from '../components/Portal';
 import useModalBackClose from '../hooks/useModalBackClose';
 
 import { updateMyProfile, createNotificationSettings } from '../api';
 
-// 세션스토리지 복호화 유틸리티 함수
 export const getDecryptedData = (key) => {
   try {
     const encoded = sessionStorage.getItem(key);
@@ -22,7 +22,6 @@ export const getDecryptedData = (key) => {
   }
 };
 
-// 24시간제 모달
 const PICKER_OPTIONS = {
   hour: Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0')),
   minute: Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0')),
@@ -67,7 +66,6 @@ export default function NotificationPermission() {
   const [isLoading, setIsLoading] = useState(false);
   const closeModal = useModalBackClose(isModalOpen, () => setIsModalOpen(false));
 
-  // 모달 기본 시간 설정 22:30
   const [pickerValue, setPickerValue] = useState({
     hour: '22',
     minute: '30',
@@ -88,7 +86,6 @@ export default function NotificationPermission() {
     try {
       setIsLoading(true);
 
-      // 0. 네이티브 푸시 알림 권한 요청 (거부/타임아웃이어도 온보딩은 계속 진행)
       if (allowNotification) {
         const pushResult = await requestPushPermission();
         if (pushResult !== 'granted') {
@@ -98,7 +95,6 @@ export default function NotificationPermission() {
 
       const onboardingData = getDecryptedData('onboarding_data') || {};
 
-      // 1. 프로필 데이터 전송 (PATCH /api/users/me/profile)
       const profilePayload = {
         nickname: onboardingData.nickname,
         gender: onboardingData.gender,
@@ -113,25 +109,23 @@ export default function NotificationPermission() {
         );
       }
 
-      // 2. 알림 설정 페이로드 구성 (HH:mm 포맷)
       const selectedTime = `${pickerValue.hour}:${pickerValue.minute}`;
       const notificationPayload = allowNotification
         ? {
-            dailyReportEnabled: true,
-            recordReminderEnabled: true,
-            recordReminderTime: selectedTime,
-            weeklyReportEnabled: true,
-            weeklyReportTime: selectedTime,
-          }
+          dailyReportEnabled: true,
+          recordReminderEnabled: true,
+          recordReminderTime: selectedTime,
+          weeklyReportEnabled: true,
+          weeklyReportTime: selectedTime,
+        }
         : {
-            dailyReportEnabled: false,
-            recordReminderEnabled: false,
-            recordReminderTime: null,
-            weeklyReportEnabled: false,
-            weeklyReportTime: null,
-          };
+          dailyReportEnabled: false,
+          recordReminderEnabled: false,
+          recordReminderTime: null,
+          weeklyReportEnabled: false,
+          weeklyReportTime: null,
+        };
 
-      // 3. 알림 설정 등록 호출 (POST /api/users/me/notification-settings)
       const notificationRes =
         await createNotificationSettings(notificationPayload);
       if (!notificationRes.data.isSuccess) {
@@ -140,7 +134,6 @@ export default function NotificationPermission() {
         );
       }
 
-      // 4. 모든 등록 완료 시 세션스토리지 비우고 홈으로 이동
       sessionStorage.removeItem('onboarding_data');
       navigate('/home', { replace: true });
     } catch (error) {
@@ -180,50 +173,50 @@ export default function NotificationPermission() {
       </ButtonGroup>
 
       {isModalOpen && (
-        <ModalOverlay onClick={closeModal}>
-          <ModalContent onClick={(e) => e.stopPropagation()}>
-            <ModalTitle>매일 몇 시에 알림을 드릴까요?</ModalTitle>
+        <Portal>
+          <ModalOverlay onClick={closeModal}>
+            <ModalContent onClick={(e) => e.stopPropagation()}>
+              <ModalTitle>매일 몇 시에 알림을 드릴까요?</ModalTitle>
 
-            <PickerWrapper>
-              <Picker
-                value={pickerValue}
-                onChange={setPickerValue}
-                itemHeight={44}
-                height={176}
-              >
-                {Object.keys(PICKER_OPTIONS).map((name) => (
-                  <Picker.Column key={name} name={name}>
-                    {PICKER_OPTIONS[name].map((option) => (
-                      <Picker.Item key={option} value={option}>
-                        {option}
-                      </Picker.Item>
-                    ))}
-                  </Picker.Column>
-                ))}
-              </Picker>
-              <HighlightBox />
-            </PickerWrapper>
+              <PickerWrapper>
+                <Picker
+                  value={pickerValue}
+                  onChange={setPickerValue}
+                  itemHeight={44}
+                  height={176}
+                >
+                  {Object.keys(PICKER_OPTIONS).map((name) => (
+                    <Picker.Column key={name} name={name}>
+                      {PICKER_OPTIONS[name].map((option) => (
+                        <Picker.Item key={option} value={option}>
+                          {option}
+                        </Picker.Item>
+                      ))}
+                    </Picker.Column>
+                  ))}
+                </Picker>
+                <HighlightBox />
+              </PickerWrapper>
 
-            <NoticeText>
-              알림 시간은 마이 페이지에서 수정이 가능해요.
-            </NoticeText>
+              <NoticeText>
+                알림 시간은 마이 페이지에서 수정이 가능해요.
+              </NoticeText>
 
-            <ModalButtonGroup>
-              <ModalSubButton type="button" onClick={closeModal}>
-                취소
-              </ModalSubButton>
-              <Button onClick={() => handleFinalSubmit(true)}>
-                확인 및 설정 완료
-              </Button>
-            </ModalButtonGroup>
-          </ModalContent>
-        </ModalOverlay>
+              <ModalButtonGroup>
+                <ModalSubButton type="button" onClick={closeModal}>
+                  취소
+                </ModalSubButton>
+                <Button onClick={() => handleFinalSubmit(true)}>
+                  확인 및 설정 완료
+                </Button>
+              </ModalButtonGroup>
+            </ModalContent>
+          </ModalOverlay>
+        </Portal>
       )}
     </Container>
   );
 }
-
-//Styled Components
 
 const Container = styled.div`
   display: flex;
@@ -317,13 +310,14 @@ const SubButton = styled.button`
   }
 `;
 
-/* 모달 스타일 컴포넌트*/
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+  max-width: 430px;
+  margin: 0 auto;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: flex-end;

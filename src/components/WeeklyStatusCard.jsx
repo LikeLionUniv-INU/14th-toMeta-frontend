@@ -1,17 +1,6 @@
-// 일주일치 상태를 요일별 원으로 보여주는 카드.
-// 원 안의 내용(color / children)만 바꿔서 다른 화면(홈 화면 등)에서도 재사용한다.
-// 사용 예시:
-// <WeeklyStatusCard
-//   title="8월 첫째 주"
-//   subtitle="이번 주 피부 상태를 확인해 보세요."
-//   days={[{ date: '2026-07-27', day: '월', color: '#ffd3ad' }, ...]}
-// />
-
-import React from 'react';
 import styled from 'styled-components';
 import { media } from '../styles/GlobalStyle';
 
-// hex 색을 흰색/검은색 쪽으로 amount(0~1)만큼 섞는다 (비네트 그라디언트용)
 const mixColor = (hex, target, amount) => {
   const c = hex.replace('#', '');
   const t = target.replace('#', '');
@@ -25,7 +14,6 @@ const mixColor = (hex, target, amount) => {
   return `rgb(${mix(r1, r2)}, ${mix(g1, g2)}, ${mix(b1, b2)})`;
 };
 
-// 표정이 도드라져 보이도록 중앙은 밝게, 가장자리는 살짝 어둡게 (비네트)
 const getCircleBackground = (hex) => {
   if (!hex || hex === '#ffffff') return '#ffffff';
   const light = mixColor(hex, '#ffffff', 0.4);

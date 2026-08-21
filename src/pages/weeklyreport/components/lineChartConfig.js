@@ -1,4 +1,4 @@
-// 탭 이름 -> reportData 필드 및 세로축 설정 매핑
+
 export const LINE_CHART_CONFIG = {
   '평균 피부온도': {
     dataKey: 'skinTemperature',

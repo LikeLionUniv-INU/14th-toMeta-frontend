@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../components/Header';
+import Portal from '../components/Portal';
 import { media } from '../styles/GlobalStyle';
 import { searchCosmetics } from '../api';
 import useModalBackClose from '../hooks/useModalBackClose';
@@ -105,36 +106,36 @@ export default function SearchCosmetic() {
         </NoticeWrapper>
       </Content>
 
-      {/* 검색 결과 없음 모달 */}
       {isModalOpen && (
-        <Overlay onClick={closeModal}>
-          <ModalContainer onClick={(e) => e.stopPropagation()}>
-            <ModalTitle>
-              검색 결과를
-              <br />
-              찾을 수 없어요
-            </ModalTitle>
+        <Portal>
+          <Overlay onClick={closeModal}>
+            <ModalContainer onClick={(e) => e.stopPropagation()}>
+              <ModalTitle>
+                검색 결과를
+                <br />
+                찾을 수 없어요
+              </ModalTitle>
 
-            <ModalDescription>
-              제품 전체 이름으로 다시 검색하거나,
-              <br />
-              원하는 제품이 없다면 직접 등록해 보세요!
-            </ModalDescription>
+              <ModalDescription>
+                제품 전체 이름으로 다시 검색하거나,
+                <br />
+                원하는 제품이 없다면 직접 등록해 보세요!
+              </ModalDescription>
 
-            <ButtonGroup>
-              <ModalButton $primary onClick={handleGoToCustom}>
-                직접 입력하기
-              </ModalButton>
-              <ModalButton onClick={handleRetrySearch}>다시 검색</ModalButton>
-            </ButtonGroup>
-          </ModalContainer>
-        </Overlay>
+              <ButtonGroup>
+                <ModalButton $primary onClick={handleGoToCustom}>
+                  직접 입력하기
+                </ModalButton>
+                <ModalButton onClick={handleRetrySearch}>다시 검색</ModalButton>
+              </ButtonGroup>
+            </ModalContainer>
+          </Overlay>
+        </Portal>
       )}
     </Container>
   );
 }
 
-/* Style Components */
 const Container = styled.div`
   width: 100%;
   max-width: 430px;
@@ -238,6 +239,8 @@ const Overlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
+  max-width: 430px;
+  margin: 0 auto;
   background-color: rgba(98, 98, 98, 0.3);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
