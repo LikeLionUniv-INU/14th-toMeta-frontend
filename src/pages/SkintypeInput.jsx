@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { media } from '../styles/GlobalStyle';
 import Button from '../components/Button';
 
-// 세션스토리지 암호화 / 복호화 유틸리티 함수
 export const saveEncryptedData = (key, data) => {
   try {
     const existingData = getDecryptedData(key) || {};
@@ -29,7 +28,6 @@ export const getDecryptedData = (key) => {
   }
 };
 
-// 피부 타입 데이터 배열
 const SKIN_TYPES = [
   { id: 'dry', title: '건성', desc: '당김이 자주 느껴지고\n건조한 피부' },
   { id: 'oily', title: '지성', desc: '번들거림과 유분기가\n많은 피부' },
@@ -113,8 +111,6 @@ export default function SkinTypeSelect() {
     </Container>
   );
 }
-
-// Styled Components
 
 const Container = styled.div`
   display: flex;

@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import Button from '../components/Button';
 import { media } from '../styles/GlobalStyle';
 
 export default function CustomName() {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [productName, setProductName] = useState('');
 
@@ -63,8 +61,6 @@ export default function CustomName() {
     </Container>
   );
 }
-
-/*  Style Components  */
 
 const Container = styled.div`
   width: 100%;

@@ -1,4 +1,3 @@
-import React from 'react';
 import * as S from './CyclePhaseCalendar.styles';
 import { DAY_LABELS } from './chartUtils';
 

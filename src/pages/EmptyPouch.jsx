@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import NavigationBar from '../components/NavigationBar';
 import Img from '../assets/images/dr-acne/surprised-dr.svg';
@@ -33,7 +32,7 @@ export default function EmptyPouch() {
 const Container = styled.div`
   margin: 26px 17px;
   height: 100dvh;
-  padding-bottom: 73px;
+  padding-bottom: calc(73px + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
   display: flex;
   flex-direction: column;

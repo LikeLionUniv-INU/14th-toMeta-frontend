@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { getDailyRecord } from '../api/records';
@@ -26,7 +26,7 @@ export default function RecordRedirect() {
         } else {
           navigate('/todaynote', { replace: true });
         }
-      } catch (error) {
+      } catch {
         navigate('/todaynote', { replace: true });
       }
     };

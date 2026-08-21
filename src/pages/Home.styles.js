@@ -14,7 +14,7 @@ export const Container = styled.div`
 export const Content = styled.main`
   flex: 1;
   min-height: 0;
-  padding: 20px 20px calc(73px + 12px);
+  padding: 20px 20px calc(73px + 12px + env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: column;
   justify-content: start;

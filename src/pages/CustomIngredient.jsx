@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import Button from '../components/Button';
 import { media } from '../styles/GlobalStyle';
 import { registerCosmeticManual } from '../api';
 
@@ -10,17 +9,14 @@ export default function CustomIngredient() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 이전 단계들에서 전달받은 데이터
   const prevData = location.state || {};
 
   const [inputIngredient, setInputIngredient] = useState('');
   const [ingredients, setIngredients] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 완료 버튼 활성화 로직
   const isValid = ingredients.length >= 1 && ingredients.length <= 3;
 
-  // 성분 추가 로직
   const handleAddIngredient = (e) => {
     if (e.nativeEvent.isComposing) return;
 
@@ -30,14 +26,12 @@ export default function CustomIngredient() {
 
       if (!trimmed) return;
 
-      // 1. 이미 3개가 다 찬 상태에서 또 엔터를 누른 경우
       if (ingredients.length >= 3) {
         alert('주요 성분은 최대 3개까지 입력할 수 있습니다.');
         setInputIngredient('');
         return;
       }
 
-      // 2. 중복이 아닌 경우 추가
       if (!ingredients.includes(trimmed)) {
         const nextList = [...ingredients, trimmed];
         setIngredients(nextList);
@@ -48,7 +42,6 @@ export default function CustomIngredient() {
     }
   };
 
-  // 성분 삭제 로직
   const handleRemoveIngredient = (target) => {
     setIngredients(ingredients.filter((item) => item !== target));
   };
@@ -57,7 +50,6 @@ export default function CustomIngredient() {
     navigate('/register/custom-category', { state: prevData });
   };
 
-  // [완료/다음] 버튼 클릭 -> 백엔드 API 전송
   const handleSubmit = async () => {
     if (!isValid || isSubmitting) return;
 
@@ -154,7 +146,6 @@ export default function CustomIngredient() {
   );
 }
 
-/* Style Components */
 
 const Container = styled.div`
   width: 100%;

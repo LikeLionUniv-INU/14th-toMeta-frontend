@@ -24,7 +24,6 @@ export const BgLayer = styled.div`
   transform-origin: center;
 `;
 
-// 핫스팟, 여박사 위치
 const HOTSPOT_LEFT = '76%';
 const HOTSPOT_TOP = '43%';
 const DR_CENTER_LEFT = '50%';
@@ -77,7 +76,6 @@ export const PopRing = styled.div`
   animation: ${popRing} 0.5s ease-out forwards;
 `;
 
-// 여 박사 등장 애니메이션
 const popInFromHotspot = keyframes`
   0% {
     left: ${HOTSPOT_LEFT};

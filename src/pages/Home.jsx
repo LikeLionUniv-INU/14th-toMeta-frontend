@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getHomeData } from '../api/home';
 import worriedDrImg from '../assets/images/dr-acne/worried-dr.svg';

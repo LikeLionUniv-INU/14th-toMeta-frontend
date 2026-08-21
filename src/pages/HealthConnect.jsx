@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
@@ -9,7 +9,6 @@ const HealthConnect = () => {
   const navigate = useNavigate();
   const [isRequesting, setIsRequesting] = useState(false);
 
-  // 이미 연결되어 있으면 권한 요청 단계를 건너뛴다
   useEffect(() => {
     const checkStatus = async () => {
       try {
@@ -25,11 +24,6 @@ const HealthConnect = () => {
     checkStatus();
   }, [navigate]);
 
-  // 네이티브(HealthConnectWebBridge)는 연결 등록 응답을 다음과 같은 JSON 문자열로 보낸다:
-  // { "type": "healthConnectConnection", "status": "granted" | "denied" | "unavailable"
-  //   | "busy" | "cancelled" | "session_missing" | "connection_failed", "connectionRegistered": boolean }
-  // POST /api/health-connect/connections 자체는 네이티브(HealthConnectRepository)가 직접 호출하므로
-  // 여기서는 결과만 받아서 화면 전환만 하면 된다.
   useEffect(() => {
     const bridge = window.ToMetaNative;
 
@@ -47,7 +41,6 @@ const HealthConnect = () => {
         const parsed = JSON.parse(rawData);
         status = parsed.status ?? rawData;
       } catch {
-        // rawData가 순수 문자열(푸시 권한 응답 등)이면 그대로 사용
       }
 
       switch (status) {

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getMyProfile } from '../../api/user';
 import { getDailyReport, updateDailyReportNote } from '../../api/reports';
 import * as S from './DailyReport.styles';
 import Header from '../../components/Header';
+import Portal from '../../components/Portal';
 import menstrualImg from '../../assets/images/menstrualcycle.png';
 import surprisedDr from '../../assets/images/dr-acne/surprised-dr.svg';
 
@@ -96,7 +97,6 @@ export default function DailyReport({ date }) {
     }
   };
 
-  // 날짜 변환 (예: 2026-08-04 -> 8월 4일 화요일)
   const formatDateTitle = (dateStr) => {
     if (!dateStr) return '';
     const [year, month, day] = dateStr.split('-').map(Number);
@@ -114,7 +114,6 @@ export default function DailyReport({ date }) {
     return `${month}월 ${day}일 ${dayOfWeek}`;
   };
 
-  // 수면 시간 변환 (분 -> 시간/분)
   const formatSleepTime = (minutes) => {
     if (!minutes && minutes !== 0) return { h: 0, m: 0 };
     const h = Math.floor(minutes / 60);
@@ -122,7 +121,6 @@ export default function DailyReport({ date }) {
     return { h, m };
   };
 
-  // 운동 시간 변환 (분 -> 시간/분)
   const formatExerciseTime = (minutes) => {
     if (!minutes && minutes !== 0) return { h: 0, m: 0 };
     const h = Math.floor(minutes / 60);
@@ -130,7 +128,6 @@ export default function DailyReport({ date }) {
     return { h, m };
   };
 
-  // 1. 산소포화도 상태 판정 함수
   const getOxygenStatus = (spo2) => {
     if (spo2 === undefined || spo2 === null)
       return { text: '측정안됨', status: 'normal' };
@@ -140,7 +137,6 @@ export default function DailyReport({ date }) {
     return { text: '위험', status: 'danger' };
   };
 
-  // 2. 피부온도 상태 판정 함수
   const getTempStatus = (temp) => {
     if (temp === undefined || temp === null)
       return { text: '측정안됨', status: 'normal' };
@@ -153,7 +149,6 @@ export default function DailyReport({ date }) {
   const getCyclePhaseInfo = (day) => {
     const currentDay = Number(day) || 1;
 
-    // 생리기간 별 각도 및 설명
     if (currentDay >= 1 && currentDay <= 5) {
       return {
         title: '*생리기란?',
@@ -202,7 +197,6 @@ export default function DailyReport({ date }) {
     );
   }
 
-  // 데이터 가공 및 상태 변수 정의
   const isCollecting =
     reportData?.status === 'collecting' || !reportData?.healthSummary;
   const health = reportData?.healthSummary || {};
@@ -212,13 +206,11 @@ export default function DailyReport({ date }) {
   const isFemale = userProfile?.gender === 'female';
   const nickname = userProfile?.nickname || '회원';
 
-  // 상태 판정 결과 변수
   const tempStatusInfo = getTempStatus(health?.skinTemperature);
   const cycleDay = health?.menstrualCycle?.menstrualCycleDay || 1;
   const cycleInfo = getCyclePhaseInfo(cycleDay);
   const oxygenStatusInfo = getOxygenStatus(health?.avgSpo2);
 
-  // 버튼 비활성화 조건
   const isSavingDisabled =
     isSavingNote || !noteText?.trim() || noteText === savedNoteText;
 
@@ -226,7 +218,6 @@ export default function DailyReport({ date }) {
     <S.Wrapper>
       <Header title={'일간 리포트'} variant="back" />
       <S.Container $blur={isCollecting}>
-        {/* 날짜 섹션 */}
         <S.DateSection>
           <S.DateText>
             {formatDateTitle(reportData?.date || targetDate)}
@@ -237,7 +228,6 @@ export default function DailyReport({ date }) {
         </S.DateSection>
 
         <S.GridContainer>
-          {/* [좌측 열] 수면 -> 운동 -> 칼로리 소모 */}
           <S.Column>
             <S.SleepCard>
               <S.CardTitle>
@@ -264,9 +254,9 @@ export default function DailyReport({ date }) {
                   const isOver = totalMinutes > targetMinutes;
                   const overProgress = isOver
                     ? Math.min(
-                        (totalMinutes - targetMinutes) / targetMinutes,
-                        1,
-                      )
+                      (totalMinutes - targetMinutes) / targetMinutes,
+                      1,
+                    )
                     : 0;
                   const overOffset = circumference * (1 - overProgress);
 
@@ -355,7 +345,6 @@ export default function DailyReport({ date }) {
             </S.CalorieCard>
           </S.Column>
 
-          {/* [우측 열] 평균 피부온도 -> 생리주기 / 산소포화도 */}
           <S.Column>
             <S.TempCard>
               <S.CardTitle>
@@ -433,7 +422,6 @@ export default function DailyReport({ date }) {
           </S.Column>
         </S.GridContainer>
 
-        {/* AI 피부 분석 */}
         {reportData.aiAnalysis && (
           <S.SectionBlock>
             <S.SectionHeading>AI 피부 분석</S.SectionHeading>
@@ -441,7 +429,6 @@ export default function DailyReport({ date }) {
           </S.SectionBlock>
         )}
 
-        {/* 맞춤 솔루션 */}
         {reportData.personalizedSolution && (
           <S.SectionBlock>
             <S.SectionHeading>{nickname}님 맞춤 솔루션</S.SectionHeading>
@@ -449,7 +436,6 @@ export default function DailyReport({ date }) {
           </S.SectionBlock>
         )}
 
-        {/* Note 입력 영역 */}
         <S.SectionBlock>
           <S.SectionHeading>Note</S.SectionHeading>
           <S.NoteInputBox>
@@ -463,7 +449,7 @@ export default function DailyReport({ date }) {
               <S.CharCount>{noteText.length} / 300자</S.CharCount>
               <S.SaveButton
                 onClick={handleSaveNote}
-                disabled={!noteText.trim() || isSavingNote}
+                disabled={isSavingDisabled}
               >
                 {isSavingNote ? '저장 중...' : '저장'}
               </S.SaveButton>
@@ -471,7 +457,6 @@ export default function DailyReport({ date }) {
           </S.NoteInputBox>
         </S.SectionBlock>
 
-        {/* 하단 추천 배너 */}
         <S.BottomBanner>
           <S.AvatarPlaceholder src={surprisedDr} />
           <S.SpeechBubble>
@@ -481,23 +466,24 @@ export default function DailyReport({ date }) {
         </S.BottomBanner>
       </S.Container>
 
-      {/* 데이터 수집 중 모달 */}
       {isCollecting && (
-        <S.CollectingOverlay>
-          <S.CollectingModal>
-            <S.ModalTitle>
-              (서비스명)이 오늘의 데이터를
-              <br />
-              모으는 중이에요
-            </S.ModalTitle>
-            <S.ModalDescription>
-              오늘을 기록하면 리포트를 일찍 만나볼 수 있어요.
-            </S.ModalDescription>
-            <S.ModalButton onClick={() => navigate('/todaynote')}>
-              오늘 기록하기
-            </S.ModalButton>
-          </S.CollectingModal>
-        </S.CollectingOverlay>
+        <Portal>
+          <S.CollectingOverlay>
+            <S.CollectingModal>
+              <S.ModalTitle>
+                (서비스명)이 오늘의 데이터를
+                <br />
+                모으는 중이에요
+              </S.ModalTitle>
+              <S.ModalDescription>
+                오늘을 기록하면 리포트를 일찍 만나볼 수 있어요.
+              </S.ModalDescription>
+              <S.ModalButton onClick={() => navigate('/todaynote')}>
+                오늘 기록하기
+              </S.ModalButton>
+            </S.CollectingModal>
+          </S.CollectingOverlay>
+        </Portal>
       )}
     </S.Wrapper>
   );

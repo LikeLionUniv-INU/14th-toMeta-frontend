@@ -50,7 +50,6 @@ export const createDailyRecord = async (recordData) => {
 
 export const getDailyRecord = async (date) => {
   if (USE_MOCK) {
-    // 2026-08-12 날짜 조회 시 목 데이터 반환 예시 (그 외 날짜는 404 처리)
     if (date === '2026-08-12') {
       return {
         data: {

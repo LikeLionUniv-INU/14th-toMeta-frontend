@@ -2,9 +2,6 @@ import api from './axios';
 
 const USE_MOCK = false; // 실서버 연동 시 false로 변경
 
-/**
- * 홈 화면 조회
- */
 export const getHomeData = async () => {
   if (USE_MOCK) {
     return {

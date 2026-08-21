@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as S from './Splash.styles';
 import acneSkinImg from '../assets/images/acne-skin.png';
@@ -93,21 +93,18 @@ const Splash = () => {
     advanceMessage();
   };
 
-  // 일정 시간 후 자동 스킵
   useEffect(() => {
     if (step !== 'lab' || !messageTyped) return undefined;
     const timer = setTimeout(advanceMessage, 2500);
     return () => clearTimeout(timer);
   }, [step, messageTyped, msgIndex, advanceMessage]);
 
-  // 암전이 다 끝날 즈음 로고를 뿅 등장시킨다
   useEffect(() => {
     if (step !== 'blackout') return undefined;
     const timer = setTimeout(() => setStep('logo'), 700);
     return () => clearTimeout(timer);
   }, [step]);
 
-  // 온보딩 진행 상태에 따라 이어서 진행할 화면으로 보낸다.
   // 401(세션 없음/만료)은 약관 동의 전이므로 /privacy로 보내는 게 맞는 동작.
   const handleLogoClick = async () => {
     if (step !== 'logo' || isCheckingUser) return;

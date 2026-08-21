@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getCosmeticOptions, deleteMyCosmetic, createCosmeticSet } from "../api/cosmetics";
@@ -9,6 +9,7 @@ import SunIcon from "../assets/images/record/sun.svg";
 import MoonIcon from "../assets/images/record/moon.svg";
 import Trash from "../assets/images/trash.png";
 import { media } from "../styles/GlobalStyle";
+import Portal from "../components/Portal";
 import useModalBackClose from "../hooks/useModalBackClose";
 
 export default function MyPouch() {
@@ -30,8 +31,6 @@ export default function MyPouch() {
     night: false,
   });
 
-  // 이름 입력(isModalOpen) -> 루틴 선택(isRoutineModalOpen) 2단계를
-  // 하나의 뒤로가기 히스토리 항목으로 묶어서 관리한다.
   const closeSetModal = useModalBackClose(
     isModalOpen || isRoutineModalOpen,
     () => {
@@ -256,70 +255,74 @@ export default function MyPouch() {
       </ContentWrapper>
 
       {isModalOpen && (
-        <ModalOverlay onClick={closeSetModal}>
-          <ModalContent onClick={(e) => e.stopPropagation()}>
-            <ModalTitle>선택한 제품을 세트로 묶을까요?</ModalTitle>
-            <ModalDesc>
-              {selectedCosmetics[0]?.customName || selectedCosmetics[0]?.productName}
-              {selectedCosmetics.length > 1
-                ? ` 외 ${selectedCosmetics.length - 1}개 제품이 한 세트로 저장돼요`
-                : "이 한 세트로 저장돼요"}
-            </ModalDesc>
-            <ModalInput
-              placeholder="세트 이름을 입력해 주세요 (ex. 진정 꿀조합)"
-              value={setName}
-              onChange={(e) => setSetName(e.target.value)}
-            />
-            <ModalButtonGroup>
-              <ModalCancelBtn onClick={closeSetModal}>
-                취소
-              </ModalCancelBtn>
-              <ModalSubmitBtn
-                onClick={handleFirstModalNext}
-                disabled={!setName.trim()}
-                $isActive={!!setName.trim()}
-              >
-                다음
-              </ModalSubmitBtn>
-            </ModalButtonGroup>
-          </ModalContent>
-        </ModalOverlay>
+        <Portal>
+          <ModalOverlay onClick={closeSetModal}>
+            <ModalContent onClick={(e) => e.stopPropagation()}>
+              <ModalTitle>선택한 제품을 세트로 묶을까요?</ModalTitle>
+              <ModalDesc>
+                {selectedCosmetics[0]?.customName || selectedCosmetics[0]?.productName}
+                {selectedCosmetics.length > 1
+                  ? ` 외 ${selectedCosmetics.length - 1}개 제품이 한 세트로 저장돼요`
+                  : "이 한 세트로 저장돼요"}
+              </ModalDesc>
+              <ModalInput
+                placeholder="세트 이름을 입력해 주세요 (ex. 진정 꿀조합)"
+                value={setName}
+                onChange={(e) => setSetName(e.target.value)}
+              />
+              <ModalButtonGroup>
+                <ModalCancelBtn onClick={closeSetModal}>
+                  취소
+                </ModalCancelBtn>
+                <ModalSubmitBtn
+                  onClick={handleFirstModalNext}
+                  disabled={!setName.trim()}
+                  $isActive={!!setName.trim()}
+                >
+                  다음
+                </ModalSubmitBtn>
+              </ModalButtonGroup>
+            </ModalContent>
+          </ModalOverlay>
+        </Portal>
       )}
 
       {isRoutineModalOpen && (
-        <ModalOverlay onClick={closeSetModal}>
-          <RoutineModalContainer onClick={(e) => e.stopPropagation()}>
-            <RoutineModalTitle>
-              언제 사용하는 제품인가요?
-            </RoutineModalTitle>
+        <Portal>
+          <ModalOverlay onClick={closeSetModal}>
+            <RoutineModalContainer onClick={(e) => e.stopPropagation()}>
+              <RoutineModalTitle>
+                언제 사용하는 제품인가요?
+              </RoutineModalTitle>
 
-            <RoutineOptions>
-              <RoutineCard
-                $isSelected={selectedRoutines.day}
-                onClick={() => toggleRoutine("day")}
-              >
-                <ModalSunSvg />
-                <span>낮</span>
-              </RoutineCard>
+              <RoutineOptions>
+                <RoutineCard
+                  $isSelected={selectedRoutines.day}
+                  onClick={() => toggleRoutine("day")}
+                >
+                  <ModalSunSvg />
+                  <span>낮</span>
+                </RoutineCard>
 
-              <RoutineCard
-                $isSelected={selectedRoutines.night}
-                onClick={() => toggleRoutine("night")}
-              >
-                <ModalMoonSvg />
-                <span>밤</span>
-              </RoutineCard>
-            </RoutineOptions>
+                <RoutineCard
+                  $isSelected={selectedRoutines.night}
+                  onClick={() => toggleRoutine("night")}
+                >
+                  <ModalMoonSvg />
+                  <span>밤</span>
+                </RoutineCard>
+              </RoutineOptions>
 
-            <RoutineModalSubTitle>
-              아침, 밤 둘 다 사용한다면 두 개 모두 선택해 주세요!
-            </RoutineModalSubTitle>
+              <RoutineModalSubTitle>
+                아침, 밤 둘 다 사용한다면 두 개 모두 선택해 주세요!
+              </RoutineModalSubTitle>
 
-            <RoutineSubmitBtn onClick={handleCreateSet}>
-              세트 만들기
-            </RoutineSubmitBtn>
-          </RoutineModalContainer>
-        </ModalOverlay>
+              <RoutineSubmitBtn onClick={handleCreateSet}>
+                세트 만들기
+              </RoutineSubmitBtn>
+            </RoutineModalContainer>
+          </ModalOverlay>
+        </Portal>
       )}
 
       <NavigationBar />
@@ -360,7 +363,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding-bottom: 70px;
+  padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
 `;
 
 const ContentWrapper = styled.div`
@@ -642,8 +645,10 @@ const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
+  max-width: 430px;
+  margin: 0 auto;
   background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
@@ -764,7 +769,6 @@ const ModalSubmitBtn = styled.button`
   }
 `;
 
-/* 2차 모달 스타일 */
 const RoutineModalContainer = styled.div`
   width: 100%;
   background-color: #e6f5e8;
